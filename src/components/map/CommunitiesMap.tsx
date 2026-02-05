@@ -3,10 +3,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { CommunityPolygon } from '@/types/community';
 import { Listing } from '@/types/listing';
-import { formatPrice } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
-
-let L: typeof import('leaflet') | null = null;
+import type * as LeafletType from 'leaflet';
 
 interface CommunitiesMapProps {
   communities: CommunityPolygon[];
@@ -21,9 +19,8 @@ export function CommunitiesMap({
 }: CommunitiesMapProps) {
   const router = useRouter();
   const mapContainerRef = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<L.Map | null>(null);
-  const polygonsRef = useRef<Map<string, L.Polygon>>(new Map());
-  const markersRef = useRef<Map<string, L.Marker>>(new Map());
+  const mapRef = useRef<LeafletType.Map | null>(null);
+  const leafletRef = useRef<typeof LeafletType | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [listings, setListings] = useState<Listing[]>([]);
   const [zoomLevel, setZoomLevel] = useState(10);
@@ -33,11 +30,12 @@ export function CommunitiesMap({
     if (typeof window === 'undefined') return;
 
     const initLeaflet = async () => {
-      if (!L) {
-        L = await import('leaflet');
-        await import('leaflet/dist/leaflet.css');
+      if (!leafletRef.current) {
+        const L = await import('leaflet');
+        leafletRef.current = L;
       }
 
+      const L = leafletRef.current;
       if (!mapContainerRef.current || mapRef.current) return;
 
       const map = L.map(mapContainerRef.current, {
@@ -70,13 +68,17 @@ export function CommunitiesMap({
 
   // Draw community polygons
   useEffect(() => {
+    const L = leafletRef.current;
     if (!isLoaded || !mapRef.current || !L) return;
 
     const map = mapRef.current;
 
-    // Clear old polygons
-    polygonsRef.current.forEach(polygon => polygon.remove());
-    polygonsRef.current.clear();
+    // Clear old polygons by removing all layers except tile layer
+    map.eachLayer((layer) => {
+      if (!(layer instanceof L.TileLayer)) {
+        map.removeLayer(layer);
+      }
+    });
 
     // Add community polygons
     communities.forEach(community => {
@@ -103,7 +105,7 @@ export function CommunitiesMap({
 
       // Add label
       const center = polygon.getBounds().getCenter();
-      const label = L.marker(center, {
+      L.marker(center, {
         icon: L.divIcon({
           className: 'community-label',
           html: `
@@ -115,19 +117,14 @@ export function CommunitiesMap({
           iconAnchor: [50, 12],
         }),
       }).addTo(map);
-
-      polygonsRef.current.set(community.id, polygon);
-      polygonsRef.current.set(`label-${community.id}`, label as any);
     });
   }, [isLoaded, communities, selectedCommunity, router, onSelectCommunity]);
 
   // Fetch and show property markers when zoomed in on a selected community
   useEffect(() => {
+    const L = leafletRef.current;
     if (!isLoaded || !mapRef.current || !L) return;
     if (!selectedCommunity || zoomLevel < 12) {
-      // Clear markers when zoomed out or no selection
-      markersRef.current.forEach(marker => marker.remove());
-      markersRef.current.clear();
       setListings([]);
       return;
     }
@@ -158,16 +155,13 @@ export function CommunitiesMap({
 
   // Draw property markers
   useEffect(() => {
+    const L = leafletRef.current;
     if (!isLoaded || !mapRef.current || !L) return;
-
-    const map = mapRef.current;
-
-    // Clear old markers
-    markersRef.current.forEach(marker => marker.remove());
-    markersRef.current.clear();
 
     // Only show markers when zoomed in enough
     if (zoomLevel < 12 || listings.length === 0) return;
+
+    const map = mapRef.current;
 
     // Add listing markers
     listings.forEach(listing => {
@@ -179,7 +173,7 @@ export function CommunitiesMap({
         className: 'custom-marker',
         html: `
           <div class="relative">
-            <div class="px-2 py-1 rounded text-xs font-semibold whitespace-nowrap shadow-md bg-spyglass-orange text-white cursor-pointer hover:scale-110 transition-transform">
+            <div class="px-2 py-1 rounded text-xs font-semibold whitespace-nowrap shadow-md bg-[#E85A24] text-white cursor-pointer hover:scale-110 transition-transform">
               ${priceLabel}
             </div>
             <div class="absolute left-1/2 -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-[#E85A24]"></div>
@@ -189,13 +183,11 @@ export function CommunitiesMap({
         iconAnchor: [40, 30],
       });
 
-      const marker = L.marker([listing.coordinates.lat, listing.coordinates.lng], { icon })
+      L.marker([listing.coordinates.lat, listing.coordinates.lng], { icon })
         .addTo(map)
         .on('click', () => {
           window.location.href = `/listing/${listing.mlsNumber}`;
         });
-
-      markersRef.current.set(listing.id, marker);
     });
   }, [isLoaded, listings, zoomLevel]);
 
