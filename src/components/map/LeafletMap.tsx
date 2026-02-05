@@ -58,7 +58,19 @@ export function LeafletMap({
       }
 
       if (mapContainerRef.current && !mapRef.current) {
-        const map = L.map(mapContainerRef.current).setView([center.lat, center.lng], zoom);
+        const map = L.map(mapContainerRef.current, {
+          // Reduce scroll sensitivity - requires more deliberate scrolling
+          scrollWheelZoom: true,
+          wheelDebounceTime: 100,
+          wheelPxPerZoomLevel: 120, // Higher = less sensitive (default is 60)
+          // Touch handling
+          touchZoom: true,
+          dragging: true,
+          tap: true,
+          // Zoom snapping for smoother behavior
+          zoomSnap: 0.5,
+          zoomDelta: 0.5,
+        }).setView([center.lat, center.lng], zoom);
         
         // Add tile layer (OpenStreetMap)
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -136,8 +148,58 @@ export function LeafletMap({
       });
 
       const marker = L.marker([listing.coordinates.lat, listing.coordinates.lng], { icon })
-        .addTo(map)
-        .on('click', () => onSelectListing?.(listing))
+        .addTo(map);
+
+      // Create Zillow-style popup card
+      const popupContent = `
+        <div class="listing-popup" style="width: 280px; cursor: pointer;" onclick="window.location.href='/listing/${listing.mlsNumber}'">
+          <div style="position: relative;">
+            <img 
+              src="${listing.photos?.[0] || '/placeholder-home.jpg'}" 
+              alt="${listing.address?.street || 'Property'}"
+              style="width: 100%; height: 160px; object-fit: cover; border-radius: 8px 8px 0 0;"
+              onerror="this.src='/placeholder-home.jpg'"
+            />
+            <div style="position: absolute; top: 8px; left: 8px; background: white; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;">
+              ${listing.status}
+            </div>
+            ${listing.photos?.length > 1 ? `
+              <div style="position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.7); color: white; padding: 2px 6px; border-radius: 4px; font-size: 11px;">
+                1/${listing.photos.length}
+              </div>
+            ` : ''}
+          </div>
+          <div style="padding: 12px;">
+            <div style="font-size: 20px; font-weight: 700; color: #111;">${formatPrice(listing.price)}</div>
+            <div style="display: flex; gap: 12px; margin-top: 4px; font-size: 13px; color: #444;">
+              <span><strong>${listing.bedrooms}</strong> bd</span>
+              <span><strong>${listing.bathrooms}</strong> ba</span>
+              <span><strong>${listing.sqft?.toLocaleString() || '—'}</strong> sqft</span>
+            </div>
+            <div style="margin-top: 8px; font-size: 13px; color: #666; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+              ${listing.address?.street || ''}, ${listing.address?.city || ''}
+            </div>
+            <div style="margin-top: 4px; font-size: 11px; color: #888;">
+              MLS# ${listing.mlsNumber}
+            </div>
+          </div>
+        </div>
+      `;
+
+      marker.bindPopup(popupContent, {
+        closeButton: true,
+        maxWidth: 300,
+        minWidth: 280,
+        className: 'listing-popup-container',
+        offset: [0, -10]
+      });
+
+      marker
+        .on('click', () => {
+          // Open popup on click
+          marker.openPopup();
+          onSelectListing?.(listing);
+        })
         .on('mouseover', () => onHoverListing?.(listing))
         .on('mouseout', () => onHoverListing?.(null));
 
@@ -201,12 +263,21 @@ export function LeafletMap({
         Array.isArray(c) ? L!.latLng(c[0], c[1]) : L!.latLng(c.lat, c.lng)
       );
       const bounds = L.latLngBounds(latLngs);
-      mapRef.current.fitBounds(bounds, { padding: [30, 30], maxZoom: 14 });
+      // Tighter zoom: smaller padding, higher minZoom
+      mapRef.current.fitBounds(bounds, { 
+        padding: [20, 20], 
+        maxZoom: 16,  // Allow closer zoom
+        animate: true 
+      });
     } else if (selectedCommunity.bounds) {
       const { north, south, east, west } = selectedCommunity.bounds;
-      mapRef.current.fitBounds([[south, west], [north, east]], { padding: [30, 30], maxZoom: 14 });
+      mapRef.current.fitBounds([[south, west], [north, east]], { 
+        padding: [20, 20], 
+        maxZoom: 16,
+        animate: true 
+      });
     } else if (selectedCommunity.center) {
-      mapRef.current.setView([selectedCommunity.center.lat, selectedCommunity.center.lng], 13);
+      mapRef.current.setView([selectedCommunity.center.lat, selectedCommunity.center.lng], 15);
     }
   }, [isLoaded, selectedCommunity]);
 
