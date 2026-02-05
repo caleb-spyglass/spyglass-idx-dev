@@ -42,7 +42,7 @@ function AgentsContent() {
           <div className="p-8">
             <div className="grid md:grid-cols-2 gap-6 mb-8">
               <a
-                href="tel:5125809338"
+                href="tel:7377274889"
                 className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors group"
               >
                 <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center group-hover:bg-red-200 transition-colors">
@@ -50,7 +50,7 @@ function AgentsContent() {
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Call Us</p>
-                  <p className="text-lg font-semibold text-gray-900">512-580-9338</p>
+                  <p className="text-lg font-semibold text-gray-900">737-727-4889</p>
                 </div>
               </a>
 

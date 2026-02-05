@@ -73,12 +73,12 @@ export default function ContactModal({
           <div className="flex items-center justify-between bg-gray-50 rounded-lg p-4 mb-6">
             <div>
               <p className="text-sm text-gray-600">Prefer to talk?</p>
-              <a href="tel:5125809338" className="text-lg font-semibold text-red-600 hover:text-red-700">
-                512-580-9338
+              <a href="tel:7377274889" className="text-lg font-semibold text-red-600 hover:text-red-700">
+                737-727-4889
               </a>
             </div>
             <a 
-              href="tel:5125809338"
+              href="tel:7377274889"
               className="bg-red-600 hover:bg-red-700 text-white p-3 rounded-full transition-colors"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

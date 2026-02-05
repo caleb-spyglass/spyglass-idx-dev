@@ -37,10 +37,10 @@ export function Header() {
           {/* CTA */}
           <div className="flex items-center gap-4">
             <a 
-              href="tel:512-580-9338" 
+              href="tel:737-727-4889" 
               className="hidden md:block text-sm hover:text-spyglass-orange transition-colors"
             >
-              512-580-9338
+              737-727-4889
             </a>
             <Link 
               href="/contact"

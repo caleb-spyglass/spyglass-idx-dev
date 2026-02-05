@@ -340,7 +340,7 @@ export function ListingDetailOverlay({
                     </button>
                   </form>
                   <p className="text-xs text-gray-500 mt-3 text-center">
-                    Or call 512-580-9338
+                    Or call 737-727-4889
                   </p>
                 </div>
               </div>

@@ -134,11 +134,11 @@ function CommunityDetailContent() {
             {/* Contact CTA */}
             <div className="flex gap-3">
               <a
-                href="tel:5125809338"
+                href="tel:7377274889"
                 className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg transition-colors"
               >
                 <PhoneIcon className="w-5 h-5" />
-                <span className="hidden sm:inline">512-580-9338</span>
+                <span className="hidden sm:inline">737-727-4889</span>
               </a>
               <button
                 onClick={() => setShowContactModal(true)}
