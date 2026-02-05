@@ -253,30 +253,6 @@ export async function searchListings(filters: SearchFilters): Promise<SearchResu
   if (filters.area) params.area = filters.area;
   if (filters.zip) params.zip = filters.zip;
 
-  // Polygon filter for community search
-  // Repliers expects: coordinates=[[[lng,lat],[lng,lat],...]]
-  if (filters.polygon && filters.polygon.length > 0) {
-    // Convert to Repliers format: [[[lng, lat], ...]]
-    // Handle both {lat, lng} objects and [lat, lng] tuples
-    const ring = filters.polygon.map(p => 
-      Array.isArray(p) ? [p[1], p[0]] : [p.lng, p.lat]
-    );
-    // Close the ring if not closed
-    if (ring[0][0] !== ring[ring.length-1][0] || ring[0][1] !== ring[ring.length-1][1]) {
-      ring.push(ring[0]);
-    }
-    params.coordinates = JSON.stringify([[ring]]);
-  }
-
-  // Bounding box (map view)
-  if (filters.bounds) {
-    // Repliers uses map parameters
-    params.minLatitude = filters.bounds.south;
-    params.maxLatitude = filters.bounds.north;
-    params.minLongitude = filters.bounds.west;
-    params.maxLongitude = filters.bounds.east;
-  }
-
   // Sort - Repliers uses camelCase values
   if (filters.sort) {
     const sortMapping: Record<string, string> = {
@@ -288,6 +264,42 @@ export async function searchListings(filters: SearchFilters): Promise<SearchResu
     params.sortBy = sortMapping[filters.sort] || 'createdOnDesc';
   } else {
     params.sortBy = 'createdOnDesc';
+  }
+
+  // Polygon filter - requires POST with "map" in body
+  // Format: [[[lng, lat], [lng, lat], ...]]
+  if (filters.polygon && filters.polygon.length > 0) {
+    // Convert to Repliers format: [[[lng, lat], ...]]
+    const ring = filters.polygon.map(p => 
+      Array.isArray(p) ? [p[1], p[0]] : [p.lng, p.lat]
+    );
+    // Close the ring if not closed
+    if (ring[0][0] !== ring[ring.length-1][0] || ring[0][1] !== ring[ring.length-1][1]) {
+      ring.push(ring[0]);
+    }
+    
+    const response = await repliersRequest<RepliersResponse>({
+      endpoint: '/listings',
+      method: 'POST',
+      params,
+      body: { map: [ring] },
+    });
+    
+    return {
+      listings: response.listings.map(transformListing),
+      total: response.count,
+      page: response.page,
+      pageSize: response.pageSize,
+      hasMore: response.page < response.numPages,
+    };
+  }
+
+  // Bounding box (map view) - uses GET with lat/lng params
+  if (filters.bounds) {
+    params.minLatitude = filters.bounds.south;
+    params.maxLatitude = filters.bounds.north;
+    params.minLongitude = filters.bounds.west;
+    params.maxLongitude = filters.bounds.east;
   }
 
   const response = await repliersRequest<RepliersResponse>({
