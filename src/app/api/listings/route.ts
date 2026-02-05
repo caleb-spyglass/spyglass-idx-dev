@@ -8,6 +8,16 @@ export async function GET(request: NextRequest) {
     
     const zip = searchParams.get('zip') || undefined;
     const city = searchParams.get('city') || undefined;
+    const polygonStr = searchParams.get('polygon');
+    
+    // Parse polygon from query string (format: "lat,lng;lat,lng;...")
+    let polygon: Array<{lat: number; lng: number}> | undefined;
+    if (polygonStr) {
+      polygon = polygonStr.split(';').map(pair => {
+        const [lat, lng] = pair.split(',').map(Number);
+        return { lat, lng };
+      }).filter(p => !isNaN(p.lat) && !isNaN(p.lng));
+    }
     
     const filters: SearchFilters = {
       page: parseInt(searchParams.get('page') || '1'),
@@ -18,8 +28,9 @@ export async function GET(request: NextRequest) {
       minBaths: searchParams.get('minBaths') ? parseInt(searchParams.get('minBaths')!) : undefined,
       city,
       zip,
+      polygon,
       // Only default to Travis if no location filter provided
-      area: searchParams.get('area') || (zip || city ? undefined : 'Travis'),
+      area: searchParams.get('area') || (zip || city || polygon ? undefined : 'Travis'),
       sort: (searchParams.get('sort') as SearchFilters['sort']) || 'date-desc',
     };
 
