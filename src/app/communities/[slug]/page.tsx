@@ -265,7 +265,7 @@ function CommunityDetailContent() {
 
       {/* Tab Content */}
       {activeTab === 'listings' && (
-        <div className="flex-1 flex flex-col overflow-hidden" style={{ height: isEmbed ? 'calc(100vh - 100px)' : 'calc(100vh - 240px)' }}>
+        <div className="flex-1 flex flex-col md:overflow-hidden md:h-[calc(100vh-240px)]">
           {/* Filter Bar */}
           {!isEmbed && (
             <div className="bg-white border-b border-gray-200 px-4 py-3">
@@ -278,8 +278,8 @@ function CommunityDetailContent() {
             </div>
           )}
           
-          <div className="flex-1 flex overflow-hidden">
-          <div className="w-full md:w-1/2 lg:w-[45%] overflow-y-auto bg-gray-50">
+          <div className="flex-1 flex md:overflow-hidden">
+          <div className="w-full md:w-1/2 lg:w-[45%] md:overflow-y-auto bg-gray-50">
             <div className="sticky top-0 bg-gray-50 px-4 py-3 border-b border-gray-200 flex items-center justify-between z-10">
               <span className="text-sm text-gray-600">
                 {loading ? 'Loading...' : `${visibleListings.length} homes in ${community.name}`}
