@@ -2,18 +2,19 @@
 
 import { Listing } from '@/types/listing';
 import { formatPrice, formatNumber } from '@/lib/utils';
-import { HeartIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import { HeartIcon, ChevronLeftIcon, ChevronRightIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
 import { useState, useRef, TouchEvent } from 'react';
 
 interface PropertyCardProps {
   listing: Listing;
   onSelect?: (listing: Listing) => void;
+  onDismiss?: (mlsNumber: string) => void;
   isSelected?: boolean;
   isHovered?: boolean;
 }
 
-export function PropertyCard({ listing, onSelect, isSelected, isHovered }: PropertyCardProps) {
+export function PropertyCard({ listing, onSelect, onDismiss, isSelected, isHovered }: PropertyCardProps) {
   const [isFavorite, setIsFavorite] = useState(false);
   const [imageError, setImageError] = useState(false);
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
@@ -111,20 +112,36 @@ export function PropertyCard({ listing, onSelect, isSelected, isHovered }: Prope
           </div>
         )}
 
-        {/* Favorite button */}
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            setIsFavorite(!isFavorite);
-          }}
-          className="absolute top-3 right-3 z-20 p-2 rounded-full bg-white/80 hover:bg-white transition-colors"
-        >
-          {isFavorite ? (
-            <HeartSolidIcon className="w-5 h-5 text-red-500" />
-          ) : (
-            <HeartIcon className="w-5 h-5 text-gray-600" />
+        {/* Action buttons (top right) */}
+        <div className="absolute top-3 right-3 z-20 flex gap-1">
+          {/* Dismiss button */}
+          {onDismiss && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onDismiss(listing.mlsNumber);
+              }}
+              className="p-2 rounded-full bg-white/80 hover:bg-white transition-colors"
+              title="Not interested"
+            >
+              <XMarkIcon className="w-5 h-5 text-gray-600" />
+            </button>
           )}
-        </button>
+          {/* Favorite button */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsFavorite(!isFavorite);
+            }}
+            className="p-2 rounded-full bg-white/80 hover:bg-white transition-colors"
+          >
+            {isFavorite ? (
+              <HeartSolidIcon className="w-5 h-5 text-red-500" />
+            ) : (
+              <HeartIcon className="w-5 h-5 text-gray-600" />
+            )}
+          </button>
+        </div>
 
         {/* Photo navigation arrows - only show if multiple photos */}
         {photos.length > 1 && (

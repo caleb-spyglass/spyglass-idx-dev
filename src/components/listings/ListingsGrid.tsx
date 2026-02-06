@@ -9,6 +9,7 @@ interface ListingsGridProps {
   hoveredListing?: Listing | null;
   onSelectListing?: (listing: Listing) => void;
   onHoverListing?: (listing: Listing | null) => void;
+  onDismissListing?: (mlsNumber: string) => void;
   isLoading?: boolean;
 }
 
@@ -18,6 +19,7 @@ export function ListingsGrid({
   hoveredListing,
   onSelectListing,
   onHoverListing,
+  onDismissListing,
   isLoading 
 }: ListingsGridProps) {
   if (isLoading) {
@@ -63,6 +65,7 @@ export function ListingsGrid({
             isSelected={selectedListing?.id === listing.id}
             isHovered={hoveredListing?.id === listing.id}
             onSelect={onSelectListing}
+            onDismiss={onDismissListing}
           />
         </div>
       ))}

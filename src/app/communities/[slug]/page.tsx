@@ -8,10 +8,11 @@ import { ListingDetailOverlay } from '@/components/listings/ListingDetailOverlay
 import { getCommunityBySlug } from '@/data/communities-polygons';
 import { Listing } from '@/types/listing';
 import { formatPrice } from '@/lib/utils';
-import { ArrowLeftIcon, MapPinIcon, HomeIcon, CurrencyDollarIcon, PhoneIcon, EnvelopeIcon, ChartBarIcon, InformationCircleIcon, Squares2X2Icon } from '@heroicons/react/24/outline';
+import { ArrowLeftIcon, MapPinIcon, HomeIcon, CurrencyDollarIcon, PhoneIcon, EnvelopeIcon, ChartBarIcon, InformationCircleIcon, Squares2X2Icon, EyeSlashIcon } from '@heroicons/react/24/outline';
 import ContactModal from '@/components/forms/ContactModal';
 import CommunityStats from '@/components/community/CommunityStats';
 import CommunityDescription from '@/components/community/CommunityDescription';
+import { useDismissedListings } from '@/hooks/useDismissedListings';
 
 // Lazy load map
 const LeafletMap = lazy(() =>
@@ -46,6 +47,15 @@ function CommunityDetailContent() {
   const [showContactModal, setShowContactModal] = useState(false);
   const [activeTab, setActiveTab] = useState<TabType>(initialTab);
   const [stats, setStats] = useState<any>(null);
+  
+  // Dismissed listings
+  const { dismiss, isDismissed, dismissedCount, restoreAll } = useDismissedListings();
+  const [showDismissed, setShowDismissed] = useState(false);
+  
+  // Filter out dismissed listings (unless showDismissed is true)
+  const visibleListings = showDismissed 
+    ? listings 
+    : listings.filter(l => !isDismissed(l.mlsNumber));
 
   // Fetch listings for this community using polygon
   useEffect(() => {
@@ -230,16 +240,37 @@ function CommunityDetailContent() {
           <div className="w-full md:w-1/2 lg:w-[45%] overflow-y-auto bg-gray-50">
             <div className="sticky top-0 bg-gray-50 px-4 py-3 border-b border-gray-200 flex items-center justify-between z-10">
               <span className="text-sm text-gray-600">
-                {loading ? 'Loading...' : `${total} homes in ${community.name}`}
+                {loading ? 'Loading...' : `${visibleListings.length} homes in ${community.name}`}
+                {dismissedCount > 0 && !showDismissed && (
+                  <span className="text-gray-400 ml-1">({dismissedCount} hidden)</span>
+                )}
               </span>
+              {dismissedCount > 0 && (
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setShowDismissed(!showDismissed)}
+                    className="flex items-center gap-1 text-xs text-gray-500 hover:text-gray-700"
+                  >
+                    <EyeSlashIcon className="w-4 h-4" />
+                    {showDismissed ? 'Hide dismissed' : 'Show all'}
+                  </button>
+                  <button
+                    onClick={restoreAll}
+                    className="text-xs text-spyglass-orange hover:underline"
+                  >
+                    Restore all
+                  </button>
+                </div>
+              )}
             </div>
 
             <ListingsGrid
-              listings={listings}
+              listings={visibleListings}
               selectedListing={selectedListing}
               hoveredListing={hoveredListing}
               onSelectListing={setSelectedListing}
               onHoverListing={setHoveredListing}
+              onDismissListing={dismiss}
               isLoading={loading}
             />
           </div>
@@ -247,7 +278,7 @@ function CommunityDetailContent() {
           <div className="hidden md:block md:w-1/2 lg:w-[55%] border-l border-gray-200">
             <Suspense fallback={<MapLoadingFallback />}>
               <LeafletMap
-                listings={listings}
+                listings={visibleListings}
                 communities={[mapCommunity]}
                 selectedListing={selectedListing}
                 hoveredListing={hoveredListing}
@@ -353,24 +384,24 @@ function CommunityDetailContent() {
         }}
         onPrevious={() => {
           if (!selectedListing) return;
-          const currentIndex = listings.findIndex(l => l.mlsNumber === selectedListing.mlsNumber);
+          const currentIndex = visibleListings.findIndex(l => l.mlsNumber === selectedListing.mlsNumber);
           if (currentIndex > 0) {
-            const prev = listings[currentIndex - 1];
+            const prev = visibleListings[currentIndex - 1];
             setSelectedListing(prev);
             window.history.pushState({}, '', `/listing/${prev.mlsNumber}`);
           }
         }}
         onNext={() => {
           if (!selectedListing) return;
-          const currentIndex = listings.findIndex(l => l.mlsNumber === selectedListing.mlsNumber);
-          if (currentIndex < listings.length - 1) {
-            const next = listings[currentIndex + 1];
+          const currentIndex = visibleListings.findIndex(l => l.mlsNumber === selectedListing.mlsNumber);
+          if (currentIndex < visibleListings.length - 1) {
+            const next = visibleListings[currentIndex + 1];
             setSelectedListing(next);
             window.history.pushState({}, '', `/listing/${next.mlsNumber}`);
           }
         }}
-        hasPrevious={selectedListing ? listings.findIndex(l => l.mlsNumber === selectedListing.mlsNumber) > 0 : false}
-        hasNext={selectedListing ? listings.findIndex(l => l.mlsNumber === selectedListing.mlsNumber) < listings.length - 1 : false}
+        hasPrevious={selectedListing ? visibleListings.findIndex(l => l.mlsNumber === selectedListing.mlsNumber) > 0 : false}
+        hasNext={selectedListing ? visibleListings.findIndex(l => l.mlsNumber === selectedListing.mlsNumber) < visibleListings.length - 1 : false}
       />
     </div>
   );
