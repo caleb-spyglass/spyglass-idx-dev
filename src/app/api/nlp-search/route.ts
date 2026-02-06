@@ -17,6 +17,13 @@ interface NLPResponse {
   nlpId: string;
 }
 
+// Extract zip codes from prompt (5 digit numbers that look like Texas zips)
+function extractZipCode(prompt: string): string | null {
+  // Match 5-digit numbers that are likely Texas zip codes (7xxxx range for Austin area)
+  const zipMatch = prompt.match(/\b(7[0-9]{4})\b/);
+  return zipMatch ? zipMatch[1] : null;
+}
+
 export async function POST(request: NextRequest) {
   try {
     const { prompt, nlpId }: NLPRequest = await request.json();
@@ -27,6 +34,9 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
+
+    // Pre-extract zip code from prompt as fallback
+    const extractedZip = extractZipCode(prompt);
 
     // Call Repliers NLP endpoint
     const nlpPayload: NLPRequest = { prompt };
@@ -65,6 +75,22 @@ export async function POST(request: NextRequest) {
     // Extract the generated URL and parse its params
     const generatedUrl = new URL(nlpResult.request.url);
     const searchParams = Object.fromEntries(generatedUrl.searchParams.entries());
+    
+    console.log('NLP generated URL:', generatedUrl.toString());
+    console.log('NLP searchParams:', searchParams);
+
+    // If NLP didn't extract zip but we found one in the prompt, add it
+    if (extractedZip && !searchParams.zip) {
+      console.log('Adding extracted zip code:', extractedZip);
+      generatedUrl.searchParams.set('zip', extractedZip);
+      // Remove area param if zip is specified (zip is more specific)
+      generatedUrl.searchParams.delete('area');
+    }
+    
+    // If there's a zip, make sure area doesn't override it
+    if (generatedUrl.searchParams.get('zip')) {
+      generatedUrl.searchParams.delete('area');
+    }
 
     // Now fetch the actual listings using the generated params
     const listingsResponse = await fetch(`${REPLIERS_API_URL}/listings?${generatedUrl.searchParams.toString()}`, {
