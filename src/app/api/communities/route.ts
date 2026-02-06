@@ -1,15 +1,39 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { sampleCommunities } from '@/data/sample-communities';
+import { COMMUNITIES } from '@/data/communities-polygons';
 
 // GET /api/communities - List all communities
 export async function GET(request: NextRequest) {
   try {
-    // TODO: Replace with database query when PostgreSQL is set up
-    // const communities = await db.query('SELECT * FROM community_zones ORDER BY name');
-    
+    const { searchParams } = new URL(request.url);
+    const county = searchParams.get('county');
+    const featured = searchParams.get('featured');
+    const search = searchParams.get('search')?.toLowerCase();
+
+    let filtered = COMMUNITIES;
+
+    if (county) {
+      filtered = filtered.filter(c => c.county.toLowerCase() === county.toLowerCase());
+    }
+    if (featured === 'true') {
+      filtered = filtered.filter(c => c.featured);
+    }
+    if (search) {
+      filtered = filtered.filter(c => c.name.toLowerCase().includes(search));
+    }
+
+    // Transform to API response format
+    const communities = filtered.map(c => ({
+      name: c.name,
+      slug: c.slug,
+      county: c.county,
+      featured: c.featured,
+      polygon: c.polygon,
+      displayPolygon: c.displayPolygon,
+    }));
+
     return NextResponse.json({
-      communities: sampleCommunities,
-      total: sampleCommunities.length,
+      communities,
+      total: communities.length,
     });
   } catch (error) {
     console.error('Communities API error:', error);

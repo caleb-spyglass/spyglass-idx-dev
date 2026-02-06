@@ -196,7 +196,7 @@ export function LeafletMap({
               ${listing.address?.street || ''}, ${listing.address?.city || ''}, TX ${listing.address?.zip || ''}
             </div>
             <div style="margin-top: 6px; font-size: 11px; color: #888; text-transform: uppercase;">
-              ${listing.brokerage || 'SPYGLASS REALTY'}
+              ${'SPYGLASS REALTY'}
             </div>
           </div>
         </div>
