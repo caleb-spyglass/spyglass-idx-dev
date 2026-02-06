@@ -4,6 +4,7 @@ import { useState, useEffect, lazy, Suspense } from 'react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { Header } from '@/components/ui/Header';
 import { ListingsGrid } from '@/components/listings/ListingsGrid';
+import { ListingDetailOverlay } from '@/components/listings/ListingDetailOverlay';
 import { getCommunityBySlug } from '@/data/communities-polygons';
 import { Listing } from '@/types/listing';
 import { formatPrice } from '@/lib/utils';
@@ -339,6 +340,37 @@ function CommunityDetailContent() {
         communityName={community.name}
         variant="info"
         title={`Interested in ${community.name}?`}
+      />
+
+      {/* Listing Detail Overlay */}
+      <ListingDetailOverlay
+        listing={selectedListing}
+        isOpen={!!selectedListing}
+        onClose={() => {
+          setSelectedListing(null);
+          // Reset URL when closing
+          window.history.pushState({}, '', `/communities/${slug}`);
+        }}
+        onPrevious={() => {
+          if (!selectedListing) return;
+          const currentIndex = listings.findIndex(l => l.mlsNumber === selectedListing.mlsNumber);
+          if (currentIndex > 0) {
+            const prev = listings[currentIndex - 1];
+            setSelectedListing(prev);
+            window.history.pushState({}, '', `/listing/${prev.mlsNumber}`);
+          }
+        }}
+        onNext={() => {
+          if (!selectedListing) return;
+          const currentIndex = listings.findIndex(l => l.mlsNumber === selectedListing.mlsNumber);
+          if (currentIndex < listings.length - 1) {
+            const next = listings[currentIndex + 1];
+            setSelectedListing(next);
+            window.history.pushState({}, '', `/listing/${next.mlsNumber}`);
+          }
+        }}
+        hasPrevious={selectedListing ? listings.findIndex(l => l.mlsNumber === selectedListing.mlsNumber) > 0 : false}
+        hasNext={selectedListing ? listings.findIndex(l => l.mlsNumber === selectedListing.mlsNumber) < listings.length - 1 : false}
       />
     </div>
   );

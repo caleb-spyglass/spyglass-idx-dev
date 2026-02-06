@@ -86,9 +86,9 @@ export function ListingDetailOverlay({
         onClick={onClose}
       />
 
-      {/* Modal overlay - space on both sides like Realty Austin */}
+      {/* Modal overlay - full screen on mobile, spaced on desktop */}
       <div 
-        className={`fixed inset-y-0 left-8 right-8 bg-white z-50 shadow-2xl rounded-lg transform transition-all duration-300 ease-out ${
+        className={`fixed inset-0 md:inset-y-0 md:left-8 md:right-8 bg-white z-50 shadow-2xl md:rounded-lg transform transition-all duration-300 ease-out ${
           isOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'
         }`}
       >
@@ -157,21 +157,17 @@ export function ListingDetailOverlay({
         <div className="overflow-y-auto h-[calc(100vh-120px)]">
           <div className="max-w-7xl mx-auto px-4 py-6">
             
-            {/* Photo grid - Realty Austin style */}
+            {/* Photo section - swipeable on mobile, grid on desktop */}
             <div className="mb-6">
               {photos.length > 0 ? (
-                <div className="grid grid-cols-4 grid-rows-2 gap-2 h-[500px] rounded-lg overflow-hidden">
-                  {/* Large main photo */}
-                  <div 
-                    className="col-span-2 row-span-2 relative cursor-pointer group"
-                    onClick={() => setShowAllPhotos(true)}
-                  >
+                <>
+                  {/* Mobile: Single image with swipe */}
+                  <div className="md:hidden relative aspect-[4/3] rounded-lg overflow-hidden">
                     <img
-                      src={photos[0]}
+                      src={photos[currentPhotoIndex]}
                       alt={listing.address.street}
                       className="w-full h-full object-cover"
                     />
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
                     {/* Status badge */}
                     <div className="absolute top-4 left-4 flex gap-2">
                       <span className="px-2 py-1 bg-spyglass-orange text-white text-xs font-semibold rounded">
@@ -181,69 +177,124 @@ export function ListingDetailOverlay({
                         {listing.status.toUpperCase()}
                       </span>
                     </div>
-                    {/* Virtual tour button */}
-                    {listing.virtualTour && (
-                      <button className="absolute bottom-4 left-4 px-4 py-2 bg-white rounded-full text-sm font-medium flex items-center gap-2 hover:bg-gray-50">
-                        <span className="text-lg">🌐</span>
-                        Virtual Tour
-                      </button>
+                    {/* Navigation arrows */}
+                    {photos.length > 1 && (
+                      <>
+                        <button
+                          onClick={() => setCurrentPhotoIndex((prev) => (prev - 1 + photos.length) % photos.length)}
+                          className="absolute left-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/90 shadow-md"
+                        >
+                          <ChevronLeftIcon className="w-5 h-5 text-gray-700" />
+                        </button>
+                        <button
+                          onClick={() => setCurrentPhotoIndex((prev) => (prev + 1) % photos.length)}
+                          className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/90 shadow-md"
+                        >
+                          <ChevronRightIcon className="w-5 h-5 text-gray-700" />
+                        </button>
+                      </>
                     )}
-                    {/* See all photos */}
-                    <button 
-                      onClick={(e) => { e.stopPropagation(); setShowAllPhotos(true); }}
-                      className="absolute bottom-4 left-4 px-4 py-2 bg-white rounded-full text-sm font-medium hover:bg-gray-50"
-                    >
-                      See all {photos.length} photos
-                    </button>
+                    {/* Photo counter & see all */}
+                    <div className="absolute bottom-4 left-4 right-4 flex justify-between items-center">
+                      <button 
+                        onClick={() => setShowAllPhotos(true)}
+                        className="px-3 py-1.5 bg-white rounded-full text-sm font-medium"
+                      >
+                        See all {photos.length}
+                      </button>
+                      <span className="px-2 py-1 bg-black/60 rounded text-xs text-white">
+                        {currentPhotoIndex + 1}/{photos.length}
+                      </span>
+                    </div>
                   </div>
-                  
-                  {/* Smaller photos grid */}
-                  {photos.slice(1, 5).map((photo, idx) => (
+
+                  {/* Desktop: Grid layout */}
+                  <div className="hidden md:grid grid-cols-4 grid-rows-2 gap-2 h-[500px] rounded-lg overflow-hidden">
+                    {/* Large main photo */}
                     <div 
-                      key={idx}
-                      className="relative cursor-pointer group"
-                      onClick={() => { setCurrentPhotoIndex(idx + 1); setShowAllPhotos(true); }}
+                      className="col-span-2 row-span-2 relative cursor-pointer group"
+                      onClick={() => setShowAllPhotos(true)}
                     >
                       <img
-                        src={photo}
-                        alt={`${listing.address.street} - ${idx + 2}`}
+                        src={photos[0]}
+                        alt={listing.address.street}
                         className="w-full h-full object-cover"
                       />
                       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
-                      
-                      {/* "Unlock more" overlay on last visible photo if there are more */}
-                      {idx === 3 && photos.length > 5 && (
-                        <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-white">
-                          <span className="text-2xl mb-1">📷</span>
-                          <span className="text-sm font-medium">+{photos.length - 5} more</span>
-                        </div>
+                      {/* Status badge */}
+                      <div className="absolute top-4 left-4 flex gap-2">
+                        <span className="px-2 py-1 bg-spyglass-orange text-white text-xs font-semibold rounded">
+                          SG
+                        </span>
+                        <span className="px-2 py-1 bg-green-500 text-white text-xs font-semibold rounded">
+                          {listing.status.toUpperCase()}
+                        </span>
+                      </div>
+                      {/* Virtual tour button */}
+                      {listing.virtualTour && (
+                        <button className="absolute bottom-4 left-4 px-4 py-2 bg-white rounded-full text-sm font-medium flex items-center gap-2 hover:bg-gray-50">
+                          <span className="text-lg">🌐</span>
+                          Virtual Tour
+                        </button>
                       )}
+                      {/* See all photos */}
+                      <button 
+                        onClick={(e) => { e.stopPropagation(); setShowAllPhotos(true); }}
+                        className="absolute bottom-4 left-4 px-4 py-2 bg-white rounded-full text-sm font-medium hover:bg-gray-50"
+                      >
+                        See all {photos.length} photos
+                      </button>
                     </div>
-                  ))}
-                  
-                  {/* Fill empty slots if less than 5 photos */}
-                  {photos.length < 5 && Array.from({ length: 4 - photos.length + 1 }).map((_, idx) => (
-                    <div key={`empty-${idx}`} className="bg-gray-100" />
-                  ))}
-                </div>
+                    
+                    {/* Smaller photos grid */}
+                    {photos.slice(1, 5).map((photo, idx) => (
+                      <div 
+                        key={idx}
+                        className="relative cursor-pointer group"
+                        onClick={() => { setCurrentPhotoIndex(idx + 1); setShowAllPhotos(true); }}
+                      >
+                        <img
+                          src={photo}
+                          alt={`${listing.address.street} - ${idx + 2}`}
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
+                        
+                        {/* "Unlock more" overlay on last visible photo if there are more */}
+                        {idx === 3 && photos.length > 5 && (
+                          <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-white">
+                            <span className="text-2xl mb-1">📷</span>
+                            <span className="text-sm font-medium">+{photos.length - 5} more</span>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                    
+                    {/* Fill empty slots if less than 5 photos */}
+                    {photos.length < 5 && Array.from({ length: 4 - photos.length + 1 }).map((_, idx) => (
+                      <div key={`empty-${idx}`} className="bg-gray-100" />
+                    ))}
+                  </div>
+                </>
               ) : (
-                <div className="h-[500px] bg-gray-100 rounded-lg flex items-center justify-center">
+                <div className="h-64 md:h-[500px] bg-gray-100 rounded-lg flex items-center justify-center">
                   <span className="text-gray-400 text-lg">No photos available</span>
                 </div>
               )}
             </div>
 
             {/* Main content grid */}
-            <div className="grid grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* Left column - Property details */}
-              <div className="col-span-2">
+              <div className="lg:col-span-2">
                 {/* Title and price */}
                 <div className="mb-6">
-                  <h1 className="text-2xl font-bold text-gray-900 mb-2">
-                    {listing.address.full} - MLS# {listing.mlsNumber}
+                  <h1 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">
+                    {listing.address.full}
                   </h1>
-                  <div className="flex items-center gap-6 text-lg">
-                    <span className="text-3xl font-bold text-gray-900">{formatPrice(listing.price)}</span>
+                  <p className="text-sm text-gray-500 mb-2">MLS# {listing.mlsNumber}</p>
+                  <div className="flex flex-wrap items-center gap-3 md:gap-6 text-base md:text-lg">
+                    <span className="text-2xl md:text-3xl font-bold text-gray-900">{formatPrice(listing.price)}</span>
                     <span className="text-gray-600">{listing.bedrooms} bd</span>
                     <span className="text-gray-600">{listing.bathrooms} ba</span>
                     <span className="text-gray-600">{formatNumber(listing.sqft)} sqft</span>
@@ -308,8 +359,8 @@ export function ListingDetailOverlay({
               </div>
 
               {/* Right column - Contact form */}
-              <div className="col-span-1">
-                <div className="sticky top-24 bg-gray-50 rounded-xl p-6">
+              <div className="lg:col-span-1">
+                <div className="lg:sticky lg:top-24 bg-gray-50 rounded-xl p-6">
                   <h3 className="text-lg font-semibold mb-4">Schedule a Tour</h3>
                   <form className="space-y-3">
                     <input
