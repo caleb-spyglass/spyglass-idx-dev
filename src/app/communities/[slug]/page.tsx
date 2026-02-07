@@ -6,12 +6,16 @@ import { Header } from '@/components/ui/Header';
 import { ListingsGrid } from '@/components/listings/ListingsGrid';
 import { ListingDetailOverlay } from '@/components/listings/ListingDetailOverlay';
 import { getCommunityBySlug } from '@/data/communities-polygons';
+import { getCommunityContent } from '@/data/community-descriptions';
 import { Listing } from '@/types/listing';
 import { formatPrice } from '@/lib/utils';
 import { ArrowLeftIcon, MapPinIcon, HomeIcon, CurrencyDollarIcon, PhoneIcon, EnvelopeIcon, ChartBarIcon, InformationCircleIcon, Squares2X2Icon, EyeSlashIcon } from '@heroicons/react/24/outline';
 import ContactModal from '@/components/forms/ContactModal';
 import CommunityStats from '@/components/community/CommunityStats';
 import CommunityDescription from '@/components/community/CommunityDescription';
+import CommunityFAQ from '@/components/community/CommunityFAQ';
+import CommunitySchemaMarkup from '@/components/community/CommunitySchemaMarkup';
+import NearbyCommunities from '@/components/community/NearbyCommunities';
 import { useDismissedListings } from '@/hooks/useDismissedListings';
 import { FilterBar, FilterState, defaultFilters } from '@/components/filters';
 
@@ -39,6 +43,7 @@ function CommunityDetailContent() {
   const initialTab = (searchParams.get('tab') as TabType) || 'listings';
 
   const community = getCommunityBySlug(slug);
+  const communityContent = getCommunityContent(slug);
 
   const [listings, setListings] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(true);
@@ -163,6 +168,14 @@ function CommunityDetailContent() {
     coordinates: community.displayPolygon.map(([lat, lng]) => ({ lat, lng })),
   };
 
+  // Calculate approximate center of the polygon for schema data
+  const centerLat = community.polygon.length > 0
+    ? community.polygon.reduce((acc, [, lat]) => acc + lat, 0) / community.polygon.length
+    : 30.2672;
+  const centerLng = community.polygon.length > 0
+    ? community.polygon.reduce((acc, [lng]) => acc + lng, 0) / community.polygon.length
+    : -97.7431;
+
   const tabs = [
     { id: 'listings' as TabType, label: 'Listings', icon: Squares2X2Icon, count: total },
     { id: 'market' as TabType, label: 'Market Data', icon: ChartBarIcon },
@@ -173,21 +186,43 @@ function CommunityDetailContent() {
     <div className="min-h-screen bg-gray-50 flex flex-col">
       {!isEmbed && <Header />}
 
+      {/* Schema.org structured data */}
+      <CommunitySchemaMarkup
+        name={community.name}
+        slug={slug}
+        county={community.county}
+        content={communityContent}
+        stats={stats}
+        centerLat={centerLat}
+        centerLng={centerLng}
+      />
+
+      {/* Breadcrumb navigation (visible) */}
+      {!isEmbed && (
+        <nav aria-label="Breadcrumb" className="bg-white border-b border-gray-200">
+          <div className="max-w-7xl mx-auto px-4 py-2">
+            <ol className="flex items-center gap-2 text-sm text-gray-500">
+              <li>
+                <a href="/" className="hover:text-gray-700 transition-colors">Home</a>
+              </li>
+              <li aria-hidden="true">/</li>
+              <li>
+                <a href="/communities" className="hover:text-gray-700 transition-colors">Communities</a>
+              </li>
+              <li aria-hidden="true">/</li>
+              <li>
+                <span className="text-gray-900 font-medium">{community.name}</span>
+              </li>
+            </ol>
+          </div>
+        </nav>
+      )}
+
       {/* Hero */}
-      <div className="relative bg-gray-900 text-white">
+      <header className="relative bg-gray-900 text-white">
         <div className="absolute inset-0 bg-gradient-to-br from-red-900/80 to-gray-900" />
         
         <div className={`relative max-w-7xl mx-auto px-4 ${isEmbed ? 'py-4' : 'py-8 md:py-12'}`}>
-          {!isEmbed && (
-            <button
-              onClick={() => router.push('/communities')}
-              className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-3 transition-colors text-sm"
-            >
-              <ArrowLeftIcon className="w-4 h-4" />
-              All Communities
-            </button>
-          )}
-
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
             <div>
               <h1 className={`${isEmbed ? 'text-2xl' : 'text-3xl md:text-4xl'} font-bold mb-2`}>
@@ -261,7 +296,7 @@ function CommunityDetailContent() {
             </div>
           )}
         </div>
-      </div>
+      </header>
 
       {/* Tab Content */}
       {activeTab === 'listings' && (
@@ -345,6 +380,7 @@ function CommunityDetailContent() {
       {activeTab === 'about' && (
         <div className="flex-1 overflow-y-auto">
           <div className="max-w-4xl mx-auto px-4 py-8">
+            {/* Community Description with proper heading hierarchy */}
             <CommunityDescription 
               name={community.name}
               slug={slug}
@@ -353,8 +389,8 @@ function CommunityDetailContent() {
             />
 
             {/* Map preview */}
-            <div className="mt-8">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">{community.name} Boundaries</h2>
+            <section className="mt-10">
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">{community.name} Boundaries</h2>
               <div className="h-96 rounded-xl overflow-hidden border border-gray-200">
                 <Suspense fallback={<MapLoadingFallback />}>
                   <LeafletMap
@@ -364,13 +400,30 @@ function CommunityDetailContent() {
                   />
                 </Suspense>
               </div>
-            </div>
+            </section>
+
+            {/* FAQ Section with schema markup */}
+            <CommunityFAQ
+              communityName={community.name}
+              communitySlug={slug}
+              county={community.county}
+              stats={stats}
+              highlights={communityContent?.highlights}
+              bestFor={communityContent?.bestFor}
+              nearbyLandmarks={communityContent?.nearbyLandmarks}
+            />
+
+            {/* Nearby Communities for internal linking */}
+            <NearbyCommunities
+              currentSlug={slug}
+              currentName={community.name}
+            />
 
             {/* CTA */}
-            <div className="mt-8 bg-red-50 rounded-xl p-6 text-center">
-              <h3 className="text-lg font-bold text-gray-900 mb-2">
+            <section className="mt-10 bg-red-50 rounded-xl p-6 text-center">
+              <h2 className="text-xl font-bold text-gray-900 mb-2">
                 Ready to explore {community.name}?
-              </h3>
+              </h2>
               <p className="text-gray-600 mb-4">
                 Our agents know this neighborhood inside and out. Let us help you find your perfect home.
               </p>
@@ -390,7 +443,7 @@ function CommunityDetailContent() {
                   Send a Message
                 </button>
               </div>
-            </div>
+            </section>
           </div>
         </div>
       )}
