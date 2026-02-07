@@ -38,19 +38,19 @@ function RichDescription({ content, name }: { content: CommunityContent; name: s
   return (
     <div className="space-y-8">
       {/* Main Description */}
-      <div>
-        <h2 className="text-xl font-bold text-gray-900 mb-4">About {name}</h2>
+      <section>
+        <h2 className="text-2xl font-bold text-gray-900 mb-4">About {name}</h2>
         <div className="text-gray-600 leading-relaxed space-y-4">
           {content.description.split('\n\n').map((paragraph, i) => (
             <p key={i}>{paragraph}</p>
           ))}
         </div>
-      </div>
+      </section>
 
       {/* Best For Pills */}
       {content.bestFor.length > 0 && (
-        <div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+        <section>
+          <h3 className="text-xl font-semibold text-gray-900 mb-3 flex items-center gap-2">
             <StarIcon className="w-5 h-5 text-spyglass-orange" />
             Best For
           </h3>
@@ -64,13 +64,13 @@ function RichDescription({ content, name }: { content: CommunityContent; name: s
               </span>
             ))}
           </div>
-        </div>
+        </section>
       )}
 
       {/* Highlights */}
       {content.highlights.length > 0 && (
-        <div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+        <section>
+          <h3 className="text-xl font-semibold text-gray-900 mb-3 flex items-center gap-2">
             <SparklesIcon className="w-5 h-5 text-spyglass-orange" />
             Neighborhood Highlights
           </h3>
@@ -90,15 +90,15 @@ function RichDescription({ content, name }: { content: CommunityContent; name: s
               );
             })}
           </div>
-        </div>
+        </section>
       )}
 
       {/* Nearby Landmarks */}
       {content.nearbyLandmarks.length > 0 && (
-        <div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+        <section>
+          <h3 className="text-xl font-semibold text-gray-900 mb-3 flex items-center gap-2">
             <MapPinIcon className="w-5 h-5 text-spyglass-orange" />
-            Nearby
+            Things to Do Near {name}
           </h3>
           <div className="flex flex-wrap gap-2">
             {content.nearbyLandmarks.map((landmark, i) => (
@@ -110,7 +110,7 @@ function RichDescription({ content, name }: { content: CommunityContent; name: s
               </span>
             ))}
           </div>
-        </div>
+        </section>
       )}
     </div>
   );
@@ -184,10 +184,10 @@ function FallbackDescription({
   };
 
   return (
-    <div>
-      <h2 className="text-xl font-bold text-gray-900 mb-4">About {name}</h2>
+    <section>
+      <h2 className="text-2xl font-bold text-gray-900 mb-4">About {name}</h2>
       <p className="text-gray-600 leading-relaxed">{generateDescription()}</p>
-    </div>
+    </section>
   );
 }
 
@@ -200,143 +200,13 @@ export default function CommunityDescription({
   // Look up rich content by slug
   const content = slug ? getCommunityContent(slug) : undefined;
 
-  // Build a rich description for structured data
-  const schemaDescription = content
-    ? content.description.split('\n\n')[0]
-    : `${name} is a neighborhood in ${county} County, Austin, Texas.`;
-
   return (
-    <div className="prose prose-gray max-w-none">
+    <article className="prose prose-gray max-w-none">
       {content ? (
         <RichDescription content={content} name={name} />
       ) : (
         <FallbackDescription name={name} county={county} stats={stats} />
       )}
-
-      {/* Schema.org structured data for SEO */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@graph': [
-              // Place schema — community
-              {
-                '@type': 'Place',
-                name: name,
-                description: schemaDescription,
-                address: {
-                  '@type': 'PostalAddress',
-                  addressLocality: name,
-                  addressRegion: 'TX',
-                  addressCountry: 'US',
-                },
-                geo: {
-                  '@type': 'GeoCoordinates',
-                  latitude: 30.2672,
-                  longitude: -97.7431,
-                },
-                containedInPlace: {
-                  '@type': 'City',
-                  name: 'Austin',
-                  address: {
-                    '@type': 'PostalAddress',
-                    addressRegion: 'TX',
-                    addressCountry: 'US',
-                  },
-                },
-                ...(content
-                  ? {
-                      amenityFeature: content.highlights.map((h) => ({
-                        '@type': 'LocationFeatureSpecification',
-                        name: h,
-                      })),
-                      keywords: [...content.bestFor, ...content.nearbyLandmarks].join(', '),
-                    }
-                  : {}),
-                ...(stats && stats.medianPrice > 0
-                  ? {
-                      additionalProperty: [
-                        {
-                          '@type': 'PropertyValue',
-                          name: 'Median Home Price',
-                          value: stats.medianPrice,
-                          unitCode: 'USD',
-                        },
-                        {
-                          '@type': 'PropertyValue',
-                          name: 'Active Listings',
-                          value: stats.activeListings,
-                        },
-                        {
-                          '@type': 'PropertyValue',
-                          name: 'Average Days on Market',
-                          value: stats.avgDaysOnMarket,
-                        },
-                        {
-                          '@type': 'PropertyValue',
-                          name: 'Average Price per Square Foot',
-                          value: stats.pricePerSqft,
-                          unitCode: 'USD',
-                        },
-                      ],
-                    }
-                  : {}),
-              },
-              // RealEstateAgent schema — Spyglass Realty
-              {
-                '@type': 'RealEstateAgent',
-                name: 'Spyglass Realty',
-                description:
-                  'Austin-based real estate brokerage helping buyers and sellers navigate the Austin housing market.',
-                url: 'https://www.spyglassrealty.com',
-                telephone: '+1-512-827-8323',
-                address: {
-                  '@type': 'PostalAddress',
-                  streetAddress: '1801 S 1st St Suite 200',
-                  addressLocality: 'Austin',
-                  addressRegion: 'TX',
-                  postalCode: '78704',
-                  addressCountry: 'US',
-                },
-                areaServed: {
-                  '@type': 'City',
-                  name: 'Austin',
-                  address: {
-                    '@type': 'PostalAddress',
-                    addressRegion: 'TX',
-                    addressCountry: 'US',
-                  },
-                },
-              },
-              // BreadcrumbList schema
-              {
-                '@type': 'BreadcrumbList',
-                itemListElement: [
-                  {
-                    '@type': 'ListItem',
-                    position: 1,
-                    name: 'Home',
-                    item: 'https://www.spyglassrealty.com',
-                  },
-                  {
-                    '@type': 'ListItem',
-                    position: 2,
-                    name: 'Communities',
-                    item: 'https://www.spyglassrealty.com/communities',
-                  },
-                  {
-                    '@type': 'ListItem',
-                    position: 3,
-                    name: name,
-                    item: `https://www.spyglassrealty.com/communities/${slug || ''}`,
-                  },
-                ],
-              },
-            ],
-          }),
-        }}
-      />
-    </div>
+    </article>
   );
 }
