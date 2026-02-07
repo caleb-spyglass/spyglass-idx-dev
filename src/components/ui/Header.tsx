@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { UserMenu } from '@/components/auth/UserMenu';
 
 export function Header() {
   return (
@@ -34,7 +35,7 @@ export function Header() {
             </Link>
           </nav>
 
-          {/* CTA */}
+          {/* CTA + User */}
           <div className="flex items-center gap-4">
             <a 
               href="tel:737-727-4889" 
@@ -42,6 +43,7 @@ export function Header() {
             >
               737-727-4889
             </a>
+            <UserMenu />
             <Link 
               href="/contact"
               className="bg-spyglass-orange hover:bg-spyglass-orange-hover px-4 py-2 rounded text-sm font-medium transition-colors"

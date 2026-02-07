@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Listing } from '@/types/listing';
 import { formatPrice, formatNumber } from '@/lib/utils';
+import { PhotoGallery } from '@/components/gallery/PhotoGallery';
 import { 
   XMarkIcon,
   HeartIcon,
@@ -14,6 +15,8 @@ import {
   ArrowRightIcon
 } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
+import { SimilarListings } from '@/components/listings/SimilarListings';
+import { useFavorites } from '@/hooks/useFavorites';
 
 interface ListingDetailOverlayProps {
   listing: Listing | null;
@@ -41,7 +44,8 @@ export function ListingDetailOverlay({
   onFilterByNeighborhood
 }: ListingDetailOverlayProps) {
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
-  const [isFavorite, setIsFavorite] = useState(false);
+  const { isFavorite: checkFavorite, toggleFavorite } = useFavorites();
+  const isFavorite = listing ? checkFavorite(listing.mlsNumber) : false;
   const [showAllPhotos, setShowAllPhotos] = useState(false);
 
   // Reset when listing changes
@@ -396,6 +400,9 @@ export function ListingDetailOverlay({
                 </div>
               </div>
             </div>
+
+            {/* Similar Listings */}
+            {listing && <SimilarListings listing={listing} />}
           </div>
         </div>
 
@@ -410,7 +417,7 @@ export function ListingDetailOverlay({
               <span className="text-xs mt-1">Dismiss</span>
             </button>
             <button
-              onClick={() => setIsFavorite(!isFavorite)}
+              onClick={() => listing && toggleFavorite(listing.mlsNumber)}
               className="flex flex-col items-center text-gray-500 hover:text-red-500"
             >
               {isFavorite ? (
@@ -436,47 +443,12 @@ export function ListingDetailOverlay({
       </div>
 
       {/* Full photo gallery modal */}
-      {showAllPhotos && (
-        <div className="fixed inset-0 bg-black z-[60] flex flex-col">
-          <div className="flex items-center justify-between p-4">
-            <span className="text-white">{currentPhotoIndex + 1} / {photos.length}</span>
-            <button onClick={() => setShowAllPhotos(false)} className="text-white p-2">
-              <XMarkIcon className="w-8 h-8" />
-            </button>
-          </div>
-          <div className="flex-1 flex items-center justify-center relative">
-            <button
-              onClick={() => setCurrentPhotoIndex((prev) => (prev - 1 + photos.length) % photos.length)}
-              className="absolute left-4 p-3 rounded-full bg-white/20 hover:bg-white/30"
-            >
-              <ChevronLeftIcon className="w-8 h-8 text-white" />
-            </button>
-            <img
-              src={photos[currentPhotoIndex]}
-              alt=""
-              className="max-h-[80vh] max-w-[90vw] object-contain"
-            />
-            <button
-              onClick={() => setCurrentPhotoIndex((prev) => (prev + 1) % photos.length)}
-              className="absolute right-4 p-3 rounded-full bg-white/20 hover:bg-white/30"
-            >
-              <ChevronRightIcon className="w-8 h-8 text-white" />
-            </button>
-          </div>
-          {/* Thumbnail strip */}
-          <div className="p-4 flex justify-center gap-2 overflow-x-auto">
-            {photos.map((photo, idx) => (
-              <button
-                key={idx}
-                onClick={() => setCurrentPhotoIndex(idx)}
-                className={`flex-shrink-0 w-16 h-12 rounded overflow-hidden border-2 ${idx === currentPhotoIndex ? 'border-white' : 'border-transparent opacity-50'}`}
-              >
-                <img src={photo} alt="" className="w-full h-full object-cover" />
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
+      <PhotoGallery
+        photos={photos}
+        initialIndex={currentPhotoIndex}
+        isOpen={showAllPhotos}
+        onClose={() => setShowAllPhotos(false)}
+      />
     </>
   );
 }

@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { Header } from '@/components/ui/Header';
 import { Listing } from '@/types/listing';
 import { formatPrice, formatNumber } from '@/lib/utils';
+import { PhotoGallery } from '@/components/gallery/PhotoGallery';
 import { 
   ArrowLeftIcon,
   HeartIcon,
@@ -16,6 +17,7 @@ import {
   ChevronRightIcon,
   XMarkIcon
 } from '@heroicons/react/24/outline';
+import { SimilarListings } from '@/components/listings/SimilarListings';
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
 
 export default function ListingDetailPage() {
@@ -56,10 +58,26 @@ export default function ListingDetailPage() {
     }
   }, [params.mls]);
 
-  const handleContactSubmit = (e: React.FormEvent) => {
+  const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Integrate with lead capture system
-    console.log('Lead submitted:', contactForm);
+    try {
+      await fetch('/api/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: contactForm.name,
+          email: contactForm.email,
+          phone: contactForm.phone,
+          message: contactForm.message,
+          formType: 'contact',
+          listingAddress: listing?.address.full,
+          mlsNumber: listing?.mlsNumber,
+          source: 'spyglass-idx',
+        }),
+      });
+    } catch (err) {
+      console.error('Lead submission error:', err);
+    }
     setFormSubmitted(true);
   };
 
@@ -191,28 +209,20 @@ export default function ListingDetailPage() {
             </div>
           </div>
 
-          {/* Thumbnail strip */}
+          {/* Thumbnail strip - show all photos */}
           {listing.photos.length > 1 && (
             <div className="flex gap-2 mt-4 overflow-x-auto pb-2">
-              {listing.photos.slice(0, 6).map((photo, idx) => (
+              {listing.photos.map((photo, idx) => (
                 <button
                   key={idx}
                   onClick={() => setCurrentPhotoIndex(idx)}
-                  className={`flex-shrink-0 w-24 h-16 rounded-lg overflow-hidden ${
+                  className={`flex-shrink-0 w-24 h-16 rounded-lg overflow-hidden transition-all duration-200 ${
                     currentPhotoIndex === idx ? 'ring-2 ring-spyglass-orange' : 'opacity-70 hover:opacity-100'
                   }`}
                 >
-                  <img src={photo} alt="" className="w-full h-full object-cover" />
+                  <img src={photo} alt={`Photo ${idx + 1}`} className="w-full h-full object-cover" loading="lazy" />
                 </button>
               ))}
-              {listing.photos.length > 6 && (
-                <button
-                  onClick={() => setShowGallery(true)}
-                  className="flex-shrink-0 w-24 h-16 rounded-lg bg-gray-200 flex items-center justify-center text-gray-600 hover:bg-gray-300 transition-colors"
-                >
-                  +{listing.photos.length - 6} more
-                </button>
-              )}
             </div>
           )}
         </div>
@@ -346,6 +356,9 @@ export default function ListingDetailPage() {
                 </a>
               </div>
             </div>
+
+            {/* Similar Listings */}
+            <SimilarListings listing={listing} />
           </div>
 
           {/* Sidebar - Contact Form */}
@@ -434,58 +447,12 @@ export default function ListingDetailPage() {
       </div>
 
       {/* Full screen gallery modal */}
-      {showGallery && (
-        <div className="fixed inset-0 bg-black z-50 flex flex-col">
-          <div className="flex items-center justify-between p-4">
-            <span className="text-white">
-              {currentPhotoIndex + 1} / {listing.photos.length}
-            </span>
-            <button
-              onClick={() => setShowGallery(false)}
-              className="p-2 text-white hover:bg-white/20 rounded-full transition-colors"
-            >
-              <XMarkIcon className="w-8 h-8" />
-            </button>
-          </div>
-          <div className="flex-1 flex items-center justify-center relative">
-            <img
-              src={listing.photos[currentPhotoIndex]}
-              alt={`Photo ${currentPhotoIndex + 1}`}
-              className="max-w-full max-h-full object-contain"
-            />
-            {listing.photos.length > 1 && (
-              <>
-                <button
-                  onClick={prevPhoto}
-                  className="absolute left-4 p-3 bg-white/20 rounded-full hover:bg-white/40 transition-colors"
-                >
-                  <ChevronLeftIcon className="w-8 h-8 text-white" />
-                </button>
-                <button
-                  onClick={nextPhoto}
-                  className="absolute right-4 p-3 bg-white/20 rounded-full hover:bg-white/40 transition-colors"
-                >
-                  <ChevronRightIcon className="w-8 h-8 text-white" />
-                </button>
-              </>
-            )}
-          </div>
-          {/* Thumbnail strip */}
-          <div className="p-4 flex gap-2 overflow-x-auto justify-center">
-            {listing.photos.map((photo, idx) => (
-              <button
-                key={idx}
-                onClick={() => setCurrentPhotoIndex(idx)}
-                className={`flex-shrink-0 w-16 h-12 rounded overflow-hidden ${
-                  currentPhotoIndex === idx ? 'ring-2 ring-white' : 'opacity-50 hover:opacity-100'
-                }`}
-              >
-                <img src={photo} alt="" className="w-full h-full object-cover" />
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
+      <PhotoGallery
+        photos={listing.photos}
+        initialIndex={currentPhotoIndex}
+        isOpen={showGallery}
+        onClose={() => setShowGallery(false)}
+      />
     </div>
   );
 }

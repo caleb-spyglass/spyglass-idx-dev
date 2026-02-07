@@ -45,11 +45,17 @@ export default function LeadCaptureForm({
         submittedAt: new Date().toISOString()
       };
 
-      // Log submission (will integrate with CRM later)
-      console.log('Lead submission:', payload);
+      // Submit to CRM via API
+      const response = await fetch('/api/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
 
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 500));
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Failed to submit');
+      }
 
       setSubmitted(true);
       onSuccess?.();

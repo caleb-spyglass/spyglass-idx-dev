@@ -5,6 +5,7 @@ import { formatPrice, formatNumber } from '@/lib/utils';
 import { HeartIcon, ChevronLeftIcon, ChevronRightIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
 import { useState, useRef, TouchEvent } from 'react';
+import { useFavorites } from '@/hooks/useFavorites';
 
 interface PropertyCardProps {
   listing: Listing;
@@ -15,7 +16,8 @@ interface PropertyCardProps {
 }
 
 export function PropertyCard({ listing, onSelect, onDismiss, isSelected, isHovered }: PropertyCardProps) {
-  const [isFavorite, setIsFavorite] = useState(false);
+  const { isFavorite: checkFavorite, toggleFavorite } = useFavorites();
+  const isFavorite = checkFavorite(listing.mlsNumber);
   const [imageError, setImageError] = useState(false);
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
   const touchStartX = useRef<number>(0);
@@ -131,7 +133,7 @@ export function PropertyCard({ listing, onSelect, onDismiss, isSelected, isHover
           <button
             onClick={(e) => {
               e.stopPropagation();
-              setIsFavorite(!isFavorite);
+              toggleFavorite(listing.mlsNumber);
             }}
             className="p-2 rounded-full bg-white/80 hover:bg-white transition-colors"
           >

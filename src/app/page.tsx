@@ -9,8 +9,9 @@ import { austinCommunities } from '@/data/austin-communities';
 import { Listing, SearchFilters } from '@/types/listing';
 import { CommunityPolygon } from '@/types/community';
 import { useListings } from '@/hooks/useListings';
+import { useSavedSearches } from '@/hooks/useSavedSearches';
 import { ListingDetailOverlay } from '@/components/listings/ListingDetailOverlay';
-import { SparklesIcon, AdjustmentsHorizontalIcon } from '@heroicons/react/24/outline';
+import { SparklesIcon, AdjustmentsHorizontalIcon, BookmarkIcon } from '@heroicons/react/24/outline';
 
 // Lazy load Leaflet map to avoid SSR issues
 const LeafletMap = lazy(() => 
@@ -39,6 +40,11 @@ export default function SearchPage() {
   const [aiTotal, setAiTotal] = useState(0);
   const [aiSummary, setAiSummary] = useState<string | null>(null);
   const [isAiActive, setIsAiActive] = useState(false);
+  
+  // Save Search state
+  const { saveSearch } = useSavedSearches();
+  const [showSaveSearchPrompt, setShowSaveSearchPrompt] = useState(false);
+  const [saveSearchName, setSaveSearchName] = useState('');
 
   const { 
     listings: filterListings, 
@@ -91,6 +97,27 @@ export default function SearchPage() {
     setAiSummary(null);
     setIsAiActive(false);
     fetchListings(filters);
+  };
+
+  // Check if any meaningful filter is active
+  const hasActiveFilters = !!(
+    filters.minPrice || filters.maxPrice ||
+    filters.minBeds || filters.minBaths ||
+    filters.minSqft || filters.maxSqft ||
+    filters.city || filters.zip || filters.neighborhood ||
+    (filters.propertyTypes && filters.propertyTypes.length > 0) ||
+    selectedCommunity
+  );
+
+  const handleSaveSearch = () => {
+    if (!saveSearchName.trim()) return;
+    saveSearch(
+      saveSearchName.trim(),
+      filters,
+      selectedCommunity?.name
+    );
+    setSaveSearchName('');
+    setShowSaveSearchPrompt(false);
   };
 
   return (
@@ -150,6 +177,46 @@ export default function SearchPage() {
             onFiltersChange={handleFiltersChange}
             totalResults={total}
           />
+        )}
+
+        {/* Save Search button - shows when filters are active */}
+        {hasActiveFilters && searchMode === 'filters' && (
+          <div className="px-4 pb-2 flex items-center gap-2">
+            {!showSaveSearchPrompt ? (
+              <button
+                onClick={() => setShowSaveSearchPrompt(true)}
+                className="flex items-center gap-1.5 text-sm text-spyglass-orange hover:text-spyglass-orange/80 font-medium transition-colors"
+              >
+                <BookmarkIcon className="w-4 h-4" />
+                Save This Search
+              </button>
+            ) : (
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  value={saveSearchName}
+                  onChange={(e) => setSaveSearchName(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === 'Enter') handleSaveSearch(); if (e.key === 'Escape') setShowSaveSearchPrompt(false); }}
+                  placeholder="Name this search..."
+                  className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-spyglass-orange focus:border-transparent w-56"
+                  autoFocus
+                />
+                <button
+                  onClick={handleSaveSearch}
+                  disabled={!saveSearchName.trim()}
+                  className="px-3 py-1.5 bg-spyglass-orange text-white text-sm font-medium rounded-lg hover:bg-spyglass-orange/90 transition-colors disabled:opacity-50"
+                >
+                  Save
+                </button>
+                <button
+                  onClick={() => { setShowSaveSearchPrompt(false); setSaveSearchName(''); }}
+                  className="px-3 py-1.5 text-sm text-gray-500 hover:text-gray-700"
+                >
+                  Cancel
+                </button>
+              </div>
+            )}
+          </div>
         )}
       </div>
 
