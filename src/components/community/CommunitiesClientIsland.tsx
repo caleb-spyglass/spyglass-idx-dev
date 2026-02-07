@@ -93,8 +93,6 @@ function CommunitiesContent() {
     [filteredCommunities]
   );
 
-  const mapCommunities = useMemo(() => filteredCommunities.map(toMapCommunity), [filteredCommunities]);
-
   const tabs: { id: FilterTab; label: string; count: number }[] = [
     { id: 'all', label: 'All', count: COMMUNITIES.length },
     { id: 'featured', label: 'Featured', count: FEATURED_COMMUNITIES.length },
