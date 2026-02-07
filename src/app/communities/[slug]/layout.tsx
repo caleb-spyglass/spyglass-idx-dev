@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { getCommunityBySlug } from '@/data/communities-polygons';
 import { getCommunityContent } from '@/data/community-descriptions';
+import { formatCommunityName } from '@/lib/nearby-communities';
 import { searchListings } from '@/lib/repliers-api';
 import { formatPrice } from '@/lib/utils';
 
@@ -19,11 +20,7 @@ export async function generateMetadata({ params }: LayoutProps): Promise<Metadat
     };
   }
 
-  // Title-case the community name
-  const communityName = community.name
-    .split(' ')
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
-    .join(' ');
+  const communityName = formatCommunityName(community.name);
 
   // Get rich content if available for better description
   const content = getCommunityContent(slug);
@@ -52,42 +49,27 @@ export async function generateMetadata({ params }: LayoutProps): Promise<Metadat
   }
 
   const title = `Homes for Sale in ${communityName}, Austin TX | Spyglass Realty`;
-  
-  // Build a rich, SEO-optimized description
+
   let description: string;
   if (activeCount > 0 && medianPrice) {
-    description = `Browse ${activeCount} homes for sale in ${communityName}, Austin TX. Median price ${medianPrice}. ${contentSnippet || `Find your dream home in ${communityName} with Spyglass Realty — Austin's top-rated brokerage.`}`;
+    description = `Browse ${activeCount} homes for sale in ${communityName}, Austin TX. Median price ${medianPrice}.`;
   } else if (activeCount > 0) {
-    description = `Browse ${activeCount} active listing${activeCount !== 1 ? 's' : ''} in ${communityName}, Austin TX. ${contentSnippet || `Find your dream home in ${communityName} with Spyglass Realty.`}`;
+    description = `Browse ${activeCount} active listings in ${communityName}, Austin TX. Find your dream home with Spyglass Realty.`;
   } else if (contentSnippet) {
-    description = `Search homes for sale in ${communityName}, Austin TX. ${contentSnippet} Find your dream home with Spyglass Realty.`;
+    description = `Search homes for sale in ${communityName}, Austin TX. ${contentSnippet}`;
   } else {
-    description = `Search homes for sale in ${communityName}, Austin TX. View listings, market data, schools, and neighborhood info. Find your dream home with Spyglass Realty.`;
+    description = `Search homes for sale in ${communityName}, Austin TX. View listings, market data, and neighborhood info with Spyglass Realty.`;
   }
 
-  // Truncate description to optimal SEO length (~155 chars for display)
   if (description.length > 160) {
     description = description.substring(0, 157) + '...';
   }
 
   const canonicalUrl = `https://search.spyglassrealty.com/communities/${slug}`;
 
-  // Build keywords
-  const keywords = [
-    `${communityName} homes for sale`,
-    `${communityName} real estate`,
-    `${communityName} Austin TX`,
-    `houses for sale ${communityName}`,
-    `${communityName} neighborhood`,
-    'Austin real estate',
-    'Spyglass Realty',
-    ...(content?.bestFor || []).map(b => `${communityName} ${b.toLowerCase()}`),
-  ].join(', ');
-
   return {
     title,
     description,
-    keywords,
     openGraph: {
       title,
       description,
@@ -109,7 +91,6 @@ export async function generateMetadata({ params }: LayoutProps): Promise<Metadat
       title,
       description,
       images: ['https://spyglassrealty.com/og-image.jpg'],
-      site: '@SpyglassRealty',
     },
     alternates: {
       canonical: canonicalUrl,
@@ -117,17 +98,6 @@ export async function generateMetadata({ params }: LayoutProps): Promise<Metadat
     robots: {
       index: true,
       follow: true,
-      googleBot: {
-        index: true,
-        follow: true,
-        'max-video-preview': -1,
-        'max-image-preview': 'large' as const,
-        'max-snippet': -1,
-      },
-    },
-    other: {
-      'geo.region': 'US-TX',
-      'geo.placename': `${communityName}, Austin`,
     },
   };
 }

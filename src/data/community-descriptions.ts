@@ -947,9 +947,19 @@ What makes North Burnet compelling as a residential investment is its trajectory
   },
 ];
 
+// Import generated descriptions for communities without hand-written content
+import { generatedCommunityDescriptions } from './generated-community-descriptions';
+
+// Combined list: hand-written first (takes priority), then generated
+const allDescriptions: CommunityContent[] = [
+  ...communityDescriptions,
+  ...generatedCommunityDescriptions,
+];
+
 // Helper function to look up community content by slug
+// Hand-written descriptions take priority over generated ones
 export function getCommunityContent(slug: string): CommunityContent | undefined {
-  return communityDescriptions.find(
+  return allDescriptions.find(
     (c) => c.slug === slug || c.slug === slug.toLowerCase().replace(/\s+/g, '-')
   );
 }

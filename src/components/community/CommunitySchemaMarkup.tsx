@@ -1,5 +1,3 @@
-'use client';
-
 import { CommunityContent } from '@/data/community-descriptions';
 
 interface CommunitySchemaMarkupProps {
