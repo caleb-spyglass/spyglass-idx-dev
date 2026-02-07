@@ -92,6 +92,12 @@ export async function POST(request: NextRequest) {
       generatedUrl.searchParams.delete('area');
     }
 
+    // Default to Sale unless user explicitly mentions rental/lease
+    const rentalKeywords = /\b(rent|rental|lease|leasing|for rent|apartment|renting)\b/i;
+    if (!rentalKeywords.test(prompt)) {
+      generatedUrl.searchParams.set('type', 'Sale');
+    }
+
     // Now fetch the actual listings using the generated params
     const listingsResponse = await fetch(`${REPLIERS_API_URL}/listings?${generatedUrl.searchParams.toString()}`, {
       headers: {
