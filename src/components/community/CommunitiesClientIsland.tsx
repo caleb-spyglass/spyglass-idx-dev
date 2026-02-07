@@ -12,10 +12,14 @@ const CommunitiesMap = lazy(() =>
   import('@/components/map/CommunitiesMap').then(mod => ({ default: mod.CommunitiesMap }))
 );
 
-const FEATURED_COMMUNITIES = COMMUNITIES.filter((c) => c.featured);
-const TRAVIS_COMMUNITIES = COMMUNITIES.filter((c) => c.county === 'Travis');
-const WILLIAMSON_COMMUNITIES = COMMUNITIES.filter((c) => c.county === 'Williamson');
-const HAYS_COMMUNITIES = COMMUNITIES.filter((c) => c.county === 'Hays');
+// Austin metro only — exclude Houston-area counties
+const AUSTIN_COUNTIES = ['Travis', 'Williamson', 'Hays'];
+const AUSTIN_COMMUNITIES = COMMUNITIES.filter((c) => AUSTIN_COUNTIES.includes(c.county));
+
+const FEATURED_COMMUNITIES = AUSTIN_COMMUNITIES.filter((c) => c.featured);
+const TRAVIS_COMMUNITIES = AUSTIN_COMMUNITIES.filter((c) => c.county === 'Travis');
+const WILLIAMSON_COMMUNITIES = AUSTIN_COMMUNITIES.filter((c) => c.county === 'Williamson');
+const HAYS_COMMUNITIES = AUSTIN_COMMUNITIES.filter((c) => c.county === 'Hays');
 
 type FilterTab = 'all' | 'featured' | 'travis' | 'williamson' | 'hays';
 
@@ -77,7 +81,7 @@ function CommunitiesContent() {
         communities = HAYS_COMMUNITIES;
         break;
       default:
-        communities = COMMUNITIES;
+        communities = AUSTIN_COMMUNITIES;
     }
 
     if (searchQuery.trim()) {
@@ -94,7 +98,7 @@ function CommunitiesContent() {
   );
 
   const tabs: { id: FilterTab; label: string; count: number }[] = [
-    { id: 'all', label: 'All', count: COMMUNITIES.length },
+    { id: 'all', label: 'All', count: AUSTIN_COMMUNITIES.length },
     { id: 'featured', label: 'Featured', count: FEATURED_COMMUNITIES.length },
     { id: 'travis', label: 'Travis County', count: TRAVIS_COMMUNITIES.length },
     { id: 'williamson', label: 'Williamson', count: WILLIAMSON_COMMUNITIES.length },
@@ -112,7 +116,7 @@ function CommunitiesContent() {
             Austin Area Communities
           </h1>
           <p className="text-gray-300 text-lg max-w-2xl">
-            Explore {COMMUNITIES.length} neighborhoods across the Austin metro area. Find your
+            Explore {AUSTIN_COMMUNITIES.length} neighborhoods across the Austin metro area. Find your
             perfect community with real-time MLS listings.
           </p>
         </div>

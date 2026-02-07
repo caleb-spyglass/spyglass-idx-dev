@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { COMMUNITIES, CommunityPolygon as PolygonData } from '@/data/communities-polygons';
 
 const REPLIERS_API_URL = process.env.REPLIERS_API_URL || 'https://api.repliers.io';
 const REPLIERS_API_KEY = process.env.REPLIERS_API_KEY || '';
@@ -24,6 +25,41 @@ function extractZipCode(prompt: string): string | null {
   return zipMatch ? zipMatch[1] : null;
 }
 
+/**
+ * Find a matching community polygon from the user's search prompt.
+ * Uses case-insensitive matching, trying longest names first to avoid
+ * partial matches (e.g. "West Lake Hills" before "West Lake").
+ */
+function findCommunityFromPrompt(prompt: string): PolygonData | null {
+  const normalizedPrompt = prompt.toLowerCase();
+  
+  // Sort by name length descending so longer (more specific) names match first
+  const sorted = [...COMMUNITIES].sort((a, b) => b.name.length - a.name.length);
+  
+  for (const community of sorted) {
+    const communityNameLower = community.name.toLowerCase();
+    // Check if the community name appears in the prompt as a word/phrase boundary
+    // Use word-boundary-ish check: the name should be preceded/followed by non-alpha or start/end
+    const escapedName = communityNameLower.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(`\\b${escapedName}\\b`, 'i');
+    if (regex.test(normalizedPrompt)) {
+      return community;
+    }
+  }
+  
+  // Fallback: try matching slugs (e.g. "travis-heights" → "Travis Heights")
+  for (const community of sorted) {
+    const slugWords = community.slug.replace(/-/g, ' ');
+    const escapedSlug = slugWords.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(`\\b${escapedSlug}\\b`, 'i');
+    if (regex.test(normalizedPrompt)) {
+      return community;
+    }
+  }
+  
+  return null;
+}
+
 export async function POST(request: NextRequest) {
   try {
     const { prompt, nlpId }: NLPRequest = await request.json();
@@ -37,6 +73,12 @@ export async function POST(request: NextRequest) {
 
     // Pre-extract zip code from prompt as fallback
     const extractedZip = extractZipCode(prompt);
+    
+    // Try to match a community/neighborhood from the prompt
+    const matchedCommunity = findCommunityFromPrompt(prompt);
+    if (matchedCommunity) {
+      console.log(`Matched community: "${matchedCommunity.name}" (${matchedCommunity.slug}), polygon has ${matchedCommunity.polygon.length} points`);
+    }
 
     // Call Repliers NLP endpoint
     const nlpPayload: NLPRequest = { prompt };
@@ -92,18 +134,54 @@ export async function POST(request: NextRequest) {
       generatedUrl.searchParams.delete('area');
     }
 
+    // If we matched a community polygon, remove the generic area param
+    // (the polygon will handle geographic filtering much more precisely)
+    if (matchedCommunity) {
+      generatedUrl.searchParams.delete('area');
+      // Also remove neighborhood/city if NLP set something generic
+      generatedUrl.searchParams.delete('neighborhood');
+    }
+
     // Default to Sale unless user explicitly mentions rental/lease
     const rentalKeywords = /\b(rent|rental|lease|leasing|for rent|apartment|renting)\b/i;
     if (!rentalKeywords.test(prompt)) {
       generatedUrl.searchParams.set('type', 'Sale');
     }
 
-    // Now fetch the actual listings using the generated params
-    const listingsResponse = await fetch(`${REPLIERS_API_URL}/listings?${generatedUrl.searchParams.toString()}`, {
-      headers: {
-        'REPLIERS-API-KEY': REPLIERS_API_KEY,
-      },
-    });
+    // Build the polygon ring for Repliers POST body if we have a community match
+    // Repliers expects: { map: [[[lng, lat], [lng, lat], ...]] }
+    let postBody: any = undefined;
+    if (matchedCommunity && matchedCommunity.polygon.length >= 3) {
+      // polygon data is already in [lng, lat] format — perfect for Repliers
+      const ring = [...matchedCommunity.polygon];
+      // Close the ring if not already closed
+      const first = ring[0];
+      const last = ring[ring.length - 1];
+      if (first[0] !== last[0] || first[1] !== last[1]) {
+        ring.push([first[0], first[1]]);
+      }
+      postBody = { map: [ring] };
+      console.log(`Using polygon filter for "${matchedCommunity.name}" with ${ring.length} points`);
+    }
+
+    // Fetch listings — use POST with polygon body if available, otherwise GET
+    let listingsResponse: Response;
+    if (postBody) {
+      listingsResponse = await fetch(`${REPLIERS_API_URL}/listings?${generatedUrl.searchParams.toString()}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'REPLIERS-API-KEY': REPLIERS_API_KEY,
+        },
+        body: JSON.stringify(postBody),
+      });
+    } else {
+      listingsResponse = await fetch(`${REPLIERS_API_URL}/listings?${generatedUrl.searchParams.toString()}`, {
+        headers: {
+          'REPLIERS-API-KEY': REPLIERS_API_KEY,
+        },
+      });
+    }
 
     if (!listingsResponse.ok) {
       throw new Error('Failed to fetch listings');
@@ -148,6 +226,12 @@ export async function POST(request: NextRequest) {
       // Listings
       listings: transformedListings,
       total: listingsData.count || transformedListings.length,
+      
+      // Community match info (so the frontend can highlight the polygon on the map)
+      matchedCommunity: matchedCommunity ? {
+        name: matchedCommunity.name,
+        slug: matchedCommunity.slug,
+      } : null,
       
       // Image search body if present
       imageSearch: nlpResult.request.body?.imageSearchItems || null,

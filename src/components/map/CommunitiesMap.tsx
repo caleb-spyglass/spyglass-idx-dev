@@ -83,6 +83,7 @@ export function CommunitiesMap({
   const geoJsonLayerRef = useRef<LeafletType.GeoJSON | null>(null);
   const labelsLayerRef = useRef<LeafletType.LayerGroup | null>(null);
   const markersLayerRef = useRef<LeafletType.LayerGroup | null>(null);
+  const countBadgesLayerRef = useRef<LeafletType.LayerGroup | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [listings, setListings] = useState<Listing[]>([]);
   const [zoomLevel, setZoomLevel] = useState(10);
@@ -110,7 +111,7 @@ export function CommunitiesMap({
 
       const map = L.map(mapContainerRef.current, {
         center: [30.2672, -97.7431],
-        zoom: 10,
+        zoom: 12,
         scrollWheelZoom: true,
         zoomSnap: 0.5,
         zoomDelta: 0.5,
@@ -129,6 +130,7 @@ export function CommunitiesMap({
 
       // Create layer groups
       labelsLayerRef.current = L.layerGroup().addTo(map);
+      countBadgesLayerRef.current = L.layerGroup().addTo(map);
       markersLayerRef.current = L.layerGroup().addTo(map);
 
       map.on('zoomend', () => {
@@ -144,7 +146,7 @@ export function CommunitiesMap({
           onSelectCommunity?.(null);
           // Zoom back out
           if (prevBoundsRef.current) {
-            map.flyTo([30.2672, -97.7431], 10, { duration: 0.8 });
+            map.flyTo([30.2672, -97.7431], 12, { duration: 0.8 });
             prevBoundsRef.current = null;
           }
         }
@@ -164,6 +166,38 @@ export function CommunitiesMap({
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // ── Fit map to show all communities when filter changes ──
+  const prevCommunitiesCountRef = useRef<number>(-1);
+  const isInitialLoadRef = useRef<boolean>(true);
+  useEffect(() => {
+    const L = leafletRef.current;
+    if (!isLoaded || !mapRef.current || !L || communities.length === 0) return;
+    if (selectedCommunity) return;
+    // Skip fitting on very first load — use the default Austin center/zoom
+    if (isInitialLoadRef.current) {
+      isInitialLoadRef.current = false;
+      prevCommunitiesCountRef.current = communities.length;
+      return;
+    }
+    // Only re-fit when the communities list actually changes (filter tab switch)
+    if (prevCommunitiesCountRef.current === communities.length) return;
+    prevCommunitiesCountRef.current = communities.length;
+
+    const allCoords: [number, number][] = [];
+    communities.forEach((c) => {
+      if (!c.coordinates || c.coordinates.length < 3) return;
+      c.coordinates.forEach((coord) => {
+        if (Array.isArray(coord)) allCoords.push([coord[0], coord[1]]);
+        else allCoords.push([coord.lat, coord.lng]);
+      });
+    });
+
+    if (allCoords.length > 0) {
+      const bounds = L.latLngBounds(allCoords.map(([lat, lng]) => L.latLng(lat, lng)));
+      mapRef.current.flyToBounds(bounds, { padding: [30, 30], duration: 0.8 });
+    }
+  }, [isLoaded, communities, selectedCommunity]);
 
   // ── Build GeoJSON feature collection from communities ──
   const buildGeoJson = useCallback((): GeoJSON.FeatureCollection => {
@@ -339,6 +373,7 @@ export function CommunitiesMap({
         if (spread < 0.0001) return; // skip tiny areas at low zoom
       }
 
+      // Name label (offset above center)
       const label = L.marker(L.latLng(center[0], center[1]), {
         icon: L.divIcon({
           className: 'community-label-icon',
@@ -352,7 +387,7 @@ export function CommunitiesMap({
             user-select: none;
           ">${community.name}</span>`,
           iconSize: [0, 0],
-          iconAnchor: [0, 0],
+          iconAnchor: [0, community.listingsCount ? 14 : 0],
         }),
         interactive: false,
       });
@@ -361,22 +396,100 @@ export function CommunitiesMap({
     });
   }, [isLoaded, communities, zoomLevel]);
 
+  // ── Draw listing count badges ──
+  useEffect(() => {
+    const L = leafletRef.current;
+    if (!isLoaded || !mapRef.current || !L || !countBadgesLayerRef.current) return;
+
+    const map = mapRef.current;
+    const badgesLayer = countBadgesLayerRef.current;
+    badgesLayer.clearLayers();
+
+    // Hide badges at very low zoom or when a community is selected (show price pins instead)
+    if (zoomLevel < 10 || selectedCommunity) return;
+
+    const mapBounds = map.getBounds();
+
+    communities.forEach((community) => {
+      if (!community.coordinates || community.coordinates.length < 3) return;
+      if (!community.listingsCount || community.listingsCount === 0) return;
+
+      const latLngs: [number, number][] = community.coordinates.map((c) => {
+        if (Array.isArray(c)) return [c[0], c[1]] as [number, number];
+        return [c.lat, c.lng] as [number, number];
+      });
+
+      const center = centroid(latLngs);
+      if (!mapBounds.contains(L.latLng(center[0], center[1]))) return;
+
+      // At lower zoom, skip tiny polygons
+      if (zoomLevel <= 11) {
+        const lats = latLngs.map((ll) => ll[0]);
+        const lngs = latLngs.map((ll) => ll[1]);
+        const spread = (Math.max(...lats) - Math.min(...lats)) * (Math.max(...lngs) - Math.min(...lngs));
+        if (spread < 0.0001) return;
+      }
+
+      const count = community.listingsCount;
+      const size = count >= 100 ? 40 : count >= 50 ? 36 : count >= 10 ? 32 : 28;
+
+      const badge = L.marker(L.latLng(center[0], center[1]), {
+        icon: L.divIcon({
+          className: 'count-badge-icon',
+          html: `<div style="
+            width: ${size}px;
+            height: ${size}px;
+            border-radius: 50%;
+            background: #0ea5e9;
+            color: white;
+            font-weight: 700;
+            font-size: ${count >= 100 ? 13 : 14}px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            border: 2px solid white;
+            cursor: pointer;
+          ">${count}</div>`,
+          iconSize: [size, size],
+          iconAnchor: [size / 2, -4],
+        }),
+        interactive: true,
+      });
+
+      badge.on('click', () => {
+        prevBoundsRef.current = map.getBounds();
+        onSelectCommunity?.(community);
+      });
+
+      badgesLayer.addLayer(badge);
+    });
+  }, [isLoaded, communities, zoomLevel, selectedCommunity, onSelectCommunity]);
+
   // ── Fetch listings for selected community ──
   useEffect(() => {
     const L = leafletRef.current;
     if (!isLoaded || !mapRef.current || !L) return;
-    if (!selectedCommunity || zoomLevel < 12) {
+    if (!selectedCommunity) {
       setListings([]);
       return;
     }
 
     const fetchListings = async () => {
       try {
+        // Use polygon coordinates for accurate in-neighborhood search
+        const polygon = selectedCommunity.coordinates?.length >= 3
+          ? selectedCommunity.coordinates.map((c) => {
+              if (Array.isArray(c)) return { lat: c[0], lng: c[1] };
+              return { lat: c.lat, lng: c.lng };
+            })
+          : undefined;
+
         const response = await fetch('/api/listings', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            bounds: selectedCommunity.bounds,
+            ...(polygon ? { polygon } : { bounds: selectedCommunity.bounds }),
             pageSize: 50,
           }),
         });
@@ -391,7 +504,7 @@ export function CommunitiesMap({
     };
 
     fetchListings();
-  }, [isLoaded, selectedCommunity, zoomLevel]);
+  }, [isLoaded, selectedCommunity]);
 
   // ── Draw property markers ──
   useEffect(() => {
@@ -401,7 +514,7 @@ export function CommunitiesMap({
     const markersLayer = markersLayerRef.current;
     markersLayer.clearLayers();
 
-    if (zoomLevel < 12 || listings.length === 0) return;
+    if (listings.length === 0) return;
 
     listings.forEach((listing) => {
       const priceLabel =
@@ -443,7 +556,7 @@ export function CommunitiesMap({
       ],
       {
         padding: [50, 50],
-        maxZoom: 14,
+        maxZoom: 16,
         duration: 0.8,
       }
     );
@@ -452,13 +565,6 @@ export function CommunitiesMap({
   return (
     <div className="relative w-full h-full">
       <div ref={mapContainerRef} className="absolute inset-0" />
-
-      {/* Zoom hint */}
-      {selectedCommunity && zoomLevel < 12 && (
-        <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-lg shadow-lg text-sm text-gray-700 z-[1000] border border-gray-200">
-          💡 Zoom in to see property listings
-        </div>
-      )}
 
       {/* Listings count floating panel */}
       {selectedCommunity && (
@@ -499,6 +605,13 @@ export function CommunitiesMap({
           border-top-color: rgba(255, 255, 255, 0.95) !important;
         }
         .community-label-icon {
+          background: none !important;
+          border: none !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+        }
+        .count-badge-icon {
           background: none !important;
           border: none !important;
           display: flex !important;

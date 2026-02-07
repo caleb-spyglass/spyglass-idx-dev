@@ -40,6 +40,7 @@ export default function SearchPage() {
   const [aiTotal, setAiTotal] = useState(0);
   const [aiSummary, setAiSummary] = useState<string | null>(null);
   const [isAiActive, setIsAiActive] = useState(false);
+  const [matchedCommunityName, setMatchedCommunityName] = useState<string | null>(null);
   
   // Save Search state
   const { saveSearch } = useSavedSearches();
@@ -84,11 +85,26 @@ export default function SearchPage() {
     setFilters(newFilters);
   };
 
-  const handleAIResults = (results: { listings: Listing[]; total: number; summary: string; nlpId: string }) => {
+  const handleAIResults = (results: { listings: Listing[]; total: number; summary: string; nlpId: string; matchedCommunity?: { name: string; slug: string } | null }) => {
     setAiListings(results.listings);
     setAiTotal(results.total);
     setAiSummary(results.summary);
     setIsAiActive(true);
+    setMatchedCommunityName(results.matchedCommunity?.name || null);
+    
+    // If a community was matched, auto-select it for the map
+    if (results.matchedCommunity?.name) {
+      const matched = austinCommunities.find(
+        c => c.name.toLowerCase() === results.matchedCommunity!.name.toLowerCase()
+      );
+      if (matched) {
+        setSelectedCommunity(matched);
+      } else {
+        setSelectedCommunity(null);
+      }
+    } else {
+      setSelectedCommunity(null);
+    }
   };
 
   const handleAIClear = () => {
@@ -96,6 +112,8 @@ export default function SearchPage() {
     setAiTotal(0);
     setAiSummary(null);
     setIsAiActive(false);
+    setMatchedCommunityName(null);
+    setSelectedCommunity(null);
     fetchListings(filters);
   };
 
@@ -319,7 +337,7 @@ export default function SearchPage() {
           <Suspense fallback={<MapLoadingFallback />}>
             <LeafletMap 
               listings={listings}
-              communities={austinCommunities}
+              communities={selectedCommunity ? [selectedCommunity] : []}
               selectedListing={selectedListing}
               hoveredListing={hoveredListing}
               selectedCommunity={selectedCommunity}

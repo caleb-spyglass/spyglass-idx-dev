@@ -10,6 +10,7 @@ interface AISearchBarProps {
     total: number;
     summary: string;
     nlpId: string;
+    matchedCommunity?: { name: string; slug: string } | null;
   }) => void;
   onClear: () => void;
   placeholder?: string;
@@ -68,6 +69,7 @@ export function AISearchBar({ onResults, onClear, placeholder }: AISearchBarProp
         total: data.total,
         summary: data.summary,
         nlpId: data.nlpId,
+        matchedCommunity: data.matchedCommunity || null,
       });
 
     } catch (err) {

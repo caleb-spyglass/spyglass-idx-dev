@@ -71,9 +71,11 @@ export function LeafletMap({
           zoomDelta: 0.5,
         }).setView([center.lat, center.lng], zoom);
         
-        // Add tile layer (OpenStreetMap)
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '© OpenStreetMap contributors'
+        // CartoDB Positron – clean, light base map
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
+          subdomains: 'abcd',
+          maxZoom: 19,
         }).addTo(map);
 
         // Track bounds changes
@@ -254,10 +256,11 @@ export function LeafletMap({
       );
       
       const polygon = L.polygon(latLngs, {
-        color: isSelected ? '#E85A24' : '#2D2D2D',
-        weight: isSelected ? 3 : 2,
-        fillColor: isSelected ? '#E85A24' : '#2D2D2D',
-        fillOpacity: isSelected ? 0.2 : 0.1
+        color: isSelected ? '#E85A24' : '#E8845A',
+        weight: isSelected ? 2.5 : 1.5,
+        fillColor: isSelected ? '#E85A24' : '#E8845A',
+        fillOpacity: isSelected ? 0.2 : 0.15,
+        dashArray: isSelected ? undefined : '4 6',
       })
         .addTo(map)
         .on('click', () => onSelectCommunity?.(community));
@@ -311,15 +314,19 @@ export function LeafletMap({
     <div className="relative w-full h-full">
       <div ref={mapContainerRef} className="absolute inset-0" />
       
-      {/* Map controls overlay */}
-      <div className="absolute top-4 left-4 z-[1000]">
-        <button className="flex items-center gap-2 px-3 py-2 bg-white rounded-lg shadow hover:bg-gray-50 transition-colors text-sm font-medium">
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-          </svg>
-          Draw
-        </button>
-      </div>
+      {/* Selected community floating panel */}
+      {selectedCommunity && (
+        <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-sm px-5 py-3 rounded-xl shadow-lg z-[1000] border border-gray-200">
+          <div className="text-sm text-gray-500 mb-0.5">
+            {listings.length > 0
+              ? `${listings.length} properties`
+              : 'Loading...'}
+          </div>
+          <div className="text-base font-bold text-gray-900">
+            {selectedCommunity.name}
+          </div>
+        </div>
+      )}
 
       {/* Loading state */}
       {!isLoaded && (
@@ -327,6 +334,28 @@ export function LeafletMap({
           <div className="text-gray-500">Loading map...</div>
         </div>
       )}
+
+      {/* Popup styles */}
+      <style jsx global>{`
+        .listing-popup-container .leaflet-popup-content-wrapper {
+          padding: 0 !important;
+          border-radius: 12px !important;
+          overflow: hidden;
+        }
+        .listing-popup-container .leaflet-popup-content {
+          margin: 0 !important;
+          width: 300px !important;
+        }
+        .community-tooltip {
+          background: rgba(255, 255, 255, 0.95) !important;
+          border: 1px solid #e5e7eb !important;
+          border-radius: 8px !important;
+          padding: 6px 10px !important;
+          font-size: 13px !important;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12) !important;
+          color: #1a1a1a !important;
+        }
+      `}</style>
     </div>
   );
 }
