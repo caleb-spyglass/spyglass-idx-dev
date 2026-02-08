@@ -69,7 +69,19 @@ export function LeafletMap({
           // Zoom snapping for smoother behavior
           zoomSnap: 0.5,
           zoomDelta: 0.5,
-        }).setView([center.lat, center.lng], zoom);
+        });
+
+        // If we have a selectedCommunity with coordinates, fit to it immediately
+        // Otherwise use the default center/zoom
+        if (selectedCommunity?.coordinates && selectedCommunity.coordinates.length >= 3) {
+          const latLngs = selectedCommunity.coordinates.map((c: any) =>
+            Array.isArray(c) ? L!.latLng(c[0], c[1]) : L!.latLng(c.lat, c.lng)
+          );
+          const bounds = L.latLngBounds(latLngs);
+          map.fitBounds(bounds, { padding: [30, 30], maxZoom: 15 });
+        } else {
+          map.setView([center.lat, center.lng], zoom);
+        }
         
         // CartoDB Positron – clean, light base map
         L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
