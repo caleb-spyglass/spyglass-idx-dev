@@ -94,7 +94,7 @@ export default function CommunityListingsIsland({
   };
 
   return (
-    <div className="flex-1 flex flex-col md:overflow-hidden md:h-[calc(100vh-240px)]">
+    <div className="flex-1 flex flex-col min-h-[60vh] md:overflow-hidden md:h-[calc(100vh-240px)]">
       {!isEmbed && (
         <div className="bg-white border-b border-gray-200 px-4 py-3">
           <FilterBar

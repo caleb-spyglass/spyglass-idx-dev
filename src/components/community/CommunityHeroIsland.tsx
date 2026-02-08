@@ -95,7 +95,7 @@ export default function CommunityHeroIsland({
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-gray-50 flex flex-col overflow-y-auto">
       {!isEmbed && <Header />}
 
       {/* Hero */}
