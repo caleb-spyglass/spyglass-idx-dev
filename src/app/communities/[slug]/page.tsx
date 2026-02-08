@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import { getCommunityBySlug } from '@/data/communities-polygons';
 import { getCommunityContent } from '@/data/community-descriptions';
+import { getScrapedContent } from '@/data/scraped-content-loader';
 import { getNearbyCommunities, getCommunityCentroid, formatCommunityName } from '@/lib/nearby-communities';
 import CommunityHeroIsland from '@/components/community/CommunityHeroIsland';
 import CommunityBreadcrumbs from '@/components/community/CommunityBreadcrumbs';
@@ -39,6 +40,7 @@ export default async function CommunityDetailPage({ params }: PageProps) {
 
   const communityName = formatCommunityName(community.name);
   const content = getCommunityContent(slug);
+  const scrapedContent = getScrapedContent(slug);
   const nearby = getNearbyCommunities(slug, 6);
   const centroid = getCommunityCentroid(slug);
 
@@ -123,6 +125,40 @@ export default async function CommunityDetailPage({ params }: PageProps) {
               </div>
             </div>
           )}
+
+          {/* Scraped SEO content from spyglassrealty.com — additional detail */}
+          {scrapedContent && scrapedContent.sections.length > 0 && (
+            <div className="mt-8 pt-8 border-t border-gray-200 space-y-6">
+              {scrapedContent.sections.map((section, idx) => (
+                <div key={idx}>
+                  {section.heading && (
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3">{section.heading}</h3>
+                  )}
+                  <div
+                    className="text-gray-600 leading-relaxed space-y-4 [&>p]:mb-4 [&>p:last-child]:mb-0 [&_a]:text-spyglass-orange [&_a]:underline [&_a:hover]:text-orange-700"
+                    dangerouslySetInnerHTML={{ __html: section.content }}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      ) : scrapedContent ? (
+        <div className="space-y-8">
+          <div>
+            <h2 className="text-xl font-bold text-gray-900 mb-4">About {communityName}</h2>
+          </div>
+          {scrapedContent.sections.map((section, idx) => (
+            <div key={idx}>
+              {section.heading && (
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">{section.heading}</h3>
+              )}
+              <div
+                className="text-gray-600 leading-relaxed space-y-4 [&>p]:mb-4 [&>p:last-child]:mb-0 [&_a]:text-spyglass-orange [&_a]:underline [&_a:hover]:text-orange-700"
+                dangerouslySetInnerHTML={{ __html: section.content }}
+              />
+            </div>
+          ))}
         </div>
       ) : (
         <div>
