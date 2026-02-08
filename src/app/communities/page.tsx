@@ -1,6 +1,7 @@
 import { COMMUNITIES } from '@/data/communities-polygons';
 import CommunitiesClientIsland from '@/components/community/CommunitiesClientIsland';
 import { formatCommunityName } from '@/lib/nearby-communities';
+import { getAllCommunityCardMeta } from '@/data/community-card-data';
 
 // Filter to Austin-area communities for the structured data
 const AUSTIN_COUNTIES = ['Travis', 'Williamson', 'Hays'];
@@ -8,6 +9,9 @@ const austinCommunities = COMMUNITIES.filter((c) => AUSTIN_COUNTIES.includes(c.c
 const uniqueAustin = Array.from(
   new Map(austinCommunities.map((c) => [c.slug, c])).values()
 ).sort((a, b) => a.name.localeCompare(b.name));
+
+// Build card metadata at build time (hero images, snippets)
+const cardMeta = getAllCommunityCardMeta(uniqueAustin.map((c) => c.slug));
 
 export default function CommunitiesPage() {
   // Build ItemList structured data for SEO
@@ -88,7 +92,7 @@ export default function CommunitiesPage() {
       </div>
 
       {/* Interactive client component */}
-      <CommunitiesClientIsland />
+      <CommunitiesClientIsland cardMeta={cardMeta} />
     </>
   );
 }

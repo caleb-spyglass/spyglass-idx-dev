@@ -270,12 +270,34 @@ export function CommunitiesMap({
       onEachFeature: (feature, layer) => {
         const id = feature.properties?.id;
         const name = feature.properties?.name;
+        const slug = feature.properties?.slug || id;
         const listingsCount = feature.properties?.listingsCount;
 
-        // Tooltip
+        // Popup with "View Community" link (shown on click)
+        const popupContent = `
+          <div style="text-align: center; padding: 4px 0;">
+            <div style="font-weight: 700; font-size: 15px; margin-bottom: 4px; color: #111;">${name}</div>
+            ${listingsCount ? `<div style="font-size: 12px; color: #666; margin-bottom: 8px;">${listingsCount} active listings</div>` : ''}
+            <a href="/communities/${slug}" 
+               style="display: inline-block; background: #EF4923; color: white; padding: 6px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; text-decoration: none; transition: background 0.2s;"
+               onmouseover="this.style.background='#d63e1a'"
+               onmouseout="this.style.background='#EF4923'"
+            >View Community →</a>
+          </div>
+        `;
+
+        layer.bindPopup(popupContent, {
+          closeButton: true,
+          maxWidth: 220,
+          minWidth: 180,
+          className: 'community-popup-container',
+          offset: [0, -5],
+        });
+
+        // Tooltip on hover (name only)
         const tooltipContent = listingsCount
-          ? `<strong>${name}</strong><br/>${listingsCount} listings`
-          : `<strong>${name}</strong>`;
+          ? `<strong>${name}</strong><br/><span style="font-size:11px; color:#666;">${listingsCount} listings · Click to explore</span>`
+          : `<strong>${name}</strong><br/><span style="font-size:11px; color:#666;">Click to explore</span>`;
 
         layer.bindTooltip(tooltipContent, {
           sticky: true,
@@ -306,22 +328,9 @@ export function CommunitiesMap({
           });
         });
 
-        // Click → select + zoom
+        // Click → navigate directly to community page
         layer.on('click', (e: LeafletType.LeafletMouseEvent) => {
           L.DomEvent.stopPropagation(e);
-          const community = communities.find((c) => c.id === id);
-          if (community) {
-            // Save current view for zoom-back
-            prevBoundsRef.current = map.getBounds();
-            onSelectCommunity?.(community);
-          }
-        });
-
-        // Double-click → navigate
-        layer.on('dblclick', (e: LeafletType.LeafletMouseEvent) => {
-          L.DomEvent.stopPropagation(e);
-          if (e.originalEvent) e.originalEvent.preventDefault();
-          const slug = feature.properties?.slug || id;
           router.push(`/communities/${slug}`);
         });
       },
@@ -458,8 +467,8 @@ export function CommunitiesMap({
       });
 
       badge.on('click', () => {
-        prevBoundsRef.current = map.getBounds();
-        onSelectCommunity?.(community);
+        const communitySlug = community.slug || community.id;
+        router.push(`/communities/${communitySlug}`);
       });
 
       badgesLayer.addLayer(badge);
@@ -603,6 +612,13 @@ export function CommunitiesMap({
         }
         .community-tooltip::before {
           border-top-color: rgba(255, 255, 255, 0.95) !important;
+        }
+        .community-popup-container .leaflet-popup-content-wrapper {
+          border-radius: 10px !important;
+          padding: 4px !important;
+        }
+        .community-popup-container .leaflet-popup-content {
+          margin: 8px 12px !important;
         }
         .community-label-icon {
           background: none !important;
