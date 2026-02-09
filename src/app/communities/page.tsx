@@ -1,4 +1,5 @@
 import { COMMUNITIES } from '@/data/communities-polygons';
+import { ZIP_COMMUNITIES, CITY_COMMUNITIES } from '@/data/area-communities';
 import CommunitiesClientIsland from '@/components/community/CommunitiesClientIsland';
 import { formatCommunityName } from '@/lib/nearby-communities';
 import { getAllCommunityCardMeta } from '@/data/community-card-data';
@@ -84,6 +85,34 @@ export default function CommunitiesPage() {
               <li key={community.slug}>
                 <a href={`/communities/${community.slug}`}>
                   Homes for Sale in {formatCommunityName(community.name)}, Austin TX
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        {/* Zip Code Pages */}
+        <h2>Search by Zip Code</h2>
+        <nav aria-label="Zip code directory">
+          <ul>
+            {ZIP_COMMUNITIES.map((zc) => (
+              <li key={zc.slug}>
+                <a href={`/communities/${zc.slug}`}>
+                  Homes for Sale in {zc.filterValue} ({zc.name})
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        {/* City Pages */}
+        <h2>Search by City</h2>
+        <nav aria-label="City directory">
+          <ul>
+            {CITY_COMMUNITIES.map((cc) => (
+              <li key={cc.slug}>
+                <a href={`/communities/${cc.slug}`}>
+                  Homes for Sale in {cc.name}, TX
                 </a>
               </li>
             ))}

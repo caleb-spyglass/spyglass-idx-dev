@@ -1,0 +1,194 @@
+name,slug,city,status,matched_polygon,score
+Adirondack,adirondack,Austin,NEEDS_POLYGON,Adirondack Trail,0.769
+Aqua Monte,aqua-monte,Austin,NEEDS_POLYGON,Mira Monte,0.7
+Arts District,arts-district,Austin,NEEDS_POLYGON,District 53,0.667
+Austins' Colony,austins-colony,Manor,NEEDS_POLYGON,Austin City Lofts,0.625
+Avery Ranch Glenfield,avery-ranch-glenfield,Austin,NEEDS_POLYGON,Avery Ranch,0.688
+Bastrop,bastrop,Texas,NEEDS_POLYGON,BERGSTROM,0.625
+Bellhaven,bellhaven,Austin,NEEDS_POLYGON,Bellview,0.706
+Bergstrom Village,bergstrom-village,Austin,NEEDS_POLYGON,Reston Village,0.774
+Berkeley Square Headway,berkeley-square-headway,Austin,NEEDS_POLYGON,Lakeline Square,0.579
+Bluffs at Sandy Creek,bluffs-at-sandy-creek,Leander,NEEDS_POLYGON,Cliffs at Barton Creek,0.744
+Cameron Industrial,cameron-industrial,Austin,NEEDS_POLYGON,Centex Industrial,0.8
+Canyon Gate,canyon-gate,Austin,NEEDS_POLYGON,Canyon Glen,0.818
+Casa Loma,casa-loma,Georgetown,NEEDS_POLYGON,Las Lomas,0.778
+CCR,ccr,Austin,NEEDS_POLYGON,Coers,0.5
+Cedar Park,cedar-park,Texas,NEEDS_POLYGON,Cedar Park Villas,0.741
+Champion City Park,champion-city-park,Austin,NEEDS_POLYGON,Cameron Park,0.667
+Chandler at Sunrise,chandler-at-sunrise,Austin,NEEDS_POLYGON,Chandler Creek,0.667
+Cherry 1660,cherry-1660,Hutto,NEEDS_POLYGON,Cherry Hills,0.609
+Chimney Corners,chimney-corners,Austin,NEEDS_POLYGON,Chimney Creek,0.786
+Clearview,clearview,Georgetown,NEEDS_POLYGON,Clarksville,0.7
+Cliffside,cliffside,Austin,NEEDS_POLYGON,Cliffview,0.778
+Coldwater,coldwater,Austin,NEEDS_POLYGON,Coldwater Canyon,0.72
+Comal Bluff,comal-bluff,Austin,NEEDS_POLYGON,Eagle Bluff,0.727
+Cooper's Hill,coopers-hill,Austin,NEEDS_POLYGON,Cooper Mill,0.833
+Country Club Acres Country West,country-club-acres-country-west,Georgetown,NEEDS_POLYGON,Country Club Creek,0.694
+Crowley Crossing,crowley-crossing,Round Rock,NEEDS_POLYGON,Cherry Crossing,0.774
+Crystal Knoll,crystal-knoll,Georgetown,NEEDS_POLYGON,Crystal Falls,0.769
+Crystal Park,crystal-park,Round Rock,NEEDS_POLYGON,Central Park,0.75
+Cypress Addition,cypress-addition,Round Rock,NEEDS_POLYGON,Cypress Canyon,0.733
+Cypress Canyon Preserve,cypress-canyon-preserve,Cedar Park,NEEDS_POLYGON,Cypress Canyon,0.757
+Cypress Creek Ranch,cypress-creek-ranch,Lake Travis,NEEDS_POLYGON,Cypress Creek,0.812
+Daffin,daffin,Austin,NEEDS_POLYGON,Daffin Gin Park,0.571
+Deepwood,deepwood,Round Rock,NEEDS_POLYGON,Delwood,0.8
+Deer Run,deer-run,Round Rock,NEEDS_POLYGON,Deer Park,0.706
+Deerfield at Brodie,deerfield-at-brodie,Austin,NEEDS_POLYGON,Deerfield Park,0.727
+Deerwood,deerwood,Austin,NEEDS_POLYGON,Delwood,0.8
+Del Web's Sun City,del-webs-sun-city,Georgetown,NEEDS_POLYGON,Sun City,0.615
+Dripping Springs,dripping-springs,Texas,NEEDS_POLYGON,Dripping Springs Ranch,0.842
+Eagles Glen,eagles-glen,Austin,NEEDS_POLYGON,Eagle Ridge,0.727
+Eastridge Summit,eastridge-summit,Austin,NEEDS_POLYGON,Steiner Ranch Eastridge Summit,0.696
+Eastridge Valley,eastridge-valley,Austin,NEEDS_POLYGON,Spring Valley,0.759
+Ed Bluestein,ed-bluestein,Austin,NEEDS_POLYGON,Painted Bunting,0.593
+Elmwood Park,elmwood-park,Austin,NEEDS_POLYGON,Lakewood Park,0.8
+Esquel,esquel,Austin,NEEDS_POLYGON,Este,0.6
+Estates at Edgewater Beach,estates-at-edgewater-beach,Lake Travis,NEEDS_POLYGON,Edgewater Beach,0.732
+Estates of North Creek Ranch,estates-of-north-creek-ranch,Leander,NEEDS_POLYGON,North Creek Ranch,0.756
+Estates of Rowe Lane,estates-of-rowe-lane,Pflugerville,NEEDS_POLYGON,Estates of Westlake,0.821
+Estrella Crossing,estrella-crossing,Georgetown,NEEDS_POLYGON,Steeds Crossing,0.75
+Flat Creek,flat-creek,Lake Travis,NEEDS_POLYGON,Lost Creek,0.8
+Flint Valley,flint-valley,Lake Travis,NEEDS_POLYGON,Lost Valley,0.783
+Flintrock at Hurst Creek,flintrock-at-hurst-creek,Lake Travis,NEEDS_POLYGON,Block House Creek,0.683
+Forest Gabriel Park,forest-gabriel-park,Georgetown,NEEDS_POLYGON,Forest Park,0.733
+Four Seasons Summer Section,four-seasons-summer-section,Austin,NEEDS_POLYGON,Four Seasons Fall Section,0.808
+Four-T Ranch,four-t-ranch,Georgetown,NEEDS_POLYGON,South Ranches,0.72
+Georgetown Country Club,georgetown-country-club,Georgetown,NEEDS_POLYGON,Country Club,0.686
+Granite Bay,granite-bay,Austin,NEEDS_POLYGON,Granite Shoals,0.72
+Green Square,green-square,Round Rock,NEEDS_POLYGON,Green Acres,0.783
+Greenbury,greenbury,Manor,NEEDS_POLYGON,Greenbriar,0.737
+Greenlawn Crossing,greenlawn-crossing,Round Rock,NEEDS_POLYGON,Georgetown Crossing,0.757
+Hanson's Corner,hansons-corner,Hutto,NEEDS_POLYGON,Calhoun's Corner,0.774
+Hatley Park,hatley-park,West Lake Hills,NEEDS_POLYGON,Avery Park,0.762
+Hawk's Canyon,hawks-canyon,Austin,NEEDS_POLYGON,Neely's Canyon,0.667
+Henderson Tract,henderson-tract,Round Rock,NEEDS_POLYGON,Anderson Acres,0.69
+Henna,henna,Round Rock,NEEDS_POLYGON,Shenandoah,0.667
+High Gabriel,high-gabriel,Leander,NEEDS_POLYGON,High Gabriel West,0.828
+High Vista,high-vista,Austin,NEEDS_POLYGON,High Vista Views,0.769
+Historic Acres,historic-acres,Georgetown,NEEDS_POLYGON,Banister Acres,0.714
+Hodde,hodde,Pflugerville,NEEDS_POLYGON,Hoppe,0.6
+Hudson Harbor,hudson-harbor,Lake Travis,NEEDS_POLYGON,Hudson Bend,0.667
+Hunters Green,hunters-green,Austin,NEEDS_POLYGON,Hunter Glen,0.833
+Hutto Exchange,hutto-exchange,Hutto,NEEDS_POLYGON,Hutto Highlands,0.621
+Jester Point,jester-point,Austin,NEEDS_POLYGON,Settlers Point,0.769
+Jonestown,jonestown,Texas,NEEDS_POLYGON,Jamestown,0.778
+Kercheville Estates,kercheville-estates,Austin,NEEDS_POLYGON,Turnersville Estates,0.769
+Kingsbery Park,kingsbery-park,Manor,NEEDS_POLYGON,Rivery Park,0.72
+Lake Travis Bluff,lake-travis-bluff,Lake Travis,NEEDS_POLYGON,Travis Bluff,0.828
+Lakeline,lakeline,Leander,NEEDS_POLYGON,Lakeline Oaks,0.762
+Lakeside Terrace,lakeside-terrace,Lake Travis,NEEDS_POLYGON,Hillside Terrace,0.812
+Lakeway Centre,lakeway-centre,Lakeway,NEEDS_POLYGON,Lakeline Center,0.69
+Legends of Lone Star,legends-of-lone-star,Hutto,NEEDS_POLYGON,Gardens of Balcones,0.667
+Liberty Hill,liberty-hill,Texas,NEEDS_POLYGON,Timber Hills,0.75
+Limestone at Wells Branch,limestone-at-wells-branch,Austin,NEEDS_POLYGON,Lake at Wells Branch,0.8
+Lockhart,lockhart,Texas,NEEDS_POLYGON,Lakehurst,0.588
+Lost River Ranches,lost-river-ranches,Georgetown,NEEDS_POLYGON,Blanco River Ranch,0.778
+Luther Peterson,luther-peterson,Round Rock,NEEDS_POLYGON,The Timbers,0.615
+Magnolia,magnolia,Leander,NEEDS_POLYGON,Magnolia Creek,0.727
+Manana West,manana-west,Austin,NEEDS_POLYGON,Maconda Park West,0.714
+Manor,manor,TX,NEEDS_POLYGON,Mesa North,0.667
+Mansfield,mansfield,Lake Travis,NEEDS_POLYGON,Masonfield,0.842
+Marble Falls,marble-falls,Lake Travis,NEEDS_POLYGON,Agave Falls,0.696
+Market District,market-district,Austin,NEEDS_POLYGON,Hawthorne at the District,0.65
+Marshall Ford/Marshall Ford Vista,marshall-fordmarshall-ford-vista,Lake Travis,NEEDS_POLYGON,Marshall Ford Vista,0.731
+Mason and Rye,mason-and-rye,Round Rock,NEEDS_POLYGON,Mason Creek,0.667
+Max Keilbar,max-keilbar,Austin,NEEDS_POLYGON,Keilbar,0.778
+Mcsheperd Ranches Ridgeline Ranchettes,mcsheperd-ranches-ridgeline-ranchettes,Lake Travis,NEEDS_POLYGON,Steiner Ranch River Dance,0.571
+Meadows at Trinity Crossing,meadows-at-trinity-crossing,Austin,NEEDS_POLYGON,Low Water Crossing,0.667
+Medway Ranch,medway-ranch,Lake Travis,NEEDS_POLYGON,McCarty Ranch,0.72
+Mission Bethany,mission-bethany,Austin,NEEDS_POLYGON,Mission Oaks,0.667
+Monterey/Belcara,montereybelcara,Austin,NEEDS_POLYGON,Montebella,0.692
+Mooreland,mooreland,Austin,NEEDS_POLYGON,Crestland,0.667
+Morningside,morningside,Austin,NEEDS_POLYGON,Morningside Meadows,0.733
+Mountain Ridge,mountain-ridge,Austin,NEEDS_POLYGON,Mountain View,0.815
+North Crossing,north-crossing,Austin,NEEDS_POLYGON,The Crossing,0.846
+North East,north-east,Austin,NEEDS_POLYGON,Northwest,0.842
+Northwest Hills Ranch,northwest-hills-ranch,Austin,NEEDS_POLYGON,NORTHWEST HILLS,0.833
+Oak Knoll Estates,oak-knoll-estates,Austin,NEEDS_POLYGON,Oak Run Estates,0.812
+Oakmont Centre,oakmont-centre,Round Rock,NEEDS_POLYGON,Oakmont Forest,0.714
+Oaks of Jollyville,oaks-of-jollyville,Austin,NEEDS_POLYGON,JOLLYVILLE,0.714
+Overlook at River Place,overlook-at-river-place,Austin,NEEDS_POLYGON,Ranch at River Place,0.744
+Panther Hollow,panther-hollow,Austin,NEEDS_POLYGON,The Hollows,0.8
+Paradise Cove,paradise-cove,Lake Travis,NEEDS_POLYGON,Paradise Valley,0.786
+Park 35,park-35,Austin,NEEDS_POLYGON,Park Side,0.625
+Parmer Center,parmer-center,Austin,NEEDS_POLYGON,Palm Creek Center,0.733
+Parmer North,parmer-north,Austin,NEEDS_POLYGON,Parmer South,0.833
+Phillips Ranch on Lake Austin,phillips-ranch-on-lake-austin,Austin,NEEDS_POLYGON,Peninsula on Lake Austin,0.717
+Plaza De Las Lomas,plaza-de-las-lomas,Austin,NEEDS_POLYGON,Las Lomas,0.667
+Quarry,quarry,Austin,NEEDS_POLYGON,Quarry Oaks,0.706
+Rainbow Crossing,rainbow-crossing,Round Rock,NEEDS_POLYGON,Ryans Crossing,0.8
+Red River,red-river,Austin,NEEDS_POLYGON,Orchard Drive,0.636
+Rhodes,rhodes,Round Rock,NEEDS_POLYGON,Rogers,0.667
+Ribelin Ranch,ribelin-ranch,Austin,NEEDS_POLYGON,River Ranch,0.75
+Ridgeline Ranchettes,ridgeline-ranchettes,Leander,NEEDS_POLYGON,Red Wagon Ranchettes,0.75
+Ridgewood North,ridgewood-north,Leander,NEEDS_POLYGON,Tangle Wood North,0.75
+Ridgewood South,ridgewood-south,Leander,NEEDS_POLYGON,Sunridge South,0.759
+River Dance at Steiner Ranch,river-dance-at-steiner-ranch,Lake Travis,NEEDS_POLYGON,Meritage at Steiner Ranch,0.792
+River Place Centre,river-place-centre,Austin,NEEDS_POLYGON,River Place,0.759
+Riverfront Estates,riverfront-estates,Lake Travis,NEEDS_POLYGON,River Estates,0.839
+Round Mountain,round-mountain,Lake Travis,NEEDS_POLYGON,Round Mountain Oaks,0.848
+Sahd,sahd,Pflugerville,NEEDS_POLYGON,Cascada,0.545
+Sanctuary at Coldwater,sanctuary-at-coldwater,Austin,NEEDS_POLYGON,Enclave at Escondera,0.571
+Sandahl,sandahl,Austin,NEEDS_POLYGON,Shenandoah,0.706
+Scenic Overlook,scenic-overlook,Leander,NEEDS_POLYGON,The Overlook,0.741
+Scofield Ranch Creekside,scofield-ranch-creekside,Austin,NEEDS_POLYGON,Mayfield Ranch Cove,0.651
+Serenada,serenada,Georgetown,NEEDS_POLYGON,Serenada West,0.762
+Shadestone Terrace,shadestone-terrace,Steiner Ranch,NEEDS_POLYGON,JOHNSTON TERRACE,0.765
+Shadow Canyon,shadow-canyon,Georgetown,NEEDS_POLYGON,Shadow Lawn,0.75
+Sheldon,sheldon,Pflugerville,NEEDS_POLYGON,Shell,0.667
+Shepard of the Hills,shepard-of-the-hills,Austin,NEEDS_POLYGON,Heather Hills,0.727
+Slaughter Creek Commerical Park,slaughter-creek-commerical-park,Austin,NEEDS_POLYGON,Slaughter Creek Acres,0.692
+Slaughter South,slaughter-south,Austin,NEEDS_POLYGON,Lake South,0.72
+Sonesta West,sonesta-west,Austin,NEEDS_POLYGON,Vista West,0.727
+Spicewood Summit,spicewood-summit,Austin,NEEDS_POLYGON,Spicewood Point,0.774
+Springdale Heights,springdale-heights,Austin,NEEDS_POLYGON,Springdale Hills,0.824
+Springfield at Thaxton Road,springfield-at-thaxton-road,Austin,NEEDS_POLYGON,Springfield,0.579
+Stillhouse Springs,stillhouse-springs,Austin,NEEDS_POLYGON,The Springs,0.759
+Strother Mountain,strother-mountain,Austin,NEEDS_POLYGON,Shepherd Mountain,0.765
+Summit at West Rim,summit-at-west-rim,West Lake Hills,NEEDS_POLYGON,The Summit at Eastridge,0.732
+Supont,supont,Round Rock,NEEDS_POLYGON,Sunset,0.667
+Taylor,taylor,Texas,NEEDS_POLYGON,Taylor Draper,0.632
+Tech Ridge Center,tech-ridge-center,Austin,NEEDS_POLYGON,Heritage Center,0.75
+The Canyon - The Preserve,the-canyon-the-preserve,Austin,NEEDS_POLYGON,The Terrace at the Preserve,0.731
+The Centerpiece At Academy Place,the-centerpiece-at-academy-place,Lake Travis,NEEDS_POLYGON,The Preserve at River Place,0.644
+The Centrum,the-centrum,Austin,NEEDS_POLYGON,The Avenue,0.667
+The Courtyard,the-courtyard,Austin,NEEDS_POLYGON,Courtyard,0.818
+The Estates at Westridge,the-estates-at-westridge,Austin,NEEDS_POLYGON,Steiner Ranch The Estates at Westridge,0.774
+The Hermitage,the-hermitage,Round Rock,NEEDS_POLYGON,Hermitage,0.818
+The Hills at Westridge,the-hills-at-westridge,Austin,NEEDS_POLYGON,The Valley at Eastridge,0.8
+The Hills of Lakeway,the-hills-of-lakeway,Lake Travis,NEEDS_POLYGON,The Hills of Hays,0.811
+The Meadows of Great Hills,the-meadows-of-great-hills,Austin,NEEDS_POLYGON,The Bluffs of Great Hills,0.784
+The Pinnacle,the-pinnacle,Georgetown,NEEDS_POLYGON,Pinnacle,0.8
+The Plaza at Slaughter Creek,the-plaza-at-slaughter-creek,Austin,NEEDS_POLYGON,The Reserve at Slaughter Creek,0.793
+The Point at Singleton Bend,the-point-at-singleton-bend,Lake Travis,NEEDS_POLYGON,The Park at Battle Bend,0.64
+The Towers of Lakeway,the-towers-of-lakeway,Lake Travis,NEEDS_POLYGON,Woods of Lakeway,0.703
+The Triangle,the-triangle,Austin,NEEDS_POLYGON,The Quadrangle,0.769
+The Vistas at Lakeway,the-vistas-at-lakeway,Lake Travis,NEEDS_POLYGON,Vistas of Lakeway,0.789
+Thunderbird Farms,thunderbird-farms,Austin,NEEDS_POLYGON,Thunderbird Village,0.722
+Timber Village,timber-village,Austin,NEEDS_POLYGON,Meyer Village,0.815
+Townwest Commons,townwest-commons,Hutto,NEEDS_POLYGON,Stonewood Commons,0.667
+Twin Meadow Creek,twin-meadow-creek,Manor,NEEDS_POLYGON,Meadow Creek,0.828
+Valle Escondido,valle-escondido,Austin,NEEDS_POLYGON,Valley View Condos,0.727
+Vaught Ranch,vaught-ranch,Austin,NEEDS_POLYGON,Walsh Ranch,0.696
+Village at River Oaks,village-at-river-oaks,Austin,NEEDS_POLYGON,VILLAGE AT WESTERN OAKS,0.818
+Village at Volente,village-at-volente,Lake Travis,NEEDS_POLYGON,Village at Treemont,0.757
+Vista Del Pueblo,vista-del-pueblo,Austin,NEEDS_POLYGON,Vista Ridge Oaks,0.625
+Vista Heights,vista-heights,Round Rock,NEEDS_POLYGON,Travis Heights,0.815
+Vista Mesa Estates,vista-mesa-estates,Leander,NEEDS_POLYGON,Vista Ridge Estates,0.811
+Warehouse District,warehouse-district,Austin,NEEDS_POLYGON,Hawthorne at the District,0.605
+Watersedge at River Place,watersedge-at-river-place,Austin,NEEDS_POLYGON,Waters Edge Avery Ranch,0.75
+Werkenthin,werkenthin,Austin,NEEDS_POLYGON,Westwind,0.556
+West Park Street,west-park-street,Cedar Park,NEEDS_POLYGON,West Park Estates,0.788
+Westminster,westminster,,NEEDS_POLYGON,Westminster Glen,0.815
+Westside Preserve,westside-preserve,Cedar Park,NEEDS_POLYGON,The Preserve,0.759
+Westview Acres,westview-acres,Round Rock,NEEDS_POLYGON,Mountview Acres,0.759
+Westwood Heights,westwood-heights,Austin,NEEDS_POLYGON,Delwood Heights,0.839
+Westwood Villas,westwood-villas,Austin,NEEDS_POLYGON,Brentwood Villas,0.839
+William Cannon Joint Venture,william-cannon-joint-venture,Austin,NEEDS_POLYGON,William Cannon,0.667
+Williams Addition,williams-addition,Georgetown,NEEDS_POLYGON,Wallace Addition,0.788
+Wimberley,wimberley,TX,NEEDS_POLYGON,Wimberley Lane,0.783
+Windcrest Crossing,windcrest-crossing,Austin,NEEDS_POLYGON,Wind River Crossing,0.811
+Woodlake,woodlake,Georgetown,NEEDS_POLYGON,Woodlawn,0.75
+Woodlake Trails,woodlake-trails,Austin,NEEDS_POLYGON,Lake Travis,0.769
+Wuthrich Hill Farms,wuthrich-hill-farms,Pflugerville,NEEDS_POLYGON,Churchill Farms,0.706
+Yellow Sage,yellow-sage,Pflugerville,NEEDS_POLYGON,Hollow Estates,0.64

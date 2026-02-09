@@ -1,0 +1,1062 @@
+name,slug,city,status,matched_polygon,score
+6d Ranch,6d-ranch,Austin,HAS_POLYGON,6d-ranch,1.0
+Acre Tract,acre-tract,Austin,HAS_POLYGON,acre-tract,1.0
+Adirondack,adirondack,Austin,NEEDS_POLYGON,Adirondack Trail,0.769
+Allandale,allandale,Austin,HAS_POLYGON,allandale,1.0
+Allegre Montantial,allegre-montantial,Austin,FUZZY_MATCH,Allegre Monantial,0.971
+Amanda,amanda,Round Rock,HAS_POLYGON,amanda,1.0
+Amorron Park,amorron-park,Round Rock,HAS_POLYGON,amorron-park,1.0
+Anderson Mill,anderson-mill,Austin,HAS_POLYGON,anderson-mill,1.0
+Anderson Mill West,anderson-mill-west,Cedar Park,HAS_POLYGON,anderson-mill-west,1.0
+Angel Pass,angel-pass,Austin,HAS_POLYGON,angel-pass,1.0
+Angus Trail,angus-trail,Austin,HAS_POLYGON,angus-trail,1.0
+Angus Valley,angus-valley,Austin,HAS_POLYGON,angus-valley,1.0
+Apache Oaks,apache-oaks,Round Rock,HAS_POLYGON,apache-oaks,1.0
+Apache Shores,apache-shores,Lake Travis,HAS_POLYGON,apache-shores,1.0
+Appaloosa Run,appaloosa-run,Austin,HAS_POLYGON,appaloosa-run,1.0
+Apple Springs,apple-springs,Leander,HAS_POLYGON,apple-springs,1.0
+Aqua Monte,aqua-monte,Austin,NEEDS_POLYGON,Mira Monte,0.7
+Arbor Place,arbor-place,Round Rock,HAS_POLYGON,arbor-place,1.0
+Armstrong Point,armstrong-point,Lake Travis,HAS_POLYGON,armstrong-point,1.0
+Arrowhead Acres,arrowhead-acres,Austin,HAS_POLYGON,arrowhead-acres,1.0
+Arrowwood,arrowwood,Austin,HAS_POLYGON,arrowwood,1.0
+Arroyo Doble Estates,arroyo-doble-estates,Manchaca,HAS_POLYGON,arroyo-doble-estates,1.0
+Arts District,arts-district,Austin,NEEDS_POLYGON,District 53,0.667
+Ashbrook,ashbrook,Austin,HAS_POLYGON,ashbrook,1.0
+Ashton Oaks,ashton-oaks,Round Rock,HAS_POLYGON,ashton-oaks,1.0
+Austin Hills,austin-hills,Austin,HAS_POLYGON,austin-hills,1.0
+Austins' Colony,austins-colony,Manor,NEEDS_POLYGON,Austin City Lofts,0.625
+Autumn Wood,autumn-wood,Austin,HAS_POLYGON,autumn-wood,1.0
+Avalon Park,avalon-park,Pflugerville,HAS_POLYGON,Avalon,1.0
+Avery Ranch,avery-ranch,Austin,HAS_POLYGON,avery-ranch,1.0
+Avery Ranch Glenfield,avery-ranch-glenfield,Austin,NEEDS_POLYGON,Avery Ranch,0.688
+Bagdad Estates,bagdad-estates,Leander,HAS_POLYGON,bagdad-estates,1.0
+Balcones Oaks,balcones-oaks,Austin,HAS_POLYGON,balcones-oaks,1.0
+Balcones Village,balcones-village,Austin,HAS_POLYGON,balcones-village,1.0
+Balcones West,balcones-west,Austin,HAS_POLYGON,balcones-west,1.0
+Balcones Woods,balcones-woods,Austin,HAS_POLYGON,balcones-woods,1.0
+Bannockburn,bannockburn,Austin,HAS_POLYGON,bannockburn,1.0
+Barker Hills,barker-hills,Manor,HAS_POLYGON,barker-hills,1.0
+Barker Ranch at Shady Hollow,barker-ranch-at-shady-hollow,Austin,HAS_POLYGON,barker-ranch-at-shady-hollow,1.0
+Barrinton Oaks,barrinton-oaks,Austin,FUZZY_MATCH,Barrington Oaks,0.966
+Barton Creek Lakeside,barton-creek-lakeside,Lake Travis,HAS_POLYGON,barton-creek-lakeside,1.0
+Barton Creek West,barton-creek-west,West Lake Hills,HAS_POLYGON,barton-creek-west,1.0
+Barton Hills,barton-hills,Austin,HAS_POLYGON,barton-hills,1.0
+Bastrop,bastrop,Texas,NEEDS_POLYGON,BERGSTROM,0.625
+Bauerle Ranch,bauerle-ranch,Austin,HAS_POLYGON,bauerle-ranch,1.0
+Bayview Arces,bayview-arces,Lake Travis,FUZZY_MATCH,Bay View Acres,0.889
+Beacon Ridge,beacon-ridge,Austin,FUZZY_MATCH,Beaconridge,0.957
+Bear Creek Place,bear-creek-place,Round Rock,HAS_POLYGON,bear-creek-place,1.0
+Beby's Ranch,bebys-ranch,Lake Travis,HAS_POLYGON,bebys-ranch,1.0
+Beckett Meadows,beckett-meadows,Austin,HAS_POLYGON,beckett-meadows,1.0
+Bee Caves,bee-caves,Texas,HAS_POLYGON,bee-caves,1.0
+Behrens Ranch,behrens-ranch,Round Rock,HAS_POLYGON,behrens-ranch,1.0
+Bell Farms,bell-farms,Manor,HAS_POLYGON,bell-farms,1.0
+Bell Meadows,bell-meadows,Hutto,HAS_POLYGON,bell-meadows,1.0
+Bella Strada,bella-strada,Lake Travis,HAS_POLYGON,bella-strada,1.0
+Bella Vista,bella-vista,Cedar Park,HAS_POLYGON,bella-vista,1.0
+Bellagio Estates,bellagio-estates,Austin,HAS_POLYGON,bellagio-estates,1.0
+Bellhaven,bellhaven,Austin,NEEDS_POLYGON,Bellview,0.706
+Bellview,bellview,Round Rock,HAS_POLYGON,bellview,1.0
+Belmont,belmont,West Central Austin,HAS_POLYGON,belmont,1.0
+Benbrook Ranch,benbrook-ranch,Leander,HAS_POLYGON,benbrook-ranch,1.0
+Bend at the Villages of Spicewood,bend-at-the-villages-of-spicewood,Austin,HAS_POLYGON,bend-at-the-villages-of-spicewood,1.0
+Bent Tree,bent-tree,Round Rock,HAS_POLYGON,bent-tree,1.0
+Bergstrom Village,bergstrom-village,Austin,NEEDS_POLYGON,Reston Village,0.774
+Berkeley Square Headway,berkeley-square-headway,Austin,NEEDS_POLYGON,Lakeline Square,0.579
+Berry Creek,berry-creek,Georgetown,HAS_POLYGON,berry-creek,1.0
+Big Bee Creek,big-bee-creek,Lake Travis,HAS_POLYGON,big-bee-creek,1.0
+Blackhawk,blackhawk,Pflugerville,HAS_POLYGON,blackhawk,1.0
+Blackhawk,blackhawk,Austin,HAS_POLYGON,blackhawk,1.0
+Blackland,blackland,Austin,HAS_POLYGON,blackland,1.0
+Block House Creek,block-house-creek,Cedar Park,HAS_POLYGON,block-house-creek,1.0
+Blockhouse Creek,blockhouse-creek,Leander,FUZZY_MATCH,Block House Creek,0.97
+Bluebonnet Acres,bluebonnet-acres,Pflugerville,HAS_POLYGON,bluebonnet-acres,1.0
+Bluffington,bluffington,West Lake Hills,HAS_POLYGON,bluffington,1.0
+Bluffs at Sandy Creek,bluffs-at-sandy-creek,Leander,NEEDS_POLYGON,Cliffs at Barton Creek,0.744
+Bluffs of Flintrock,bluffs-of-flintrock,Lake Travis,HAS_POLYGON,bluffs-of-flintrock,1.0
+Bohls Place,bohls-place,Pflugerville,HAS_POLYGON,bohls-place,1.0
+Boulders at Crystal Falls,boulders-at-crystal-falls,Leander,HAS_POLYGON,boulders-at-crystal-falls,1.0
+Bouldin,bouldin,Austin,HAS_POLYGON,bouldin,1.0
+Bradford Park,bradford-park,Round Rock,HAS_POLYGON,bradford-park,1.0
+Brangus Ranch,brangus-ranch,Georgetown,HAS_POLYGON,brangus-ranch,1.0
+Bratton Park,bratton-park,Austin,HAS_POLYGON,bratton-park,1.0
+Breakaway Park,breakaway-park,Cedar Park,HAS_POLYGON,breakaway-park,1.0
+Brentwood,brentwood,Austin,HAS_POLYGON,brentwood,1.0
+Briarpatch,briarpatch,Austin,HAS_POLYGON,briarpatch,1.0
+Briarwood,briarwood,Georgetown,HAS_POLYGON,briarwood,1.0
+Bridgehead,bridgehead,Austin,HAS_POLYGON,bridgehead,1.0
+Bridges of Bear Creek,bridges-of-bear-creek,Austin,HAS_POLYGON,bridges-of-bear-creek,1.0
+Brodie Springs,brodie-springs,Austin,HAS_POLYGON,brodie-springs,1.0
+Brookfield Estates,brookfield-estates,Pflugerville,HAS_POLYGON,brookfield-estates,1.0
+Brookhollow,brookhollow,Pflugerville,HAS_POLYGON,brookhollow,1.0
+Brooks Hollow,brooks-hollow,Lake Travis,HAS_POLYGON,brooks-hollow,1.0
+Brushy Creek,brushy-creek,Round Rock,HAS_POLYGON,brushy-creek,1.0
+Brushy Creek Estates,brushy-creek-estates,Hutto,FUZZY_MATCH,Dry Creek Estates,0.865
+Brushy Creek Meadows,brushy-creek-meadows,Hutto,HAS_POLYGON,brushy-creek-meadows,1.0
+Brushy Slope,brushy-slope,Round Rock,HAS_POLYGON,brushy-slope,1.0
+Buckingham Estates,buckingham-estates,Austin,HAS_POLYGON,buckingham-estates,1.0
+Buckingham Ridge,buckingham-ridge,Austin,HAS_POLYGON,buckingham-ridge,1.0
+Buda,buda,TX,HAS_POLYGON,buda,1.0
+Buffalo Gap,buffalo-gap,Lake Travis,HAS_POLYGON,buffalo-gap,1.0
+Bull Creek Ranch,bull-creek-ranch,Austin,HAS_POLYGON,bull-creek-ranch,1.0
+Buttercup Creek,buttercup-creek,Cedar Park,HAS_POLYGON,buttercup-creek,1.0
+Caballa Ranch,caballa-ranch,Leander,FUZZY_MATCH,Caballo Ranch,0.923
+Caballo Ranch,caballo-ranch,Cedar Park,HAS_POLYGON,caballo-ranch,1.0
+Calhoun's Corner,calhouns-corner,Austin,HAS_POLYGON,calhouns-corner,1.0
+Cambridge Estates,cambridge-estates,Pflugerville,HAS_POLYGON,cambridge-estates,1.0
+Cambridge Heights,cambridge-heights,Pflugerville,HAS_POLYGON,cambridge-heights,1.0
+Camelot,camelot,West Lake Hills,HAS_POLYGON,camelot,1.0
+Cameron Industrial,cameron-industrial,Austin,NEEDS_POLYGON,Centex Industrial,0.8
+Cannon Oaks,cannon-oaks,Austin,HAS_POLYGON,cannon-oaks,1.0
+Cantarra,cantarra,Pflugerville,HAS_POLYGON,cantarra,1.0
+Canterbury Trails,canterbury-trails,Austin,HAS_POLYGON,canterbury-trails,1.0
+Canyon Creek,canyon-creek,Austin,HAS_POLYGON,canyon-creek,1.0
+Canyon Creek West,canyon-creek-west,Austin,FUZZY_MATCH,Canyon Creek Estates,0.865
+Canyon Gate,canyon-gate,Austin,NEEDS_POLYGON,Canyon Glen,0.818
+Canyon Glen,canyon-glen,Austin,HAS_POLYGON,canyon-glen,1.0
+Canyon Ridge,canyon-ridge,Austin,HAS_POLYGON,canyon-ridge,1.0
+Canyon Rim,canyon-rim,Austin,HAS_POLYGON,canyon-rim,1.0
+Canyon Villas,canyon-villas,Austin,HAS_POLYGON,canyon-villas,1.0
+Cardinal Hills,cardinal-hills,Lake Travis,HAS_POLYGON,cardinal-hills,1.0
+Carol Meadows,carol-meadows,Hutto,HAS_POLYGON,carol-meadows,1.0
+Carrell Oaks,carrell-oaks,Austin,HAS_POLYGON,carrell-oaks,1.0
+Carriage Hills,carriage-hills,Manor,HAS_POLYGON,carriage-hills,1.0
+Carriage Hills,carriage-hills,Cedar Park,HAS_POLYGON,carriage-hills,1.0
+Carriage Oaks,carriage-oaks,Liberty Hill,HAS_POLYGON,carriage-oaks,1.0
+Carson Creek,carson-creek,Austin,HAS_POLYGON,carson-creek,1.0
+Casa Loma,casa-loma,Georgetown,NEEDS_POLYGON,Las Lomas,0.778
+Castlewood Forest,castlewood-forest,Austin,HAS_POLYGON,castlewood-forest,1.0
+Cat Hollow,cat-hollow,Round Rock,HAS_POLYGON,cat-hollow,1.0
+Cat Mountain,cat-mountain,Austin,HAS_POLYGON,cat-mountain,1.0
+CCR,ccr,Austin,NEEDS_POLYGON,Coers,0.5
+Cedar Park,cedar-park,Texas,NEEDS_POLYGON,Cedar Park Villas,0.741
+Cedar Park Ranchettes,cedar-park-ranchettes,Cedar Park,HAS_POLYGON,cedar-park-ranchettes,1.0
+Cedar Park Town Center,cedar-park-town-center,Cedar Park,HAS_POLYGON,cedar-park-town-center,1.0
+Centennial Park,centennial-park,Austin,HAS_POLYGON,centennial-park,1.0
+Central,central,Austin,HAS_POLYGON,Central Park,1.0
+Central East Austin,central-east-austin,Austin,HAS_POLYGON,central-east-austin,1.0
+Champion City Park,champion-city-park,Austin,NEEDS_POLYGON,Cameron Park,0.667
+Champions Forest,champions-forest,Austin,HAS_POLYGON,champions-forest,1.0
+Chandler at Sunrise,chandler-at-sunrise,Austin,NEEDS_POLYGON,Chandler Creek,0.667
+Chandler Creek,chandler-creek,Austin,HAS_POLYGON,chandler-creek,1.0
+Chandlere Crossing,chandlere-crossing,Round Rock,FUZZY_MATCH,Chandler Crossing,0.971
+Chapel Hill North,chapel-hill-north,Austin,HAS_POLYGON,chapel-hill-north,1.0
+Chapparal,chapparal,Austin,FUZZY_MATCH,Chaparral,0.889
+Chappell Hill,chappell-hill,Austin,HAS_POLYGON,chappell-hill,1.0
+Chateau at Onion Creek,chateau-at-onion-creek,Austin,HAS_POLYGON,chateau-at-onion-creek,1.0
+Cherry 1660,cherry-1660,Hutto,NEEDS_POLYGON,Cherry Hills,0.609
+Cherry Creek,cherry-creek,Austin,HAS_POLYGON,cherry-creek,1.0
+Cherry Hill Park,cherry-hill-park,Austin,HAS_POLYGON,cherry-hill-park,1.0
+Cherry Hollow Estates,cherry-hollow-estates,Leander,HAS_POLYGON,cherry-hollow-estates,1.0
+Cherry Meadows,cherry-meadows,Austin,HAS_POLYGON,cherry-meadows,1.0
+Cherrywood,cherrywood,Austin,HAS_POLYGON,cherrywood,1.0
+Chestnut,chestnut,Austin,HAS_POLYGON,chestnut,1.0
+Chimney Corners,chimney-corners,Austin,NEEDS_POLYGON,Chimney Creek,0.786
+Chimney Hills,chimney-hills,Austin,HAS_POLYGON,chimney-hills,1.0
+Chimney Hills North,chimney-hills-north,Austin,HAS_POLYGON,chimney-hills-north,1.0
+Chrisholm Crossing,chrisholm-crossing,Round Rock,FUZZY_MATCH,Chisholm Crossing,0.971
+Churchill Farms,churchill-farms,Georgetown,HAS_POLYGON,churchill-farms,1.0
+Cimarron,cimarron,Round Rock,HAS_POLYGON,cimarron,1.0
+Cimarron Hills,cimarron-hills,Georgetown,HAS_POLYGON,cimarron-hills,1.0
+Circle C Ranch,circle-c-ranch,Austin,FUZZY_MATCH,Circle N Ranch,0.929
+Circle J Ranch,circle-j-ranch,Lake Travis,FUZZY_MATCH,Circle N Ranch,0.929
+Clarks Crossing,clarks-crossing,Hutto,HAS_POLYGON,clarks-crossing,1.0
+Clarksville,clarksville,West Central Austin,HAS_POLYGON,clarksville,1.0
+Clayton's Crossing,claytons-crossing,Austin,HAS_POLYGON,claytons-crossing,1.0
+Clear Creek Estates,clear-creek-estates,Austin,HAS_POLYGON,clear-creek-estates,1.0
+Clearview,clearview,Georgetown,NEEDS_POLYGON,Clarksville,0.7
+Cliff Over Lake Austin,cliff-over-lake-austin,West Central Austin,FUZZY_MATCH,Cliffs Over Lake Austin,0.978
+Cliffside,cliffside,Austin,NEEDS_POLYGON,Cliffview,0.778
+Club at Wells Point,club-at-wells-point,Pflugerville,FUZZY_MATCH,The Club at Wells Point,0.905
+Cluck Creek Estates,cluck-creek-estates,Austin,HAS_POLYGON,cluck-creek-estates,1.0
+Cold Springs,cold-springs,Leander,HAS_POLYGON,cold-springs,1.0
+Coldwater,coldwater,Austin,NEEDS_POLYGON,Coldwater Canyon,0.72
+Colonial Grand,colonial-grand,Round Rock,HAS_POLYGON,colonial-grand,1.0
+Colony Meadows,colony-meadows,Austin,HAS_POLYGON,colony-meadows,1.0
+Colony Park,colony-park,Austin,HAS_POLYGON,colony-park,1.0
+Colorado Crossing,colorado-crossing,West Central Austin,HAS_POLYGON,colorado-crossing,1.0
+Comal Bluff,comal-bluff,Austin,NEEDS_POLYGON,Eagle Bluff,0.727
+Comanche Canyon Ranch,comanche-canyon-ranch,Lake Travis,HAS_POLYGON,comanche-canyon-ranch,1.0
+Comanche Point,comanche-point,Lake Travis,HAS_POLYGON,comanche-point,1.0
+Comanche Trail,comanche-trail,Lake Travis,HAS_POLYGON,comanche-trail,1.0
+Comanche Trail Estates,comanche-trail-estates,Lake Travis,HAS_POLYGON,comanche-trail-estates,1.0
+Comanche Village,comanche-village,Lake Travis,HAS_POLYGON,comanche-village,1.0
+Commander's Point Estates,commanders-point-estates,Lake Travis,HAS_POLYGON,commanders-point-estates,1.0
+Cooper Lane,cooper-lane,Austin,HAS_POLYGON,cooper-lane,1.0
+Cooper's Hill,coopers-hill,Austin,NEEDS_POLYGON,Cooper Mill,0.833
+Copperfield,copperfield,Pflugerville,HAS_POLYGON,copperfield,1.0
+Coppertree,coppertree,Austin,HAS_POLYGON,coppertree,1.0
+Coronado Hills,coronado-hills,Austin,HAS_POLYGON,coronado-hills,1.0
+Corridor Park,corridor-park,Round Rock,HAS_POLYGON,corridor-park,1.0
+Cortona,cortona,West Lake Hills,HAS_POLYGON,cortona,1.0
+Costa Bella,costa-bella,Lake Travis,HAS_POLYGON,costa-bella,1.0
+Cottonwood Creek,cottonwood-creek,Hutto,HAS_POLYGON,cottonwood-creek,1.0
+Country Club Acres Country West,country-club-acres-country-west,Georgetown,NEEDS_POLYGON,Country Club Creek,0.694
+Countryside,countryside,West Lake Hills,HAS_POLYGON,countryside,1.0
+County Estates,county-estates,Hutto,FUZZY_MATCH,Country Estates,0.966
+County Estates II,county-estates-ii,Hutto,FUZZY_MATCH,Country Estates,0.875
+County Glen,county-glen,Leander,HAS_POLYGON,county-glen,1.0
+Coventry Crossing,coventry-crossing,Cedar Park,HAS_POLYGON,coventry-crossing,1.0
+Creek Bend,creek-bend,Hutto,HAS_POLYGON,creek-bend,1.0
+Creek of Driftwood,creek-of-driftwood,,HAS_POLYGON,creek-of-driftwood,1.0
+Creek View,creek-view,Round Rock,HAS_POLYGON,creek-view,1.0
+Creekmont West,creekmont-west,Round Rock,HAS_POLYGON,creekmont-west,1.0
+Creekside Estates,creekside-estates,Hutto,HAS_POLYGON,creekside-estates,1.0
+Creekview,creekview,Cedar Park,HAS_POLYGON,creekview,1.0
+Crestview,crestview,Austin,HAS_POLYGON,crestview,1.0
+Cross Creek,cross-creek,Leander,HAS_POLYGON,cross-creek,1.0
+Cross Trails,cross-trails,Round Rock,HAS_POLYGON,cross-trails,1.0
+Crossing at Carriage Hills,crossing-at-carriage-hills,Cedar Park,HAS_POLYGON,crossing-at-carriage-hills,1.0
+Crossing at Parmer Lane,crossing-at-parmer-lane,Austin,HAS_POLYGON,crossing-at-parmer-lane,1.0
+Crosswind,crosswind,Lake Travis,HAS_POLYGON,crosswind,1.0
+Crowley Crossing,crowley-crossing,Round Rock,NEEDS_POLYGON,Cherry Crossing,0.774
+Crystal Knoll,crystal-knoll,Georgetown,NEEDS_POLYGON,Crystal Falls,0.769
+Crystal Mountain,crystal-mountain,West Lake Hills,HAS_POLYGON,crystal-mountain,1.0
+Crystal Park,crystal-park,Round Rock,NEEDS_POLYGON,Central Park,0.75
+Cypress Addition,cypress-addition,Round Rock,NEEDS_POLYGON,Cypress Canyon,0.733
+Cypress Canyon,cypress-canyon,Cedar Park,HAS_POLYGON,cypress-canyon,1.0
+Cypress Canyon Preserve,cypress-canyon-preserve,Cedar Park,NEEDS_POLYGON,Cypress Canyon,0.757
+Cypress Creek,cypress-creek,Cedar Park,HAS_POLYGON,cypress-creek,1.0
+Cypress Creek Ranch,cypress-creek-ranch,Lake Travis,NEEDS_POLYGON,Cypress Creek,0.812
+Cypress Mill,cypress-mill,Cedar Park,HAS_POLYGON,cypress-mill,1.0
+Cypress Pointe,cypress-pointe,Lake Travis,HAS_POLYGON,cypress-pointe,1.0
+Cypress Ridge,cypress-ridge,Austin,HAS_POLYGON,cypress-ridge,1.0
+Daffin,daffin,Austin,NEEDS_POLYGON,Daffin Gin Park,0.571
+Dan Jean Oaks,dan-jean-oaks,Austin,HAS_POLYGON,dan-jean-oaks,1.0
+Davenport Ranch,davenport-ranch,West Lake Hills,HAS_POLYGON,davenport-ranch,1.0
+Davenport Rim,davenport-rim,West Lake Hills,HAS_POLYGON,davenport-rim,1.0
+Davis Hill Estates,davis-hill-estates,Austin,HAS_POLYGON,davis-hill-estates,1.0
+Davis Spring,davis-spring,Round Rock,HAS_POLYGON,davis-spring,1.0
+Dawson,dawson,Austin,HAS_POLYGON,dawson,1.0
+Decker Creek Estates,decker-creek-estates,Manor,HAS_POLYGON,decker-creek-estates,1.0
+Deep Eddy Heights,deep-eddy-heights,West Central Austin,HAS_POLYGON,deep-eddy-heights,1.0
+Deepwood,deepwood,Round Rock,NEEDS_POLYGON,Delwood,0.8
+Deer Creek Ranch,deer-creek-ranch,Cedar Park,HAS_POLYGON,deer-creek-ranch,1.0
+Deer Haven,deer-haven,Austin,HAS_POLYGON,deer-haven,1.0
+Deer Park at Maple Run,deer-park-at-maple-run,Austin,HAS_POLYGON,deer-park-at-maple-run,1.0
+Deer Run,deer-run,Round Rock,NEEDS_POLYGON,Deer Park,0.706
+Deerfield at Brodie,deerfield-at-brodie,Austin,NEEDS_POLYGON,Deerfield Park,0.727
+Deerwood,deerwood,Austin,NEEDS_POLYGON,Delwood,0.8
+Del Web's Sun City,del-webs-sun-city,Georgetown,NEEDS_POLYGON,Sun City,0.615
+Dessau Estates,dessau-estates,Pflugerville,HAS_POLYGON,dessau-estates,1.0
+Dorsett Oaks,dorsett-oaks,Austin,HAS_POLYGON,dorsett-oaks,1.0
+Double Creek Village,double-creek-village,Austin,HAS_POLYGON,double-creek-village,1.0
+Dove Creek,dove-creek,Round Rock,HAS_POLYGON,dove-creek,1.0
+Downtown Austin,downtown-austin,Austin,HAS_POLYGON,downtown-austin,1.0
+Downtown,downtown,Austin,HAS_POLYGON,downtown,1.0
+Downtown Georgetown,downtown-georgetown,Georgetown,HAS_POLYGON,downtown-georgetown,1.0
+Dripping Springs,dripping-springs,Texas,NEEDS_POLYGON,Dripping Springs Ranch,0.842
+Duval Springs,duval-springs,Austin,HAS_POLYGON,duval-springs,1.0
+Eagle Ridge,eagle-ridge,Round Rock,HAS_POLYGON,eagle-ridge,1.0
+Eagle Ridge,eagle-ridge,Lake Travis,HAS_POLYGON,eagle-ridge,1.0
+Eagles Glen,eagles-glen,Austin,NEEDS_POLYGON,Eagle Ridge,0.727
+East,east,Austin,HAS_POLYGON,east,1.0
+East Central,east-central,Austin,HAS_POLYGON,east-central,1.0
+East Cesar Chavez,east-cesar-chavez,Austin,HAS_POLYGON,east-cesar-chavez,1.0
+Eastridge Summit,eastridge-summit,Austin,NEEDS_POLYGON,Steiner Ranch Eastridge Summit,0.696
+Eastridge Valley,eastridge-valley,Austin,NEEDS_POLYGON,Spring Valley,0.759
+Eck Lane on the Lake,eck-lane-on-the-lake,Lake Travis,HAS_POLYGON,eck-lane-on-the-lake,1.0
+Ed Bluestein,ed-bluestein,Austin,NEEDS_POLYGON,Painted Bunting,0.593
+Edgewater Beach,edgewater-beach,Lake Travis,HAS_POLYGON,edgewater-beach,1.0
+Edinburgh Gardens,edinburgh-gardens,Austin,HAS_POLYGON,edinburgh-gardens,1.0
+Egger Acres,egger-acres,Round Rock,HAS_POLYGON,egger-acres,1.0
+Elm Wood Estates,elm-wood-estates,Austin,HAS_POLYGON,elm-wood-estates,1.0
+Elmwood Park,elmwood-park,Austin,NEEDS_POLYGON,Lakewood Park,0.8
+Emerald Point,emerald-point,Lake Travis,HAS_POLYGON,emerald-point,1.0
+Emory Farms,emory-farms,Hutto,HAS_POLYGON,emory-farms,1.0
+Enclave at the Villages of Spicewood,enclave-at-the-villages-of-spicewood,Austin,HAS_POLYGON,enclave-at-the-villages-of-spicewood,1.0
+Escalera Ranch,escalera-ranch,Georgetown,HAS_POLYGON,escalera-ranch,1.0
+Esquel,esquel,Austin,NEEDS_POLYGON,Este,0.6
+Estates at Edgewater Beach,estates-at-edgewater-beach,Lake Travis,NEEDS_POLYGON,Edgewater Beach,0.732
+Estates at Settlers Park,estates-at-settlers-park,Round Rock,HAS_POLYGON,estates-at-settlers-park,1.0
+Estates at Westlake,estates-at-westlake,Austin,HAS_POLYGON,estates-at-westlake,1.0
+Estates of Bauerle Ranch,estates-of-bauerle-ranch,Austin,HAS_POLYGON,estates-of-bauerle-ranch,1.0
+Estates of Brentwood,estates-of-brentwood,Austin,HAS_POLYGON,estates-of-brentwood,1.0
+Estates of North Creek Ranch,estates-of-north-creek-ranch,Leander,NEEDS_POLYGON,North Creek Ranch,0.756
+Estates of Rowe Lane,estates-of-rowe-lane,Pflugerville,NEEDS_POLYGON,Estates of Westlake,0.821
+Estates of Westlake,estates-of-westlake,Georgetown,HAS_POLYGON,estates-of-westlake,1.0
+Estrella Crossing,estrella-crossing,Georgetown,NEEDS_POLYGON,Steeds Crossing,0.75
+Eubank Acres,eubank-acres,Austin,HAS_POLYGON,eubank-acres,1.0
+Fairways at Crystal Falls,fairways-at-crystal-falls,Leander,HAS_POLYGON,fairways-at-crystal-falls,1.0
+Falcon Oaks,falcon-oaks,Leander,HAS_POLYGON,falcon-oaks,1.0
+Falcon Pointe,falcon-pointe,Pflugerville,HAS_POLYGON,falcon-pointe,1.0
+Ferguson Crossing,ferguson-crossing,Austin,HAS_POLYGON,ferguson-crossing,1.0
+Fern Bluff,fern-bluff,Round Rock,HAS_POLYGON,fern-bluff,1.0
+Five Oaks Park North,five-oaks-park-north,Austin,HAS_POLYGON,five-oaks-park-north,1.0
+Flat Creek,flat-creek,Lake Travis,NEEDS_POLYGON,Lost Creek,0.8
+Flint Valley,flint-valley,Lake Travis,NEEDS_POLYGON,Lost Valley,0.783
+Flintrock at Hurst Creek,flintrock-at-hurst-creek,Lake Travis,NEEDS_POLYGON,Block House Creek,0.683
+Flower Hill,flower-hill,Round Rock,HAS_POLYGON,flower-hill,1.0
+Ford Oaks,ford-oaks,Austin,HAS_POLYGON,ford-oaks,1.0
+Forest Bluff,forest-bluff,Manor,HAS_POLYGON,forest-bluff,1.0
+Forest Bluffs,forest-bluffs,Round Rock,HAS_POLYGON,forest-bluffs,1.0
+Forest Creek,forest-creek,Round Rock,HAS_POLYGON,forest-creek,1.0
+Forest Gabriel Park,forest-gabriel-park,Georgetown,NEEDS_POLYGON,Forest Park,0.733
+Forest Hills,forest-hills,Austin,HAS_POLYGON,forest-hills,1.0
+Forest Oaks,forest-oaks,Cedar Park,HAS_POLYGON,forest-oaks,1.0
+Forest Ridge,forest-ridge,Round Rock,HAS_POLYGON,forest-ridge,1.0
+Forum,forum,Austin,HAS_POLYGON,forum,1.0
+Fountainwood,fountainwood,Georgetown,HAS_POLYGON,fountainwood,1.0
+Four Points Centre,four-points-centre,Austin,HAS_POLYGON,four-points-centre,1.0
+Four Seasons Summer Section,four-seasons-summer-section,Austin,NEEDS_POLYGON,Four Seasons Fall Section,0.808
+Four-T Ranch,four-t-ranch,Georgetown,NEEDS_POLYGON,South Ranches,0.72
+Fox Creek Estates,fox-creek-estates,Lake Travis,HAS_POLYGON,fox-creek-estates,1.0
+Franklin Park,franklin-park,Austin,HAS_POLYGON,franklin-park,1.0
+Fredrickson Ranch on Lake Georgetown,fredrickson-ranch-on-lake-georgetown,Georgetown,HAS_POLYGON,fredrickson-ranch-on-lake-georgetown,1.0
+French Place,french-place,Austin,HAS_POLYGON,french-place,1.0
+Gabriels Overlook,gabriels-overlook,Georgetown,HAS_POLYGON,gabriels-overlook,1.0
+Galindo,galindo,Austin,HAS_POLYGON,galindo,1.0
+Gann Ranch,gann-ranch,Cedar Park,HAS_POLYGON,gann-ranch,1.0
+Garden Valley,garden-valley,Austin,HAS_POLYGON,garden-valley,1.0
+Garrison Park,garrison-park,Austin,HAS_POLYGON,garrison-park,1.0
+Gate Hollow Estates,gate-hollow-estates,Lake Travis,HAS_POLYGON,gate-hollow-estates,1.0
+Gateway,gateway,Austin,HAS_POLYGON,gateway,1.0
+Gatlinburg,gatlinburg,Pflugerville,HAS_POLYGON,gatlinburg,1.0
+Georgetown Country Club,georgetown-country-club,Georgetown,NEEDS_POLYGON,Country Club,0.686
+Georgetown Crossing,georgetown-crossing,Georgetown,HAS_POLYGON,georgetown-crossing,1.0
+Georgetown,georgetown,TX,HAS_POLYGON,georgetown,1.0
+Georgetown Place,georgetown-place,Georgetown,HAS_POLYGON,georgetown-place,1.0
+Georgetown Village,georgetown-village,Georgetown,HAS_POLYGON,georgetown-village,1.0
+Georgian Acres,georgian-acres,Austin,HAS_POLYGON,georgian-acres,1.0
+Glenlake,glenlake,Austin,HAS_POLYGON,glenlake,1.0
+Glenwood,glenwood,Hutto,HAS_POLYGON,glenwood,1.0
+Golden Lake Estates,golden-lake-estates,Austin,HAS_POLYGON,golden-lake-estates,1.0
+Golden Oaks.,golden-oaks,Georgetown,HAS_POLYGON,golden-oaks,1.0
+Govalle,govalle,Austin,HAS_POLYGON,govalle,1.0
+Gracy Woods,gracy-woods,Austin,HAS_POLYGON,gracy-woods,1.0
+Grand Mesa at Crystal Falls,grand-mesa-at-crystal-falls,Leander,HAS_POLYGON,grand-mesa-at-crystal-falls,1.0
+Grand Oaks,grand-oaks,Austin,HAS_POLYGON,grand-oaks,1.0
+Grandview Hills,grandview-hills,Austin,HAS_POLYGON,grandview-hills,1.0
+Granite Bay,granite-bay,Austin,NEEDS_POLYGON,Granite Shoals,0.72
+Great Oak Estates,great-oak-estates,Leander,FUZZY_MATCH,Great Oaks Estates,0.971
+Green Park,green-park,West Lake Hills,HAS_POLYGON,green-park,1.0
+Green Shores on Lake Austin,green-shores-on-lake-austin,Austin,HAS_POLYGON,green-shores-on-lake-austin,1.0
+Green Square,green-square,Round Rock,NEEDS_POLYGON,Green Acres,0.783
+Green Trails Estates,green-trails-estates,Austin,HAS_POLYGON,green-trails-estates,1.0
+Greenbury,greenbury,Manor,NEEDS_POLYGON,Greenbriar,0.737
+Greenfield,greenfield,Round Rock,HAS_POLYGON,greenfield,1.0
+Greenhill,greenhill,Round Rock,HAS_POLYGON,greenhill,1.0
+Greenlawn Crossing,greenlawn-crossing,Round Rock,NEEDS_POLYGON,Georgetown Crossing,0.757
+Greenleaf Estates,greenleaf-estates,Austin,HAS_POLYGON,greenleaf-estates,1.0
+Greenridge,greenridge,Pflugerville,HAS_POLYGON,greenridge,1.0
+Greenslopes,greenslopes,Austin,HAS_POLYGON,greenslopes,1.0
+Gregorian Place,gregorian-place,Georgetown,FUZZY_MATCH,Georgian Place,0.897
+Halbert,halbert,Round Rock,HAS_POLYGON,halbert,1.0
+Hamilton Point,hamilton-point,Manor,HAS_POLYGON,hamilton-point,1.0
+Hammett's Crossing,hammetts-crossing,Lake Travis,HAS_POLYGON,hammetts-crossing,1.0
+Hancock,hancock,Austin,HAS_POLYGON,hancock,1.0
+Hancock Hill,hancock-hill,Austin,HAS_POLYGON,hancock-hill,1.0
+Hanson's Corner,hansons-corner,Hutto,NEEDS_POLYGON,Calhoun's Corner,0.774
+Harris Branch,harris-branch,Austin,HAS_POLYGON,harris-branch,1.0
+Harris Ranch,harris-ranch,Austin,FUZZY_MATCH,HARRIS BRANCH,0.96
+Harris Ridge,harris-ridge,Round Rock,HAS_POLYGON,harris-ridge,1.0
+Hatley Park,hatley-park,West Lake Hills,NEEDS_POLYGON,Avery Park,0.762
+Hawk's Canyon,hawks-canyon,Austin,NEEDS_POLYGON,Neely's Canyon,0.667
+Hays Country Oaks,hays-country-oaks,Buda,HAS_POLYGON,hays-country-oaks,1.0
+Heatherwilde,heatherwilde,Pflugerville,HAS_POLYGON,heatherwilde,1.0
+Henderson Tract,henderson-tract,Round Rock,NEEDS_POLYGON,Anderson Acres,0.69
+Henna,henna,Round Rock,NEEDS_POLYGON,Shenandoah,0.667
+Hennig Heights,hennig-heights,Lake Travis,HAS_POLYGON,hennig-heights,1.0
+Heritage,heritage,Austin,HAS_POLYGON,heritage,1.0
+Heritage Hills,heritage-hills,Austin,HAS_POLYGON,heritage-hills,1.0
+Heritage Oaks,heritage-oaks,Georgetown,HAS_POLYGON,heritage-oaks,1.0
+Heritage Park,heritage-park,Cedar Park,HAS_POLYGON,heritage-park,1.0
+Hidden Glen,hidden-glen,Round Rock,HAS_POLYGON,hidden-glen,1.0
+Hidden Lake Estates,hidden-lake-estates,Manor,HAS_POLYGON,hidden-lake-estates,1.0
+Hidden Mesa,hidden-mesa,Leander,HAS_POLYGON,hidden-mesa,1.0
+Hidden Valley,hidden-valley,Austin,HAS_POLYGON,hidden-valley,1.0
+High Chaparral,high-chaparral,Leander,HAS_POLYGON,high-chaparral,1.0
+High Country,high-country,Round Rock,HAS_POLYGON,high-country,1.0
+High Gabriel,high-gabriel,Leander,NEEDS_POLYGON,High Gabriel West,0.828
+High Meadows,high-meadows,Cedar Park,HAS_POLYGON,high-meadows,1.0
+High Pointe,high-pointe,Austin,FUZZY_MATCH,Highpointe,0.952
+High Vista,high-vista,Austin,NEEDS_POLYGON,High Vista Views,0.769
+Highland Club Village,highland-club-village,Lake Travis,HAS_POLYGON,highland-club-village,1.0
+Highland Estates,highland-estates,Round Rock,HAS_POLYGON,highland-estates,1.0
+Highland Hills,highland-hills,Austin,HAS_POLYGON,highland-hills,1.0
+Highland Oaks,highland-oaks,Austin,HAS_POLYGON,highland-oaks,1.0
+Highland Park,highland-park,Pflugerville,HAS_POLYGON,highland-park,1.0
+Highland Park West,highland-park-west,West Central Austin,HAS_POLYGON,highland-park-west,1.0
+Highland Terrace,highland-terrace,Round Rock,HAS_POLYGON,highland-terrace,1.0
+Highlands at Crystal Falls,highlands-at-crystal-falls,Leander,HAS_POLYGON,highlands-at-crystal-falls,1.0
+Hillcrest,hillcrest,Austin,HAS_POLYGON,hillcrest,1.0
+Hills at Paloma Lake,hills-at-paloma-lake,Round Rock,HAS_POLYGON,hills-at-paloma-lake,1.0
+Hillside Oaks,hillside-oaks,Austin,HAS_POLYGON,hillside-oaks,1.0
+Hillside Spring,hillside-spring,Pflugerville,HAS_POLYGON,hillside-spring,1.0
+Historic Acres,historic-acres,Georgetown,NEEDS_POLYGON,Banister Acres,0.714
+Hodde,hodde,Pflugerville,NEEDS_POLYGON,Hoppe,0.6
+Holly,holly,Austin,HAS_POLYGON,holly,1.0
+Honeycomb Hills,honeycomb-hills,Leander,HAS_POLYGON,honeycomb-hills,1.0
+Horizon Park,horizon-park,Leander,HAS_POLYGON,horizon-park,1.0
+Hornsby Bend,hornsby-bend,Manor,HAS_POLYGON,hornsby-bend,1.0
+Horsby Glen,horsby-glen,Austin,FUZZY_MATCH,Hornsby Glen,0.957
+Horshoe Bend Estates,horshoe-bend-estates,Lake Travis,HAS_POLYGON,horshoe-bend-estates,1.0
+Hudson Bend,hudson-bend,Austin,HAS_POLYGON,hudson-bend,1.0
+Hudson Harbor,hudson-harbor,Lake Travis,NEEDS_POLYGON,Hudson Bend,0.667
+Hughes Park Lake,hughes-park-lake,Lake Travis,HAS_POLYGON,hughes-park-lake,1.0
+Hunters Green,hunters-green,Austin,NEEDS_POLYGON,Hunter Glen,0.833
+Huntington Trails,huntington-trails,Round Rock,HAS_POLYGON,huntington-trails,1.0
+Hutto Exchange,hutto-exchange,Hutto,NEEDS_POLYGON,Hutto Highlands,0.621
+Hutto Highlands,hutto-highlands,Hutto,HAS_POLYGON,hutto-highlands,1.0
+Hutto,hutto,TX,HAS_POLYGON,hutto,1.0
+Hutto Square,hutto-square,Hutto,HAS_POLYGON,hutto-square,1.0
+Huttopark,huttopark,Hutto,FUZZY_MATCH,Huttoparke,0.947
+Hyde Park,hyde-park,Austin,HAS_POLYGON,hyde-park,1.0
+Hyridge,hyridge,Round Rock,HAS_POLYGON,hyridge,1.0
+Illakee,illakee,Lake Travis,HAS_POLYGON,illakee,1.0
+Imperial Valley,imperial-valley,Austin,HAS_POLYGON,imperial-valley,1.0
+Indian Creek,indian-creek,Georgetown,HAS_POLYGON,indian-creek,1.0
+Indian Hills,indian-hills,Austin,HAS_POLYGON,indian-hills,1.0
+Indian Ridge,indian-ridge,Round Rock,HAS_POLYGON,indian-ridge,1.0
+Inverness Point,inverness-point,Lake Travis,HAS_POLYGON,inverness-point,1.0
+Island at Mt Bonnell Shores,island-at-mt-bonnell-shores,Austin,FUZZY_MATCH,Island at Mount Bonnell Shores,0.947
+Island Way,island-way,Austin,HAS_POLYGON,island-way,1.0
+Jackrabbit,jackrabbit,Round Rock,HAS_POLYGON,jackrabbit,1.0
+Jacks Pond,jacks-pond,Austin,HAS_POLYGON,jacks-pond,1.0
+Jacobson Estates,jacobson-estates,,HAS_POLYGON,jacobson-estates,1.0
+Jester Estates,jester-estates,Austin,FUZZY_MATCH,Nester Estates,0.929
+Jester Farms,jester-farms,Round Rock,HAS_POLYGON,jester-farms,1.0
+Jester Point,jester-point,Austin,NEEDS_POLYGON,Settlers Point,0.769
+Johnston Terrace,johnston-terrace,Austin,HAS_POLYGON,johnston-terrace,1.0
+Jonestown,jonestown,Texas,NEEDS_POLYGON,Jamestown,0.778
+Jourdan Crossing,jourdan-crossing,Austin,HAS_POLYGON,jourdan-crossing,1.0
+Katy Crossing,katy-crossing,Georgetown,HAS_POLYGON,katy-crossing,1.0
+Katymead,katymead,Pflugerville,HAS_POLYGON,katymead,1.0
+Keesee,keesee,Austin,HAS_POLYGON,keesee,1.0
+Kennedy Ridge Estates,kennedy-ridge-estates,Manor,HAS_POLYGON,kennedy-ridge-estates,1.0
+Kercheville Estates,kercheville-estates,Austin,NEEDS_POLYGON,Turnersville Estates,0.769
+Kimbro Creek Estates,kimbro-creek-estates,Manor,HAS_POLYGON,kimbro-creek-estates,1.0
+Kimbro Road Estates,kimbro-road-estates,Manor,HAS_POLYGON,kimbro-road-estates,1.0
+Kincheon,kincheon,Austin,HAS_POLYGON,kincheon,1.0
+Kingsbery Park,kingsbery-park,Manor,NEEDS_POLYGON,Rivery Park,0.72
+Knollwood,knollwood,West Lake Hills,HAS_POLYGON,knollwood,1.0
+Knollwood on the Colorado River,knollwood-on-the-colorado-river,Austin,HAS_POLYGON,knollwood-on-the-colorado-river,1.0
+Kuempel,kuempel,Pflugerville,HAS_POLYGON,kuempel,1.0
+La Conterra,la-conterra,Georgetown,HAS_POLYGON,la-conterra,1.0
+La Frontera Village,la-frontera-village,Round Rock,HAS_POLYGON,la-frontera-village,1.0
+La Hacienda Estates,la-hacienda-estates,Lake Travis,HAS_POLYGON,la-hacienda-estates,1.0
+La Tierra De Los Pedernales,la-tierra-de-los-pedernales,Lake Travis,HAS_POLYGON,la-tierra-de-los-pedernales,1.0
+Lago Vista,lago-vista,Texas,HAS_POLYGON,lago-vista,1.0
+Lake Austin Village,lake-austin-village,Lake Travis,HAS_POLYGON,lake-austin-village,1.0
+Lake Creek Park,lake-creek-park,Round Rock,HAS_POLYGON,lake-creek-park,1.0
+Lake Forest,lake-forest,Round Rock,HAS_POLYGON,lake-forest,1.0
+Lake Travis Bluff,lake-travis-bluff,Lake Travis,NEEDS_POLYGON,Travis Bluff,0.828
+Lake Travis,lake-travis,Austin,HAS_POLYGON,lake-travis,1.0
+Lake View Acres,lake-view-acres,Lake Travis,HAS_POLYGON,lake-view-acres,1.0
+Lakeland Hills Lakeside,lakeland-hills-lakeside,Lake Travis,FUZZY_MATCH,Lake and Hills Lakeside,0.957
+Lakeland Park,lakeland-park,Lake Travis,HAS_POLYGON,lakeland-park,1.0
+Lakeline,lakeline,Leander,NEEDS_POLYGON,Lakeline Oaks,0.762
+Lakeline Oaks,lakeline-oaks,Cedar Park,HAS_POLYGON,lakeline-oaks,1.0
+Lakes at Northtown,lakes-at-northtown,Pflugerville,HAS_POLYGON,lakes-at-northtown,1.0
+Lakes at Techridge,lakes-at-techridge,Pflugerville,FUZZY_MATCH,The Lakes at Techridge,0.9
+Lakeshore Addition,lakeshore-addition,Austin,HAS_POLYGON,lakeshore-addition,1.0
+Lakeside,lakeside,Hutto,HAS_POLYGON,lakeside,1.0
+Lakeside at Blackhawk,lakeside-at-blackhawk,Pflugerville,HAS_POLYGON,lakeside-at-blackhawk,1.0
+Lakeside Terrace,lakeside-terrace,Lake Travis,NEEDS_POLYGON,Hillside Terrace,0.812
+Lakeway Centre,lakeway-centre,Lakeway,NEEDS_POLYGON,Lakeline Center,0.69
+Lakewind Estates,lakewind-estates,Lake Travis,HAS_POLYGON,lakewind-estates,1.0
+Lakewood Country Estates,lakewood-country-estates,Cedar Park,HAS_POLYGON,lakewood-country-estates,1.0
+Lakewood Estates,lakewood-estates,Georgetown,HAS_POLYGON,lakewood-estates,1.0
+Lakewood Hills,lakewood-hills,Austin,HAS_POLYGON,lakewood-hills,1.0
+Lakewood Park,lakewood-park,Austin,HAS_POLYGON,lakewood-park,1.0
+Lakewood Village,lakewood-village,Austin,HAS_POLYGON,lakewood-village,1.0
+Lambert Estates,lambert-estates,Manor,HAS_POLYGON,lambert-estates,1.0
+Lamplight Village,lamplight-village,Austin,HAS_POLYGON,lamplight-village,1.0
+Las Cimas,las-cimas,Austin,HAS_POLYGON,las-cimas,1.0
+Las Lomas,las-lomas,West Lake Hills,HAS_POLYGON,las-lomas,1.0
+Laurel Ridge,laurel-ridge,Round Rock,HAS_POLYGON,laurel-ridge,1.0
+Laurelwood Estates,laurelwood-estates,Austin,HAS_POLYGON,laurelwood-estates,1.0
+Leander Heights,leander-heights,Leander,HAS_POLYGON,leander-heights,1.0
+Leander,leander,TX,HAS_POLYGON,leander,1.0
+Ledbetter Oaks,ledbetter-oaks,Round Rock,HAS_POLYGON,ledbetter-oaks,1.0
+Leffler Commercial,leffler-commercial,Austin,HAS_POLYGON,leffler-commercial,1.0
+Legend Oaks,legend-oaks,Austin,HAS_POLYGON,legend-oaks,1.0
+Legends of Hutto,legends-of-hutto,Hutto,HAS_POLYGON,legends-of-hutto,1.0
+Legends of Lone Star,legends-of-lone-star,Hutto,NEEDS_POLYGON,Gardens of Balcones,0.667
+Legends Village,legends-village,Round Rock,HAS_POLYGON,legends-village,1.0
+Liberty Hill,liberty-hill,Texas,NEEDS_POLYGON,Timber Hills,0.75
+Lime Creek Estates,lime-creek-estates,Cedar Park,FUZZY_MATCH,Wiley Creek Estates,0.865
+Limestone at Wells Branch,limestone-at-wells-branch,Austin,NEEDS_POLYGON,Lake at Wells Branch,0.8
+Linda Vista,linda-vista,Austin,HAS_POLYGON,linda-vista,1.0
+Live Oak Ranch,live-oak-ranch,Leander,FUZZY_MATCH,Live Oak Ranches,0.933
+Lockhart,lockhart,Texas,NEEDS_POLYGON,Lakehurst,0.588
+Lockwood Acres,lockwood-acres,Manor,HAS_POLYGON,lockwood-acres,1.0
+Lockwood Farms,lockwood-farms,Manor,FUZZY_MATCH,Lockwood Acres,0.857
+Logan Ranch,logan-ranch,Georgetown,HAS_POLYGON,logan-ranch,1.0
+Long Branch Valley,long-branch-valley,Lake Travis,HAS_POLYGON,long-branch-valley,1.0
+Long Canyon,long-canyon,Austin,HAS_POLYGON,long-canyon,1.0
+Longhorn Village at Steiner Ranch,longhorn-village-at-steiner-ranch,Lake Travis,HAS_POLYGON,longhorn-village-at-steiner-ranch,1.0
+Los Cielos,los-cielos,Austin,HAS_POLYGON,los-cielos,1.0
+Los Robles,los-robles,Austin,FUZZY_MATCH,Los Arboles,0.857
+Lost Creek,lost-creek,West Lake Hills,HAS_POLYGON,lost-creek,1.0
+Lost Plains,lost-plains,Austin,HAS_POLYGON,lost-plains,1.0
+Lost River Ranches,lost-river-ranches,Georgetown,NEEDS_POLYGON,Blanco River Ranch,0.778
+Luther Peterson,luther-peterson,Round Rock,NEEDS_POLYGON,The Timbers,0.615
+Magnolia,magnolia,Leander,NEEDS_POLYGON,Magnolia Creek,0.727
+Majestic Hills Ranchettes,majestic-hills-ranchettes,Lake Travis,HAS_POLYGON,majestic-hills-ranchettes,1.0
+Majestic Oaks,majestic-oaks,Austin,HAS_POLYGON,majestic-oaks,1.0
+Manana West,manana-west,Austin,NEEDS_POLYGON,Maconda Park West,0.714
+Manor,manor,TX,NEEDS_POLYGON,Mesa North,0.667
+Manor Villa Estates,manor-villa-estates,Manor,HAS_POLYGON,manor-villa-estates,1.0
+Mansfield,mansfield,Lake Travis,NEEDS_POLYGON,Masonfield,0.842
+Maple Run,maple-run,Austin,HAS_POLYGON,maple-run,1.0
+Marble Falls,marble-falls,Lake Travis,NEEDS_POLYGON,Agave Falls,0.696
+Market District,market-district,Austin,NEEDS_POLYGON,Hawthorne at the District,0.65
+Marshall Ford/Marshall Ford Vista,marshall-fordmarshall-ford-vista,Lake Travis,NEEDS_POLYGON,Marshall Ford Vista,0.731
+Martinshore,martinshore,Austin,HAS_POLYGON,martinshore,1.0
+Mason and Rye,mason-and-rye,Round Rock,NEEDS_POLYGON,Mason Creek,0.667
+Mason Creek,mason-creek,Leander,HAS_POLYGON,mason-creek,1.0
+Matthews Park,matthews-park,Austin,HAS_POLYGON,matthews-park,1.0
+Max Keilbar,max-keilbar,Austin,NEEDS_POLYGON,Keilbar,0.778
+Mayfield Ranch,mayfield-ranch,Round Rock,HAS_POLYGON,mayfield-ranch,1.0
+Mays Crossing,mays-crossing,Round Rock,HAS_POLYGON,mays-crossing,1.0
+McKinney,mckinney,Austin,HAS_POLYGON,mckinney,1.0
+McKinney Park East,mckinney-park-east,Austin,HAS_POLYGON,mckinney-park-east,1.0
+Mcsheperd Ranches Ridgeline Ranchettes,mcsheperd-ranches-ridgeline-ranchettes,Lake Travis,NEEDS_POLYGON,Steiner Ranch River Dance,0.571
+Meadow Park South,meadow-park-south,Pflugerville,HAS_POLYGON,meadow-park-south,1.0
+Meadows at Berdoll,meadows-at-berdoll,Austin,HAS_POLYGON,meadows-at-berdoll,1.0
+Meadows at Double Creek,meadows-at-double-creek,Austin,HAS_POLYGON,meadows-at-double-creek,1.0
+Meadows at Trinity Crossing,meadows-at-trinity-crossing,Austin,NEEDS_POLYGON,Low Water Crossing,0.667
+Meadows Lake,meadows-lake,Austin,FUZZY_MATCH,Meadow Lake,0.957
+Meadows of Blackhawk,meadows-of-blackhawk,Pflugerville,HAS_POLYGON,meadows-of-blackhawk,1.0
+Meadows of Georgetown,meadows-of-georgetown,Georgetown,HAS_POLYGON,meadows-of-georgetown,1.0
+Meadows of Walnut Creek,meadows-of-walnut-creek,Austin,HAS_POLYGON,meadows-of-walnut-creek,1.0
+Medway Ranch,medway-ranch,Lake Travis,NEEDS_POLYGON,McCarty Ranch,0.72
+Mercado Heights,mercado-heights,Austin,HAS_POLYGON,mercado-heights,1.0
+Meridian,meridian,Austin,HAS_POLYGON,meridian,1.0
+Mesa Forest,mesa-forest,Austin,HAS_POLYGON,mesa-forest,1.0
+Mesa North,mesa-north,Austin,HAS_POLYGON,mesa-north,1.0
+Mesa Oaks,mesa-oaks,Austin,HAS_POLYGON,mesa-oaks,1.0
+Mesa Park,mesa-park,Austin,HAS_POLYGON,mesa-park,1.0
+Mesa Park,mesa-park,Round Rock,HAS_POLYGON,mesa-park,1.0
+Middle Gabriel Estates,middle-gabriel-estates,Georgetown,HAS_POLYGON,middle-gabriel-estates,1.0
+Milwood,milwood,Austin,HAS_POLYGON,milwood,1.0
+Mimosa Manor,mimosa-manor,Austin,HAS_POLYGON,mimosa-manor,1.0
+Mission Bethany,mission-bethany,Austin,NEEDS_POLYGON,Mission Oaks,0.667
+MLK,mlk,Austin,HAS_POLYGON,mlk,1.0
+MLK/183,mlk183,Austin,HAS_POLYGON,MLK/183,1.0
+Monterey/Belcara,montereybelcara,Austin,NEEDS_POLYGON,Montebella,0.692
+Montopolis,montopolis,Austin,HAS_POLYGON,montopolis,1.0
+Montview Acres,montview-acres,Lake Travis,FUZZY_MATCH,Mountview Acres,0.966
+Montview Harbor,montview-harbor,Lake Travis,HAS_POLYGON,montview-harbor,1.0
+Mooreland,mooreland,Austin,NEEDS_POLYGON,Crestland,0.667
+Morningside,morningside,Austin,NEEDS_POLYGON,Morningside Meadows,0.733
+Morningside Meadows,morningside-meadows,Pflugerville,HAS_POLYGON,morningside-meadows,1.0
+Mountain Creek,mountain-creek,Pflugerville,HAS_POLYGON,mountain-creek,1.0
+Mountain Ridge,mountain-ridge,Austin,NEEDS_POLYGON,Mountain View,0.815
+Mountain Top Acres,mountain-top-acres,Lake Travis,FUZZY_MATCH,Mountaintop Acres,0.971
+Mountain View,mountain-view,Lake Travis,HAS_POLYGON,mountain-view,1.0
+Mt Bonnell Terrace,mt-bonnell-terrace,Austin,HAS_POLYGON,mt-bonnell-terrace,1.0
+Mustang Ranch,mustang-ranch,Round Rock,HAS_POLYGON,mustang-ranch,1.0
+North,north,Austin,HAS_POLYGON,north,1.0
+North Burnet,north-burnet,Austin,HAS_POLYGON,north-burnet,1.0
+North Central,north-central,Austin,HAS_POLYGON,north-central,1.0
+North Crossing,north-crossing,Austin,NEEDS_POLYGON,The Crossing,0.846
+North Lake,north-lake,Georgetown,HAS_POLYGON,north-lake,1.0
+North Lakeway Village,north-lakeway-village,Lake Travis,HAS_POLYGON,north-lakeway-village,1.0
+North Lamar,north-lamar,Austin,HAS_POLYGON,north-lamar,1.0
+North Loop,north-loop,Austin,HAS_POLYGON,north-loop,1.0
+North Oaks,north-oaks,Austin,HAS_POLYGON,north-oaks,1.0
+North Oaks Hillside,north-oaks-hillside,Austin,HAS_POLYGON,north-oaks-hillside,1.0
+North Park,north-park,Pflugerville,HAS_POLYGON,north-park,1.0
+North Park Estates,north-park-estates,Austin,HAS_POLYGON,north-park-estates,1.0
+North Shields,north-shields,Austin,HAS_POLYGON,north-shields,1.0
+North Shoal Creek,north-shoal-creek,Austin,HAS_POLYGON,north-shoal-creek,1.0
+North Star,north-star,Austin,HAS_POLYGON,north-star,1.0
+North University,north-university,Austin,HAS_POLYGON,north-university,1.0
+Northcreek,northcreek,Leander,FUZZY_MATCH,North Creek,0.952
+North East,north-east,Austin,NEEDS_POLYGON,Northwest,0.842
+Northridge Acres,northridge-acres,Austin,HAS_POLYGON,northridge-acres,1.0
+Northtown Park,northtown-park,Pflugerville,HAS_POLYGON,northtown-park,1.0
+Northtown West,northtown-west,Pflugerville,HAS_POLYGON,northtown-west,1.0
+Northview Hills,northview-hills,Austin,HAS_POLYGON,northview-hills,1.0
+Northwest,northwest,Austin,HAS_POLYGON,northwest,1.0
+Northwest Balcones,northwest-balcones,Austin,HAS_POLYGON,northwest-balcones,1.0
+Northwest Estates,northwest-estates,Austin,HAS_POLYGON,northwest-estates,1.0
+Northwest Hills,northwest-hills,Austin,HAS_POLYGON,northwest-hills,1.0
+Northwest Hills Ranch,northwest-hills-ranch,Austin,NEEDS_POLYGON,NORTHWEST HILLS,0.833
+Northwest Oaks,northwest-oaks,Austin,HAS_POLYGON,northwest-oaks,1.0
+Nuckols Crossing,nuckols-crossing,Austin,HAS_POLYGON,nuckols-crossing,1.0
+Oak at Twin Creeks,oak-at-twin-creeks,Austin,HAS_POLYGON,oak-at-twin-creeks,1.0
+Oak Bluff Estates,oak-bluff-estates,Round Rock,HAS_POLYGON,oak-bluff-estates,1.0
+Oak Creek Estates,oak-creek-estates,Manor,HAS_POLYGON,oak-creek-estates,1.0
+Oak Creek Parke,oak-creek-parke,Austin,HAS_POLYGON,oak-creek-parke,1.0
+Oak Forest,oak-forest,Austin,HAS_POLYGON,oak-forest,1.0
+Oak Hill,oak-hill,Austin,HAS_POLYGON,oak-hill,1.0
+Oak Hollow,oak-hollow,Round Rock,HAS_POLYGON,oak-hollow,1.0
+Oak Knoll Estates,oak-knoll-estates,Austin,NEEDS_POLYGON,Oak Run Estates,0.812
+Oak Park Estates,oak-park-estates,Austin,FUZZY_MATCH,Oakland Park Estates,0.889
+Oak Ridge,oak-ridge,Austin,HAS_POLYGON,oak-ridge,1.0
+Oak Ridge,oak-ridge,Georgetown,HAS_POLYGON,oak-ridge,1.0
+Oak Summit,oak-summit,Austin,HAS_POLYGON,oak-summit,1.0
+Oakcreek,oakcreek,Round Rock,HAS_POLYGON,oakcreek,1.0
+Oakcrest Estates,oakcrest-estates,Georgetown,HAS_POLYGON,oakcrest-estates,1.0
+Oakmont Centre,oakmont-centre,Round Rock,NEEDS_POLYGON,Oakmont Forest,0.714
+Oakridge,oakridge,Leander,FUZZY_MATCH,Oak Ridge,0.941
+Oaks of Jollyville,oaks-of-jollyville,Austin,NEEDS_POLYGON,JOLLYVILLE,0.714
+Oakvalley Park,oakvalley-park,Austin,FUZZY_MATCH,Oak Valley Park,0.966
+Old Bagdad Estates,old-bagdad-estates,Leander,HAS_POLYGON,old-bagdad-estates,1.0
+Old Enfield,old-enfield,Austin,HAS_POLYGON,old-enfield,1.0
+Old Oak Estates,old-oak-estates,Round Rock,HAS_POLYGON,old-oak-estates,1.0
+Old Town Meadows,old-town-meadows,Round Rock,HAS_POLYGON,old-town-meadows,1.0
+Old West Austin,old-west-austin,Austin,HAS_POLYGON,old-west-austin,1.0
+Olde Oaks,olde-oaks,Georgetown,FUZZY_MATCH,Golden Oaks,0.9
+Olympic Heights,olympic-heights,Austin,HAS_POLYGON,olympic-heights,1.0
+Onion Creek,onion-creek,Austin,HAS_POLYGON,onion-creek,1.0
+Onion Creek Forest,onion-creek-forest,Austin,HAS_POLYGON,onion-creek-forest,1.0
+Orchard,orchard,Leander,HAS_POLYGON,Orchard Park,1.0
+Overlook at River Place,overlook-at-river-place,Austin,NEEDS_POLYGON,Ranch at River Place,0.744
+Overlook Estates,overlook-estates,Leander,HAS_POLYGON,overlook-estates,1.0
+Painted Bunting,painted-bunting,Austin,HAS_POLYGON,painted-bunting,1.0
+Palamino Park,palamino-park,Austin,HAS_POLYGON,palamino-park,1.0
+Palladio Point,palladio-point,Austin,HAS_POLYGON,palladio-point,1.0
+Palmino Park,palmino-park,Austin,FUZZY_MATCH,Palamino Park,0.96
+Paloma Lake,paloma-lake,Round Rock,HAS_POLYGON,paloma-lake,1.0
+Palomino Park,palomino-park,Leander,HAS_POLYGON,palomino-park,1.0
+Pamela Heights,pamela-heights,Austin,HAS_POLYGON,pamela-heights,1.0
+Panther Hollow,panther-hollow,Austin,NEEDS_POLYGON,The Hollows,0.8
+Paradise Cove,paradise-cove,Lake Travis,NEEDS_POLYGON,Paradise Valley,0.786
+Paradiso Villas,paradiso-villas,Cedar Park,HAS_POLYGON,paradiso-villas,1.0
+Park 35,park-35,Austin,NEEDS_POLYGON,Park Side,0.625
+Park at Duval,park-at-duval,Austin,HAS_POLYGON,park-at-duval,1.0
+Park Central,park-central,Austin,HAS_POLYGON,park-central,1.0
+Park Place,park-place,Cedar Park,HAS_POLYGON,park-place,1.0
+Park Ridge,park-ridge,Austin,HAS_POLYGON,park-ridge,1.0
+Parkcrest,parkcrest,Pflugerville,HAS_POLYGON,parkcrest,1.0
+Parker Acres,parker-acres,Austin,HAS_POLYGON,parker-acres,1.0
+Parkridge Gardens,parkridge-gardens,Austin,HAS_POLYGON,parkridge-gardens,1.0
+Parkside,parkside,Austin,FUZZY_MATCH,Park Side,0.941
+Parkside at Mayfield Ranch,parkside-at-mayfield-ranch,Leander,HAS_POLYGON,parkside-at-mayfield-ranch,1.0
+Parkside at Slaughter Creek,parkside-at-slaughter-creek,Austin,HAS_POLYGON,parkside-at-slaughter-creek,1.0
+Parkstone,parkstone,West Lake Hills,HAS_POLYGON,parkstone,1.0
+Parkwood,parkwood,Austin,HAS_POLYGON,parkwood,1.0
+Parmer Center,parmer-center,Austin,NEEDS_POLYGON,Palm Creek Center,0.733
+Parmer Heights,parmer-heights,Austin,FUZZY_MATCH,Parker Heights,0.929
+Parmer North,parmer-north,Austin,NEEDS_POLYGON,Parmer South,0.833
+Parmer Park,parmer-park,Austin,HAS_POLYGON,parmer-park,1.0
+Parmer Point,parmer-point,Austin,HAS_POLYGON,parmer-point,1.0
+Parmer South,parmer-south,Austin,HAS_POLYGON,parmer-south,1.0
+Parmer Square,parmer-square,Austin,HAS_POLYGON,parmer-square,1.0
+Parsons Meadows,parsons-meadows,Manor,HAS_POLYGON,parsons-meadows,1.0
+Pecan Branch,pecan-branch,Georgetown,HAS_POLYGON,pecan-branch,1.0
+Pecan Hills,pecan-hills,Round Rock,HAS_POLYGON,pecan-hills,1.0
+Pecan Hollow Ranches,pecan-hollow-ranches,Leander,HAS_POLYGON,pecan-hollow-ranches,1.0
+Pecan Springs/Springdale,pecan-springsspringdale,Austin,FUZZY_MATCH,PECAN SPRINGS-SPRINGDALE,0.958
+Pemberton Heights,pemberton-heights,Austin,HAS_POLYGON,pemberton-heights,1.0
+Pennington Place,pennington-place,Georgetown,HAS_POLYGON,pennington-place,1.0
+Pflugerville Acres,pflugerville-acres,Pflugerville,HAS_POLYGON,pflugerville-acres,1.0
+Pflugerville Estates,pflugerville-estates,Pflugerville,HAS_POLYGON,pflugerville-estates,1.0
+Pflugerville,pflugerville,TX,HAS_POLYGON,pflugerville,1.0
+Pheasant Run,pheasant-run,Austin,HAS_POLYGON,pheasant-run,1.0
+Phillips Ranch on Lake Austin,phillips-ranch-on-lake-austin,Austin,NEEDS_POLYGON,Peninsula on Lake Austin,0.717
+Picadilly Ridge,picadilly-ridge,Pflugerville,HAS_POLYGON,picadilly-ridge,1.0
+Pioneer Crossing,pioneer-crossing,Round Rock,HAS_POLYGON,pioneer-crossing,1.0
+Pioneer Crossing,pioneer-crossing,Austin,HAS_POLYGON,pioneer-crossing,1.0
+Pioneer Hill,pioneer-hill,Austin,HAS_POLYGON,pioneer-hill,1.0
+Plain View Estates,plain-view-estates,Manor,FUZZY_MATCH,Park View Estates,0.857
+Plantation,plantation,Round Rock,HAS_POLYGON,plantation,1.0
+Plaza De Las Lomas,plaza-de-las-lomas,Austin,NEEDS_POLYGON,Las Lomas,0.667
+Pleasant Valley,pleasant-valley,Austin,HAS_POLYGON,pleasant-valley,1.0
+Point West of Westover Hills,point-west-of-westover-hills,Austin,HAS_POLYGON,point-west-of-westover-hills,1.0
+Preserve at Dyer Creek,preserve-at-dyer-creek,Round Rock,HAS_POLYGON,preserve-at-dyer-creek,1.0
+Preserve at Stone Oak,preserve-at-stone-oak,Round Rock,HAS_POLYGON,preserve-at-stone-oak,1.0
+Presidential Meadows,presidential-meadows,Manor,HAS_POLYGON,presidential-meadows,1.0
+Prominent Point,prominent-point,Austin,HAS_POLYGON,prominent-point,1.0
+Quail Hollow,quail-hollow,Austin,HAS_POLYGON,quail-hollow,1.0
+Quail Meadow,quail-meadow,Georgetown,HAS_POLYGON,quail-meadow,1.0
+Quail Valley,quail-valley,Georgetown,HAS_POLYGON,quail-valley,1.0
+Quarry,quarry,Austin,NEEDS_POLYGON,Quarry Oaks,0.706
+Quest Village,quest-village,Cedar Park,HAS_POLYGON,quest-village,1.0
+Rainbow Crossing,rainbow-crossing,Round Rock,NEEDS_POLYGON,Ryans Crossing,0.8
+Raintree Estates,raintree-estates,Austin,HAS_POLYGON,raintree-estates,1.0
+Ranch at Brushy Creek,ranch-at-brushy-creek,Cedar Park,HAS_POLYGON,ranch-at-brushy-creek,1.0
+Ranch at Cypress Creek,ranch-at-cypress-creek,Cedar Park,HAS_POLYGON,ranch-at-cypress-creek,1.0
+Ranch at Deer Creek,ranch-at-deer-creek,Cedar Park,HAS_POLYGON,ranch-at-deer-creek,1.0
+Rancho Alto,rancho-alto,Austin,HAS_POLYGON,rancho-alto,1.0
+Rancho Siena,rancho-siena,Georgetown,FUZZY_MATCH,Rancho Sienna,0.96
+Reata East,reata-east,Georgetown,HAS_POLYGON,reata-east,1.0
+Reata Trails,reata-trails,Georgetown,HAS_POLYGON,reata-trails,1.0
+Red Oaks,red-oaks,Cedar Park,HAS_POLYGON,red-oaks,1.0
+Red River,red-river,Austin,NEEDS_POLYGON,Orchard Drive,0.636
+Remington Heights,remington-heights,Round Rock,HAS_POLYGON,remington-heights,1.0
+Reserve at Berry Creek,reserve-at-berry-creek,Georgetown,HAS_POLYGON,reserve-at-berry-creek,1.0
+Reserve at Westcreek,reserve-at-westcreek,Pflugerville,HAS_POLYGON,reserve-at-westcreek,1.0
+Rhodes,rhodes,Round Rock,NEEDS_POLYGON,Rogers,0.667
+Riata Crossing,riata-crossing,Austin,HAS_POLYGON,riata-crossing,1.0
+Ribelin Ranch,ribelin-ranch,Austin,NEEDS_POLYGON,River Ranch,0.75
+Richland Estates,richland-estates,Austin,HAS_POLYGON,richland-estates,1.0
+Ridge at Paloma Lake,ridge-at-paloma-lake,Round Rock,FUZZY_MATCH,The Ridge at Paloma Lake,0.909
+Ridge at Steeds Crossing,ridge-at-steeds-crossing,Pflugerville,HAS_POLYGON,ridge-at-steeds-crossing,1.0
+Ridgeline Ranchettes,ridgeline-ranchettes,Leander,NEEDS_POLYGON,Red Wagon Ranchettes,0.75
+Ridgemar Landing,ridgemar-landing,Leander,FUZZY_MATCH,Ridgmar Landing,0.968
+Ridgetop,ridgetop,Austin,HAS_POLYGON,ridgetop,1.0
+Ridgetop Acres,ridgetop-acres,Leander,HAS_POLYGON,ridgetop-acres,1.0
+Ridgewood North,ridgewood-north,Leander,NEEDS_POLYGON,Tangle Wood North,0.75
+Ridgewood South,ridgewood-south,Leander,NEEDS_POLYGON,Sunridge South,0.759
+Ridgewood Village,ridgewood-village,Austin,HAS_POLYGON,ridgewood-village,1.0
+River Bend,river-bend,Lake Travis,HAS_POLYGON,river-bend,1.0
+River Chase,river-chase,Georgetown,HAS_POLYGON,river-chase,1.0
+River Dance at Steiner Ranch,river-dance-at-steiner-ranch,Lake Travis,NEEDS_POLYGON,Meritage at Steiner Ranch,0.792
+River Hills,river-hills,Georgetown,HAS_POLYGON,river-hills,1.0
+River Oak Lake Estates,river-oak-lake-estates,Austin,HAS_POLYGON,river-oak-lake-estates,1.0
+River Place,river-place,Austin,HAS_POLYGON,river-place,1.0
+River Place Centre,river-place-centre,Austin,NEEDS_POLYGON,River Place,0.759
+River Pointe,river-pointe,Austin,HAS_POLYGON,river-pointe,1.0
+River Ranch,river-ranch,Austin,HAS_POLYGON,river-ranch,1.0
+River Ridge,river-ridge,Lake Travis,HAS_POLYGON,river-ridge,1.0
+Riverfront Estates,riverfront-estates,Lake Travis,NEEDS_POLYGON,River Estates,0.839
+Riverside,riverside,Austin,HAS_POLYGON,riverside,1.0
+Riverwalk,riverwalk,Hutto,HAS_POLYGON,riverwalk,1.0
+Rivery,rivery,Georgetown,HAS_POLYGON,Rivery Park,1.0
+Riviera Springs,riviera-springs,Cedar Park,HAS_POLYGON,riviera-springs,1.0
+Rob Roy,rob-roy,West Lake Hills,HAS_POLYGON,rob-roy,1.0
+Rob Roy on the Creek,rob-roy-on-the-creek,West Lake Hills,HAS_POLYGON,rob-roy-on-the-creek,1.0
+Rob Roy on the Lake,rob-roy-on-the-lake,West Lake Hills,HAS_POLYGON,rob-roy-on-the-lake,1.0
+Rob Roy West,rob-roy-west,West Lake Hills,HAS_POLYGON,rob-roy-west,1.0
+Rockcliff Estates,rockcliff-estates,West Lake Hills,HAS_POLYGON,rockcliff-estates,1.0
+Rocky Ridge,rocky-ridge,Lake Travis,HAS_POLYGON,rocky-ridge,1.0
+Rolling Hills,rolling-hills,Pflugerville,HAS_POLYGON,rolling-hills,1.0
+Rolling Hills West,rolling-hills-west,West Lake Hills,HAS_POLYGON,rolling-hills-west,1.0
+Rolling Meadows,rolling-meadows,Pflugerville,HAS_POLYGON,rolling-meadows,1.0
+Rolling Ridge,rolling-ridge,Round Rock,HAS_POLYGON,rolling-ridge,1.0
+Ronald Heights,ronald-heights,Austin,HAS_POLYGON,ronald-heights,1.0
+Rosedale,rosedale,Austin,HAS_POLYGON,rosedale,1.0
+Rosewood,rosewood,Austin,HAS_POLYGON,rosewood,1.0
+Rough Hollow,rough-hollow,Lake Travis,HAS_POLYGON,rough-hollow,1.0
+Round Mountain,round-mountain,Lake Travis,NEEDS_POLYGON,Round Mountain Oaks,0.848
+Round Mountain Oaks,round-mountain-oaks,Leander,HAS_POLYGON,round-mountain-oaks,1.0
+Round Rock East,round-rock-east,Round Rock,HAS_POLYGON,round-rock-east,1.0
+Round Rock Glen,round-rock-glen,Round Rock,HAS_POLYGON,round-rock-glen,1.0
+Round Rock,round-rock,TX,HAS_POLYGON,round-rock,1.0
+Round Rock Ranch,round-rock-ranch,Round Rock,HAS_POLYGON,round-rock-ranch,1.0
+Round Rock West,round-rock-west,Round Rock,HAS_POLYGON,round-rock-west,1.0
+Royal Pointe,royal-pointe,Pflugerville,HAS_POLYGON,royal-pointe,1.0
+Ryans Crossing,ryans-crossing,Round Rock,HAS_POLYGON,ryans-crossing,1.0
+Saddle Creek,saddle-creek,Round Rock,HAS_POLYGON,saddle-creek,1.0
+Saddlebrook Estates,saddlebrook-estates,Round Rock,HAS_POLYGON,saddlebrook-estates,1.0
+Sahd,sahd,Pflugerville,NEEDS_POLYGON,Cascada,0.545
+Sam Bass Trails,sam-bass-trails,Round Rock,HAS_POLYGON,sam-bass-trails,1.0
+San Gabriel River Estates,san-gabriel-river-estates,Georgetown,HAS_POLYGON,san-gabriel-river-estates,1.0
+San Leanna Park,san-leanna-park,Austin,HAS_POLYGON,san-leanna-park,1.0
+Sanctuary at Coldwater,sanctuary-at-coldwater,Austin,NEEDS_POLYGON,Enclave at Escondera,0.571
+Sandahl,sandahl,Austin,NEEDS_POLYGON,Shenandoah,0.706
+Sandy Creek Ranches,sandy-creek-ranches,Leander,HAS_POLYGON,sandy-creek-ranches,1.0
+Sandy Shores,sandy-shores,Lake Travis,HAS_POLYGON,sandy-shores,1.0
+Sarahs Creek,sarahs-creek,Pflugerville,FUZZY_MATCH,Sarah's Creek,0.96
+Saxony,saxony,Pflugerville,HAS_POLYGON,saxony,1.0
+Scenic Overlook,scenic-overlook,Leander,NEEDS_POLYGON,The Overlook,0.741
+Schramm Ranch,schramm-ranch,Lake Travis,HAS_POLYGON,schramm-ranch,1.0
+Scofield Farms,scofield-farms,Austin,HAS_POLYGON,scofield-farms,1.0
+Scofield Ranch Creekside,scofield-ranch-creekside,Austin,NEEDS_POLYGON,Mayfield Ranch Cove,0.651
+Sendera,sendera,Austin,HAS_POLYGON,sendera,1.0
+Sendera South,sendera-south,Austin,HAS_POLYGON,sendera-south,1.0
+Sendero Hills,sendero-hills,Austin,HAS_POLYGON,sendero-hills,1.0
+Sendero Springs,sendero-springs,Round Rock,HAS_POLYGON,sendero-springs,1.0
+Senna Hills,senna-hills,West Lake Hills,HAS_POLYGON,senna-hills,1.0
+Serenada,serenada,Georgetown,NEEDS_POLYGON,Serenada West,0.762
+Serenada East,serenada-east,Georgetown,HAS_POLYGON,serenada-east,1.0
+Sette Tierra,sette-tierra,Austin,HAS_POLYGON,sette-tierra,1.0
+Settlers Crossing,settlers-crossing,Round Rock,HAS_POLYGON,settlers-crossing,1.0
+Settlers Meadow,settlers-meadow,Pflugerville,HAS_POLYGON,settlers-meadow,1.0
+Settlers Overlook,settlers-overlook,Round Rock,HAS_POLYGON,settlers-overlook,1.0
+Settlers Ridge,settlers-ridge,Pflugerville,HAS_POLYGON,settlers-ridge,1.0
+Seven Oaks,seven-oaks,West Lake Hills,HAS_POLYGON,seven-oaks,1.0
+Shadestone Terrace,shadestone-terrace,Steiner Ranch,NEEDS_POLYGON,JOHNSTON TERRACE,0.765
+Shadow Brook,shadow-brook,Round Rock,HAS_POLYGON,shadow-brook,1.0
+Shadow Canyon,shadow-canyon,Georgetown,NEEDS_POLYGON,Shadow Lawn,0.75
+Shadow Oaks,shadow-oaks,Austin,HAS_POLYGON,shadow-oaks,1.0
+Shadow Pointe,shadow-pointe,Round Rock,HAS_POLYGON,shadow-pointe,1.0
+Shadowglen,shadowglen,Manor,HAS_POLYGON,shadowglen,1.0
+Shady Hollow,shady-hollow,Austin,HAS_POLYGON,shady-hollow,1.0
+Shady Hollow Gardens,shady-hollow-gardens,Austin,HAS_POLYGON,shady-hollow-gardens,1.0
+Shady Lake Acres,shady-lake-acres,Austin,HAS_POLYGON,shady-lake-acres,1.0
+Shady Oaks,shady-oaks,Georgetown,FUZZY_MATCH,Shadow Oaks,0.857
+Shallow Creek,shallow-creek,Pflugerville,HAS_POLYGON,shallow-creek,1.0
+Sheldon,sheldon,Pflugerville,NEEDS_POLYGON,Shell,0.667
+Shenandoah,shenandoah,Cedar Park,HAS_POLYGON,shenandoah,1.0
+Shepard of the Hills,shepard-of-the-hills,Austin,NEEDS_POLYGON,Heather Hills,0.727
+Shepherd Mountain,shepherd-mountain,Austin,HAS_POLYGON,shepherd-mountain,1.0
+Shiloh,shiloh,Austin,HAS_POLYGON,shiloh,1.0
+Shoal Creek,shoal-creek,Austin,HAS_POLYGON,shoal-creek,1.0
+Shoal Crest,shoal-crest,Austin,HAS_POLYGON,shoal-crest,1.0
+Shoalcreek,shoalcreek,Austin,FUZZY_MATCH,Shoal Creek,0.952
+Shoreline Park,shoreline-park,Austin,HAS_POLYGON,shoreline-park,1.0
+Sienna,sienna,Round Rock,FUZZY_MATCH,Siena,0.909
+Sierra Arbor Estates,sierra-arbor-estates,Austin,HAS_POLYGON,sierra-arbor-estates,1.0
+Sierra Oaks,sierra-oaks,Austin,HAS_POLYGON,sierra-oaks,1.0
+Sierra Vista,sierra-vista,Georgetown,HAS_POLYGON,sierra-vista,1.0
+Silent Ridge,silent-ridge,Lake Travis,HAS_POLYGON,silent-ridge,1.0
+Silver Leaf,silver-leaf,Round Rock,HAS_POLYGON,silver-leaf,1.0
+Silver Oaks,silver-oaks,Cedar Park,FUZZY_MATCH,Silver Oak,0.952
+Silverado Ranch,silverado-ranch,Cedar Park,HAS_POLYGON,silverado-ranch,1.0
+Silverstone,silverstone,Austin,HAS_POLYGON,silverstone,1.0
+Skyview,skyview,Austin,HAS_POLYGON,skyview,1.0
+Slaughter Creek Acres,slaughter-creek-acres,Austin,HAS_POLYGON,slaughter-creek-acres,1.0
+Slaughter Creek Commerical Park,slaughter-creek-commerical-park,Austin,NEEDS_POLYGON,Slaughter Creek Acres,0.692
+Slaughter South,slaughter-south,Austin,NEEDS_POLYGON,Lake South,0.72
+Sleepy Hollow,sleepy-hollow,Lake Travis,HAS_POLYGON,sleepy-hollow,1.0
+Slow Turtle,slow-turtle,Austin,HAS_POLYGON,slow-turtle,1.0
+Somerset,somerset,Round Rock,HAS_POLYGON,somerset,1.0
+Sonesta West,sonesta-west,Austin,NEEDS_POLYGON,Vista West,0.727
+Sonoma,sonoma,Round Rock,HAS_POLYGON,sonoma,1.0
+South,south,Austin,HAS_POLYGON,South Park,1.0
+South Bend,south-bend,Austin,FUZZY_MATCH,South End,0.947
+South Brook Center,south-brook-center,Austin,HAS_POLYGON,south-brook-center,1.0
+South Central,south-central,Austin,HAS_POLYGON,south-central,1.0
+South Congress,south-congress,Austin,HAS_POLYGON,south-congress,1.0
+South Creek,south-creek,Austin,HAS_POLYGON,south-creek,1.0
+South Creek,south-creek,Round Rock,HAS_POLYGON,south-creek,1.0
+South Creek South,south-creek-south,Austin,HAS_POLYGON,south-creek-south,1.0
+South Lamar,south-lamar,Austin,HAS_POLYGON,south-lamar,1.0
+South San Gabriel Ranches,south-san-gabriel-ranches,Leander,HAS_POLYGON,south-san-gabriel-ranches,1.0
+Southapton Hills,southapton-hills,Austin,FUZZY_MATCH,Southampton Hills,0.97
+South East,south-east,Austin,HAS_POLYGON,south-east,1.0
+Southhampton Hills,southhampton-hills,Austin,FUZZY_MATCH,Southampton Hills,0.971
+Southland Oaks,southland-oaks,Austin,HAS_POLYGON,southland-oaks,1.0
+Southpark Meadows,southpark-meadows,Austin,FUZZY_MATCH,South Meadows,0.867
+Southwest,southwest,Austin,HAS_POLYGON,southwest,1.0
+Southwest Oaks,southwest-oaks,Austin,HAS_POLYGON,southwest-oaks,1.0
+Southwest Territory,southwest-territory,Austin,HAS_POLYGON,southwest-territory,1.0
+Speyside,speyside,Austin,HAS_POLYGON,speyside,1.0
+Spicewood Estates,spicewood-estates,Austin,HAS_POLYGON,spicewood-estates,1.0
+Spicewood Summit,spicewood-summit,Austin,NEEDS_POLYGON,Spicewood Point,0.774
+Spring Creek Estates,spring-creek-estates,Lake Travis,HAS_POLYGON,spring-creek-estates,1.0
+Spring Hill Village,spring-hill-village,Pflugerville,HAS_POLYGON,spring-hill-village,1.0
+Spring Ridge,spring-ridge,Round Rock,HAS_POLYGON,spring-ridge,1.0
+Spring Trails,spring-trails,Pflugerville,HAS_POLYGON,spring-trails,1.0
+Spring Willow Creek,spring-willow-creek,Pflugerville,HAS_POLYGON,spring-willow-creek,1.0
+Springbrook,springbrook,Pflugerville,HAS_POLYGON,springbrook,1.0
+Springbrook Glen,springbrook-glen,Pflugerville,HAS_POLYGON,springbrook-glen,1.0
+Springdale Heights,springdale-heights,Austin,NEEDS_POLYGON,Springdale Hills,0.824
+Springfield at Thaxton Road,springfield-at-thaxton-road,Austin,NEEDS_POLYGON,Springfield,0.579
+Spyglass/Bartons Bluff,spyglassbartons-bluff,Austin,FUZZY_MATCH,Spyglass / Barton's Bluff,0.936
+St. Edwards,st-edwards,Austin,HAS_POLYGON,st-edwards,1.0
+St. Johns,st-johns,Austin,HAS_POLYGON,st-johns,1.0
+St. Tropez,st-tropez,Austin,HAS_POLYGON,st-tropez,1.0
+Stablewood at Slaughter Creek,stablewood-at-slaughter-creek,Austin,HAS_POLYGON,stablewood-at-slaughter-creek,1.0
+Steiner Ranch,steiner-ranch,Austin,HAS_POLYGON,steiner-ranch,1.0
+Stillhouse Springs,stillhouse-springs,Austin,NEEDS_POLYGON,The Springs,0.759
+Stone Canyon,stone-canyon,Round Rock,HAS_POLYGON,stone-canyon,1.0
+Stone Oak,stone-oak,Round Rock,HAS_POLYGON,stone-oak,1.0
+Stonecreek,stonecreek,Austin,FUZZY_MATCH,Stone Creek,0.952
+Stoneledge,stoneledge,Austin,HAS_POLYGON,stoneledge,1.0
+Stonewater,stonewater,Manor,HAS_POLYGON,stonewater,1.0
+Stoney Brook,stoney-brook,Round Rock,HAS_POLYGON,stoney-brook,1.0
+Stony Ridge,stony-ridge,Austin,FUZZY_MATCH,Stoney Ridge,0.957
+Stratford Hills,stratford-hills,West Lake Hills,HAS_POLYGON,stratford-hills,1.0
+Strother Mountain,strother-mountain,Austin,NEEDS_POLYGON,Shepherd Mountain,0.765
+Strum Parke,strum-parke,Hutto,FUZZY_MATCH,Sturm Parke,0.909
+Summercrest,summercrest,Georgetown,HAS_POLYGON,summercrest,1.0
+Summerlyn,summerlyn,Leander,HAS_POLYGON,summerlyn,1.0
+Summit at West Rim,summit-at-west-rim,West Lake Hills,NEEDS_POLYGON,The Summit at Eastridge,0.732
+Summit Oaks,summit-oaks,Austin,HAS_POLYGON,summit-oaks,1.0
+Summit on Eck Lane,summit-on-eck-lane,Lake Travis,HAS_POLYGON,summit-on-eck-lane,1.0
+Sun City,sun-city,Georgetown,HAS_POLYGON,sun-city,1.0
+Sundance Ranch,sundance-ranch,Liberty Hill,HAS_POLYGON,sundance-ranch,1.0
+Sunridge South,sunridge-south,Austin,HAS_POLYGON,sunridge-south,1.0
+Sunrise Vista,sunrise-vista,Round Rock,HAS_POLYGON,sunrise-vista,1.0
+Sunset Valley,sunset-valley,Austin,HAS_POLYGON,sunset-valley,1.0
+Supont,supont,Round Rock,NEEDS_POLYGON,Sunset,0.667
+Swanson's Ranchettes,swansons-ranchettes,Austin,HAS_POLYGON,swansons-ranchettes,1.0
+Swenson Farms,swenson-farms,Pflugerville,HAS_POLYGON,swenson-farms,1.0
+Tanglewild Estates,tanglewild-estates,Austin,HAS_POLYGON,tanglewild-estates,1.0
+Tanglewood Estates,tanglewood-estates,Austin,HAS_POLYGON,tanglewood-estates,1.0
+Tanglewood Forest,tanglewood-forest,Austin,HAS_POLYGON,tanglewood-forest,1.0
+Tarrytown,tarrytown,West Central Austin,HAS_POLYGON,tarrytown,1.0
+Taylor Estates,taylor-estates,Austin,HAS_POLYGON,taylor-estates,1.0
+Taylor,taylor,Texas,NEEDS_POLYGON,Taylor Draper,0.632
+Tech Ridge Center,tech-ridge-center,Austin,NEEDS_POLYGON,Heritage Center,0.75
+Teravista,teravista,Round Rock,HAS_POLYGON,teravista,1.0
+Texas Oaks,texas-oaks,Austin,HAS_POLYGON,texas-oaks,1.0
+The Arbor at Great Hills,the-arbor-at-great-hills,Austin,HAS_POLYGON,the-arbor-at-great-hills,1.0
+The Bend at Nuckols Crossing,the-bend-at-nuckols-crossing,Austin,HAS_POLYGON,the-bend-at-nuckols-crossing,1.0
+The Bluffs,the-bluffs,Austin,HAS_POLYGON,the-bluffs,1.0
+The Bluffs at Villages of Spicewood,the-bluffs-at-villages-of-spicewood,Austin,FUZZY_MATCH,Bluffs at Villages of Spicewood,0.939
+The Bluffs of Great Hills,the-bluffs-of-great-hills,Austin,HAS_POLYGON,the-bluffs-of-great-hills,1.0
+The Canyon - The Preserve,the-canyon-the-preserve,Austin,NEEDS_POLYGON,The Terrace at the Preserve,0.731
+The Centerpiece At Academy Place,the-centerpiece-at-academy-place,Lake Travis,NEEDS_POLYGON,The Preserve at River Place,0.644
+The Centrum,the-centrum,Austin,NEEDS_POLYGON,The Avenue,0.667
+The Commons at Rowe Lane,the-commons-at-rowe-lane,Pflugerville,HAS_POLYGON,the-commons-at-rowe-lane,1.0
+The Cottonwood,the-cottonwood,Hutto,HAS_POLYGON,the-cottonwood,1.0
+The Courtyard,the-courtyard,Austin,NEEDS_POLYGON,Courtyard,0.818
+The Drag,the-drag,Austin,HAS_POLYGON,the-drag,1.0
+The Enclave at Alta Vista,the-enclave-at-alta-vista,Lake Travis,FUZZY_MATCH,The Enclave at Alta Vista Ridge,0.893
+The Enclave at Brushy Creek,the-enclave-at-brushy-creek,Hutto,HAS_POLYGON,the-enclave-at-brushy-creek,1.0
+The Estates at Westridge,the-estates-at-westridge,Austin,NEEDS_POLYGON,Steiner Ranch The Estates at Westridge,0.774
+The Fairway at Great Hills,the-fairway-at-great-hills,Austin,HAS_POLYGON,the-fairway-at-great-hills,1.0
+The Headlands,the-headlands,Austin,HAS_POLYGON,the-headlands,1.0
+The Hermitage,the-hermitage,Round Rock,NEEDS_POLYGON,Hermitage,0.818
+The Highlands at Oak Forest,the-highlands-at-oak-forest,Austin,FUZZY_MATCH,Highlands at Oak Forest,0.92
+The Hills,the-hills,Lake Travis,HAS_POLYGON,the-hills,1.0
+The Hills at Westridge,the-hills-at-westridge,Austin,NEEDS_POLYGON,The Valley at Eastridge,0.8
+The Hills of Lakeway,the-hills-of-lakeway,Lake Travis,NEEDS_POLYGON,The Hills of Hays,0.811
+The Hollow at Slaughter Creek,the-hollow-at-slaughter-creek,Austin,FUZZY_MATCH,Hollow at Slaughter Creek,0.926
+The Legends,the-legends,Austin,HAS_POLYGON,the-legends,1.0
+The Meadows at Bluff Springs,the-meadows-at-bluff-springs,Austin,FUZZY_MATCH,Meadows at Bluff Springs,0.923
+The Meadows of Great Hills,the-meadows-of-great-hills,Austin,NEEDS_POLYGON,The Bluffs of Great Hills,0.784
+The Oaklands,the-oaklands,Round Rock,HAS_POLYGON,the-oaklands,1.0
+The Park at Brushy Creek,the-park-at-brushy-creek,Hutto,FUZZY_MATCH,Park at Brushy Creek,0.909
+The Park at Spicewood Springs,the-park-at-spicewood-springs,Austin,FUZZY_MATCH,Park at Spicewood Springs,0.926
+The Parke,the-parke,Austin,FUZZY_MATCH,The Parker,0.947
+The Pavillion,the-pavillion,Austin,FUZZY_MATCH,The Pavilion,0.96
+The Pinnacle,the-pinnacle,Georgetown,NEEDS_POLYGON,Pinnacle,0.8
+The Plaza at Slaughter Creek,the-plaza-at-slaughter-creek,Austin,NEEDS_POLYGON,The Reserve at Slaughter Creek,0.793
+The Point at Singleton Bend,the-point-at-singleton-bend,Lake Travis,NEEDS_POLYGON,The Park at Battle Bend,0.64
+The Post Oak,the-post-oak,Manor,HAS_POLYGON,the-post-oak,1.0
+The Reserve at Hudson Bend,the-reserve-at-hudson-bend,Lake Travis,FUZZY_MATCH,Reserve at Hudson Bend,0.917
+The Reserve at Twin Creeks,the-reserve-at-twin-creeks,Cedar Park,FUZZY_MATCH,Reserve at Twin Creeks,0.917
+The Ridge at Alta Vista,the-ridge-at-alta-vista,Lake Travis,HAS_POLYGON,the-ridge-at-alta-vista,1.0
+The Settlement,the-settlement,Round Rock,HAS_POLYGON,the-settlement,1.0
+The Sidney,the-sidney,Austin,HAS_POLYGON,the-sidney,1.0
+The Towers of Lakeway,the-towers-of-lakeway,Lake Travis,NEEDS_POLYGON,Woods of Lakeway,0.703
+The Triangle,the-triangle,Austin,NEEDS_POLYGON,The Quadrangle,0.769
+The University of Texas at Austin,the-university-of-texas-at-austin,Austin,FUZZY_MATCH,University of Texas - Austin,0.885
+The Villas at Davenport,the-villas-at-davenport,West Lake Hills,FUZZY_MATCH,Villas at Davenport,0.905
+The Vistas at Lakeway,the-vistas-at-lakeway,Lake Travis,NEEDS_POLYGON,Vistas of Lakeway,0.789
+The Waters at Bluff Springs,the-waters-at-bluff-springs,Austin,FUZZY_MATCH,Waters at Bluffsprings,0.898
+The Woodlands,the-woodlands,Austin,HAS_POLYGON,the-woodlands,1.0
+The Woods of Greenshores,the-woods-of-greenshores,Austin,FUZZY_MATCH,Woods of Greenshores,0.909
+The Woods of Lake Travis,the-woods-of-lake-travis,Lake Travis,HAS_POLYGON,the-woods-of-lake-travis,1.0
+Thoroughbred Ranchettes,thoroughbred-ranchettes,Austin,HAS_POLYGON,thoroughbred-ranchettes,1.0
+Thousand Oaks,thousand-oaks,Georgetown,HAS_POLYGON,thousand-oaks,1.0
+Thunderbird Farms,thunderbird-farms,Austin,NEEDS_POLYGON,Thunderbird Village,0.722
+Timber Creek,timber-creek,Austin,HAS_POLYGON,timber-creek,1.0
+Timber Village,timber-village,Austin,NEEDS_POLYGON,Meyer Village,0.815
+Timberline West,timberline-west,Leander,HAS_POLYGON,timberline-west,1.0
+Tomanet Estates,tomanet-estates,Austin,HAS_POLYGON,tomanet-estates,1.0
+Townwest Commons,townwest-commons,Hutto,NEEDS_POLYGON,Stonewood Commons,0.667
+Travis Heights,travis-heights,Austin,HAS_POLYGON,travis-heights,1.0
+Travis Landing,travis-landing,Lake Travis,HAS_POLYGON,travis-landing,1.0
+Travis Oak Trails,travis-oak-trails,Lake Travis,HAS_POLYGON,travis-oak-trails,1.0
+Travis Oaks,travis-oaks,Lake Travis,HAS_POLYGON,travis-oaks,1.0
+Travis Vista,travis-vista,Lake Travis,HAS_POLYGON,travis-vista,1.0
+Travista,travista,Lake Travis,HAS_POLYGON,travista,1.0
+Treemont,treemont,West Lake Hills,HAS_POLYGON,treemont,1.0
+Treetops,treetops,Austin,HAS_POLYGON,treetops,1.0
+Tri-View Estates,tri-view-estates,Round Rock,FUZZY_MATCH,View Estates,0.857
+Turtle Creek,turtle-creek,Round Rock,HAS_POLYGON,turtle-creek,1.0
+Twin Creeks,twin-creeks,Cedar Park,HAS_POLYGON,twin-creeks,1.0
+Twin Meadow Creek,twin-meadow-creek,Manor,NEEDS_POLYGON,Meadow Creek,0.828
+Twin Mesa,twin-mesa,Austin,HAS_POLYGON,twin-mesa,1.0
+Twin Ridge,twin-ridge,Round Rock,HAS_POLYGON,twin-ridge,1.0
+Twin Springs,twin-springs,Georgetown,HAS_POLYGON,twin-springs,1.0
+University Hills,university-hills,Austin,HAS_POLYGON,university-hills,1.0
+University Park,university-park,Georgetown,HAS_POLYGON,university-park,1.0
+Valle Del Rio,valle-del-rio,Austin,HAS_POLYGON,valle-del-rio,1.0
+Valle Escondido,valle-escondido,Austin,NEEDS_POLYGON,Valley View Condos,0.727
+Valley Oaks,valley-oaks,Austin,HAS_POLYGON,valley-oaks,1.0
+Valley Vista,valley-vista,Hutto,HAS_POLYGON,valley-vista,1.0
+Valleyside Place,valleyside-place,Austin,HAS_POLYGON,valleyside-place,1.0
+Vaught Ranch,vaught-ranch,Austin,NEEDS_POLYGON,Walsh Ranch,0.696
+Village at Mayfield Ranch,village-at-mayfield-ranch,Round Rock,HAS_POLYGON,village-at-mayfield-ranch,1.0
+Village at River Oaks,village-at-river-oaks,Austin,NEEDS_POLYGON,VILLAGE AT WESTERN OAKS,0.818
+Village at Volente,village-at-volente,Lake Travis,NEEDS_POLYGON,Village at Treemont,0.757
+Village at Walnut Creek,village-at-walnut-creek,Austin,FUZZY_MATCH,Villages at Walnut Creek,0.979
+Village at Western Oaks,village-at-western-oaks,Austin,HAS_POLYGON,village-at-western-oaks,1.0
+Villages of Berry Creek,villages-of-berry-creek,Georgetown,HAS_POLYGON,villages-of-berry-creek,1.0
+Villages of Hidden Lake,villages-of-hidden-lake,Pflugerville,HAS_POLYGON,villages-of-hidden-lake,1.0
+Villas on Travis,villas-on-travis,Lake Travis,HAS_POLYGON,villas-on-travis,1.0
+Vineyard Bay,vineyard-bay,Lake Travis,HAS_POLYGON,vineyard-bay,1.0
+Vista Del Pueblo,vista-del-pueblo,Austin,NEEDS_POLYGON,Vista Ridge Oaks,0.625
+Vista Grande,vista-grande,Lake Travis,HAS_POLYGON,vista-grande,1.0
+Vista Heights,vista-heights,Round Rock,NEEDS_POLYGON,Travis Heights,0.815
+Vista Mesa Estates,vista-mesa-estates,Leander,NEEDS_POLYGON,Vista Ridge Estates,0.811
+Vista North,vista-north,Austin,HAS_POLYGON,vista-north,1.0
+Vista Oaks,vista-oaks,Round Rock,HAS_POLYGON,vista-oaks,1.0
+Vista Oaks of Lakeway,vista-oaks-of-lakeway,Lake Travis,FUZZY_MATCH,Vistas of Lakeway,0.895
+Vista Ridge,vista-ridge,Leander,HAS_POLYGON,vista-ridge,1.0
+Vista Ridge Oaks,vista-ridge-oaks,Cedar Park,HAS_POLYGON,vista-ridge-oaks,1.0
+Vista Royale,vista-royale,,HAS_POLYGON,vista-royale,1.0
+Vista West,vista-west,Austin,HAS_POLYGON,vista-west,1.0
+Volente Heights,volente-heights,Lake Travis,HAS_POLYGON,volente-heights,1.0
+Volente Hills,volente-hills,Cedar Park,HAS_POLYGON,volente-hills,1.0
+Walnut Bend,walnut-bend,Austin,HAS_POLYGON,walnut-bend,1.0
+Walnut Forest,walnut-forest,Austin,HAS_POLYGON,walnut-forest,1.0
+Walnut Place,walnut-place,Austin,HAS_POLYGON,walnut-place,1.0
+Walnut Ridge,walnut-ridge,Austin,HAS_POLYGON,walnut-ridge,1.0
+Walsh Ranch,walsh-ranch,Round Rock,HAS_POLYGON,walsh-ranch,1.0
+Walsh Trails,walsh-trails,Cedar Park,HAS_POLYGON,walsh-trails,1.0
+Warehouse District,warehouse-district,Austin,NEEDS_POLYGON,Hawthorne at the District,0.605
+Warner Heights,warner-heights,Pflugerville,FUZZY_MATCH,Parker Heights,0.857
+Warner Ranch,warner-ranch,Round Rock,HAS_POLYGON,warner-ranch,1.0
+Waterford Place,waterford-place,Austin,HAS_POLYGON,waterford-place,1.0
+Waterloo,waterloo,Austin,HAS_POLYGON,waterloo,1.0
+Watersedge,watersedge,Austin,HAS_POLYGON,watersedge,1.0
+Watersedge at River Place,watersedge-at-river-place,Austin,NEEDS_POLYGON,Waters Edge Avery Ranch,0.75
+Watson Park,watson-park,Pflugerville,HAS_POLYGON,watson-park,1.0
+Wells Branch,wells-branch,Austin,HAS_POLYGON,wells-branch,1.0
+Wells Point,wells-point,Pflugerville,HAS_POLYGON,wells-point,1.0
+Welsh Trails,welsh-trails,Cedar Park,FUZZY_MATCH,Walsh Trails,0.917
+Werkenthin,werkenthin,Austin,NEEDS_POLYGON,Westwind,0.556
+West,west,Austin,HAS_POLYGON,west,1.0
+West Branch,west-branch,Austin,HAS_POLYGON,west-branch,1.0
+West Cave Estates,west-cave-estates,,HAS_POLYGON,west-cave-estates,1.0
+West Central,west-central,Austin,FUZZY_MATCH,East Central,0.917
+West End,west-end,Austin,HAS_POLYGON,west-end,1.0
+West Oak Hill,west-oak-hill,Austin,HAS_POLYGON,west-oak-hill,1.0
+West Park Street,west-park-street,Cedar Park,NEEDS_POLYGON,West Park Estates,0.788
+West Rim,west-rim,West Lake Hills,HAS_POLYGON,west-rim,1.0
+West University,west-university,Austin,HAS_POLYGON,west-university,1.0
+Westbridge Estates,westbridge-estates,Austin,FUZZY_MATCH,Westridge Estates,0.971
+Westcliff,westcliff,Austin,HAS_POLYGON,westcliff,1.0
+Westgate,westgate,Austin,HAS_POLYGON,westgate,1.0
+Westhill Estates,westhill-estates,Austin,HAS_POLYGON,westhill-estates,1.0
+Westlake Highlands,westlake-highlands,West Lake Hills,HAS_POLYGON,westlake-highlands,1.0
+West Lake Hills,west-lake-hills,Texas,HAS_POLYGON,west-lake-hills,1.0
+Westlake Oaks,westlake-oaks,West Lake Hills,HAS_POLYGON,westlake-oaks,1.0
+Westlake of the Woods,westlake-of-the-woods,Georgetown,HAS_POLYGON,westlake-of-the-woods,1.0
+Westminster,westminster,,NEEDS_POLYGON,Westminster Glen,0.815
+Westminster Glen,westminster-glen,Austin,HAS_POLYGON,westminster-glen,1.0
+Westover Hills,westover-hills,Austin,HAS_POLYGON,westover-hills,1.0
+Westside Preserve,westside-preserve,Cedar Park,NEEDS_POLYGON,The Preserve,0.759
+Westview Acres,westview-acres,Round Rock,NEEDS_POLYGON,Mountview Acres,0.759
+Westview Meadows,westview-meadows,Leander,HAS_POLYGON,westview-meadows,1.0
+Westview on Lake Austin,westview-on-lake-austin,Austin,HAS_POLYGON,westview-on-lake-austin,1.0
+Westwind,westwind,Round Rock,HAS_POLYGON,westwind,1.0
+Westwood,westwood,Leander,HAS_POLYGON,westwood,1.0
+Westwood,westwood,West Lake Hills,HAS_POLYGON,westwood,1.0
+Westwood Heights,westwood-heights,Austin,NEEDS_POLYGON,Delwood Heights,0.839
+Westwood Villas,westwood-villas,Austin,NEEDS_POLYGON,Brentwood Villas,0.839
+Whispering Oaks,whispering-oaks,Austin,FUZZY_MATCH,Whisper Oaks,0.889
+Wild Plum Valley,wild-plum-valley,Round Rock,HAS_POLYGON,wild-plum-valley,1.0
+Wildflower,wildflower,Pflugerville,HAS_POLYGON,wildflower,1.0
+Wildhorse Creek,wildhorse-creek,Manor,HAS_POLYGON,wildhorse-creek,1.0
+Wiley Creek Estates,wiley-creek-estates,Leander,HAS_POLYGON,wiley-creek-estates,1.0
+William Cannon Joint Venture,william-cannon-joint-venture,Austin,NEEDS_POLYGON,William Cannon,0.667
+Williams Addition,williams-addition,Georgetown,NEEDS_POLYGON,Wallace Addition,0.788
+Willow Creek,willow-creek,Pflugerville,HAS_POLYGON,willow-creek,1.0
+Willowbend Estates,willowbend-estates,Round Rock,HAS_POLYGON,willowbend-estates,1.0
+Wimberley,wimberley,TX,NEEDS_POLYGON,Wimberley Lane,0.783
+Windcrest Crossing,windcrest-crossing,Austin,NEEDS_POLYGON,Wind River Crossing,0.811
+Windermere,windermere,Pflugerville,HAS_POLYGON,windermere,1.0
+Windmill Bluff Estates,windmill-bluff-estates,Lake Travis,HAS_POLYGON,windmill-bluff-estates,1.0
+Windridge,windridge,Austin,HAS_POLYGON,windridge,1.0
+Windsor Hills,windsor-hills,Austin,HAS_POLYGON,windsor-hills,1.0
+Windsor Park,windsor-park,Austin,HAS_POLYGON,windsor-park,1.0
+Wipporwill,wipporwill,Cedar Park,FUZZY_MATCH,Whippoorwill,0.909
+Wolf Ranch,wolf-ranch,Georgetown,HAS_POLYGON,wolf-ranch,1.0
+Wood Glen,wood-glen,Round Rock,HAS_POLYGON,wood-glen,1.0
+Wood Ranch,wood-ranch,Georgetown,HAS_POLYGON,wood-ranch,1.0
+Woodcliff,woodcliff,Austin,HAS_POLYGON,woodcliff,1.0
+Woodgreen Acres,woodgreen-acres,Austin,HAS_POLYGON,woodgreen-acres,1.0
+Woodhaven,woodhaven,West Lake Hills,HAS_POLYGON,woodhaven,1.0
+Woodlake,woodlake,Georgetown,NEEDS_POLYGON,Woodlawn,0.75
+Woodlake Trails,woodlake-trails,Austin,NEEDS_POLYGON,Lake Travis,0.769
+Woodland Estates,woodland-estates,,HAS_POLYGON,woodland-estates,1.0
+Woodland Park,woodland-park,Georgetown,HAS_POLYGON,woodland-park,1.0
+Woods at Carriage Hills,woods-at-carriage-hills,Cedar Park,HAS_POLYGON,woods-at-carriage-hills,1.0
+Woods at Mason Creek,woods-at-mason-creek,Leander,HAS_POLYGON,woods-at-mason-creek,1.0
+Woods of Century Park,woods-of-century-park,Austin,HAS_POLYGON,woods-of-century-park,1.0
+Woods of Fountainwood,woods-of-fountainwood,Georgetown,HAS_POLYGON,woods-of-fountainwood,1.0
+Woods of Westlake,woods-of-westlake,West Lake Hills,HAS_POLYGON,woods-of-westlake,1.0
+Woodstone Village,woodstone-village,Austin,HAS_POLYGON,woodstone-village,1.0
+Wooten,wooten,Austin,HAS_POLYGON,wooten,1.0
+Wuthrich Hill Farms,wuthrich-hill-farms,Pflugerville,NEEDS_POLYGON,Churchill Farms,0.706
+Wyldwood,wyldwood,Austin,HAS_POLYGON,wyldwood,1.0
+Yacht Harbor,yacht-harbor,Lake Travis,HAS_POLYGON,yacht-harbor,1.0
+Yarrabee Bend,yarrabee-bend,Austin,HAS_POLYGON,yarrabee-bend,1.0
+Yarrabee Bend South,yarrabee-bend-south,Austin,HAS_POLYGON,yarrabee-bend-south,1.0
+Yellow Sage,yellow-sage,Pflugerville,NEEDS_POLYGON,Hollow Estates,0.64
+Yucca Mountain,yucca-mountain,Austin,HAS_POLYGON,yucca-mountain,1.0
+Zilker,zilker,Austin,HAS_POLYGON,zilker,1.0
