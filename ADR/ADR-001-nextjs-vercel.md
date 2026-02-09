@@ -3,6 +3,7 @@
 **Status:** Accepted  
 **Date:** 2025-02-03  
 **Deciders:** Spyglass Realty Engineering  
+**Governance:** [Enterprise Architecture Guidelines v1.0](../docs/spyglass_enterprise_arch.pdf), February 2026
 
 ## Context
 
@@ -53,3 +54,11 @@ Use **Next.js 16** (App Router with React Server Components) deployed on **Verce
 - Keep deployment portable by avoiding Vercel-specific features where possible
 - Use `next.revalidate` caching to reduce function invocations
 - Monitor Vercel usage and upgrade plan if needed
+
+## Rollback Plan
+
+If Vercel becomes untenable (cost, reliability, features):
+1. Next.js App Router is portable — can be deployed to any Node.js host
+2. Candidate targets: Render (Docker), AWS Amplify, Fly.io, self-hosted
+3. Primary migration work: Replace Vercel-specific env var management and preview deploy workflow
+4. Estimated migration effort: 1–2 days (framework stays the same; only hosting changes)

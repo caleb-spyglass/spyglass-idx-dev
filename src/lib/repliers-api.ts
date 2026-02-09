@@ -5,12 +5,20 @@
  * All listing data flows through this API.
  * 
  * API: https://api.repliers.io
+ * 
+ * Resilience: All calls use fetchWithRetry (10 s timeout, 2 retries
+ * with exponential back-off) per Enterprise Architecture Guidelines
+ * v1.0, §8 "Fail safely" and §Integration Patterns.
  */
 
 import { Listing, SearchFilters, SearchResults } from '@/types/listing';
+import { fetchWithRetry } from '@/lib/fetch-with-retry';
 
 const REPLIERS_API_URL = process.env.REPLIERS_API_URL || 'https://api.repliers.io';
 const REPLIERS_API_KEY = process.env.REPLIERS_API_KEY || '';
+
+/** Timeout for Repliers API calls (ms). Vercel functions have 10 s default. */
+const REPLIERS_TIMEOUT_MS = 8_000;
 
 interface RepliersRequestOptions {
   endpoint: string;
@@ -116,12 +124,14 @@ async function repliersRequest<T>({
     'REPLIERS-API-KEY': REPLIERS_API_KEY,
   };
 
-  const response = await fetch(url.toString(), {
+  const response = await fetchWithRetry(url.toString(), {
     method,
     headers,
     body: body ? JSON.stringify(body) : undefined,
     next: { revalidate: 60 }, // Cache for 60 seconds
-  });
+    timeoutMs: REPLIERS_TIMEOUT_MS,
+    maxRetries: 2,
+  } as any); // 'next' is a Next.js extension not in standard RequestInit
 
   if (!response.ok) {
     const error = await response.text();

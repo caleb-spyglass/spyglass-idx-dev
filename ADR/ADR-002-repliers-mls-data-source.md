@@ -3,6 +3,7 @@
 **Status:** Accepted  
 **Date:** 2025-02-03  
 **Deciders:** Spyglass Realty Engineering  
+**Governance:** [Enterprise Architecture Guidelines v1.0](../docs/spyglass_enterprise_arch.pdf), February 2026
 
 ## Context
 
@@ -60,3 +61,11 @@ The NLP search feature uses Repliers' `/nlp` endpoint, which interprets natural 
 - **Response transformation:** Our `Listing` type insulates UI from Repliers schema changes
 - **Monitoring:** Log API errors and response times for early detection
 - **Fallback:** Consider adding a cache layer (Redis/KV) if Repliers uptime is a concern
+
+## Rollback Plan
+
+If Repliers becomes unavailable, too expensive, or insufficient:
+1. **Short-term:** Add Redis/KV cache layer to serve stale data during outages (hours to implement)
+2. **Medium-term:** Switch to alternative managed MLS API (e.g., Spark API, Bridge Interactive)
+3. **Long-term:** Set up direct RETS/RESO feed with local database (weeks of work — requires data infrastructure)
+4. Our `Listing` type and `transformListing()` function insulate the UI from the data source — only `repliers-api.ts` needs to change

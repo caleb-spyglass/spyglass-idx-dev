@@ -1,36 +1,116 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Spyglass IDX
 
-## Getting Started
+Real estate listing search for the Austin metro area. Powered by Repliers MLS API, deployed on Vercel.
 
-First, run the development server:
+**Production:** https://spyglass-idx.vercel.app  
+**Stack:** Next.js 16 · React 19 · TypeScript · Tailwind CSS 4 · Leaflet  
+**Governance:** [Enterprise Architecture Guidelines v1.0](./docs/spyglass_enterprise_arch.pdf), February 2026
+
+---
+
+## Quick Start
 
 ```bash
+# 1. Clone
+git clone https://github.com/SpyglassRealty/spyglass-idx.git
+cd spyglass-idx
+
+# 2. Install
+npm install
+
+# 3. Configure environment
+cp .env.example .env.local
+# Edit .env.local — at minimum set REPLIERS_API_KEY
+
+# 4. Run
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# → http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Scripts
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Command | Description |
+|---|---|
+| `npm run dev` | Start dev server (Turbopack) |
+| `npm run build` | Production build |
+| `npm run start` | Serve production build locally |
+| `npm run lint` | Run ESLint |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Environment Variables
 
-## Learn More
+Set in `.env.local` (local) or **Vercel Dashboard → Settings → Environment Variables** (production).
 
-To learn more about Next.js, take a look at the following resources:
+| Variable | Required | Description |
+|---|---|---|
+| `REPLIERS_API_KEY` | **Yes** | Repliers MLS API key |
+| `REPLIERS_API_URL` | No | Repliers base URL (default: `https://api.repliers.io`) |
+| `FUB_API_KEY` | No | Follow Up Boss CRM key (leads degrade gracefully without) |
+| `NEXT_PUBLIC_SITE_URL` | No | Canonical URL for SEO |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Full list: [RUNBOOK.md § Environment Variables](./RUNBOOK.md#2-environment-variables)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Deploy
 
-## Deploy on Vercel
+Push to `main` → Vercel auto-deploys. Manual: `npx vercel --prod`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+See [RUNBOOK.md](./RUNBOOK.md) for full deployment, rollback, and troubleshooting procedures.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Test
+
+```bash
+npm run build   # Type-checks + compiles all routes
+npm run lint    # Linting
+```
+
+> **Note:** No unit test suite yet. Build + lint is the current verification gate. See roadmap.
+
+## Project Structure
+
+```
+src/
+├── app/
+│   ├── api/            # API route handlers (serverless)
+│   │   ├── listings/   # MLS search endpoints
+│   │   ├── communities/# Community data + stats
+│   │   ├── nlp-search/ # AI natural-language search
+│   │   └── leads/      # Lead capture → Follow Up Boss
+│   ├── communities/    # Community pages (SSR)
+│   ├── listing/        # Listing detail pages (SSR)
+│   └── favorites/      # Client-side favorites (localStorage)
+├── components/         # React components
+├── data/               # Static community polygon data (4,145 polygons)
+├── hooks/              # Custom React hooks
+├── lib/                # Server-side utilities
+│   ├── repliers-api.ts # Repliers MLS client (timeout + retry)
+│   ├── follow-up-boss.ts # FUB CRM client (timeout + retry)
+│   ├── logger.ts       # Structured JSON logging
+│   ├── nlp-guard.ts    # NLP prompt firewall
+│   ├── rate-limit.ts   # Token-bucket rate limiter
+│   └── fetch-with-retry.ts # Resilient fetch wrapper
+└── types/              # TypeScript type definitions
+```
+
+## Documentation
+
+| Document | Purpose |
+|---|---|
+| [ARCHITECTURE.md](./ARCHITECTURE.md) | C4 diagrams, tech stack, data flows, deployment |
+| [SECURITY.md](./SECURITY.md) | Threat model, data classification, security checklist |
+| [RUNBOOK.md](./RUNBOOK.md) | Operations, incidents, rollback, monitoring |
+| [ADR/](./ADR/) | Architecture Decision Records (5 active) |
+| [openapi.yaml](./openapi.yaml) | API contract (OpenAPI 3.1) |
+| [CHANGELOG.md](./CHANGELOG.md) | Version history |
+
+## Architecture
+
+See [ARCHITECTURE.md](./ARCHITECTURE.md) for full C4 diagrams. High-level:
+
+```
+Browsers → Vercel (Next.js SSR + API Routes) → Repliers API (MLS)
+                                              → Follow Up Boss (CRM)
+                                              → Census API (Stats)
+```
+
+## License
+
+Proprietary — Spyglass Realty. All rights reserved.

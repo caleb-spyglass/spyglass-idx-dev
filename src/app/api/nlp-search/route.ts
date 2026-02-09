@@ -2,9 +2,16 @@ import { NextRequest, NextResponse } from 'next/server';
 import { COMMUNITIES, CommunityPolygon as PolygonData } from '@/data/communities-polygons';
 import { createRequestLogger } from '@/lib/logger';
 import { validateNLPPrompt, sanitizeNLPSummary } from '@/lib/nlp-guard';
+import { fetchWithRetry } from '@/lib/fetch-with-retry';
+import { nlpLimiter, getClientIp } from '@/lib/rate-limit';
 
 const REPLIERS_API_URL = process.env.REPLIERS_API_URL || 'https://api.repliers.io';
 const REPLIERS_API_KEY = process.env.REPLIERS_API_KEY || '';
+
+/** Timeout for Repliers NLP call (ms) — allow extra time for LLM processing */
+const NLP_TIMEOUT_MS = 12_000;
+/** Timeout for listings fetch after NLP (ms) */
+const LISTINGS_TIMEOUT_MS = 8_000;
 
 interface NLPRequest {
   prompt: string;
@@ -65,6 +72,17 @@ function findCommunityFromPrompt(prompt: string): PolygonData | null {
 export async function POST(request: NextRequest) {
   const log = createRequestLogger('POST', '/api/nlp-search');
 
+  // Rate limiting (10 req/min per IP)
+  const clientIp = getClientIp(request);
+  const rl = nlpLimiter.check(clientIp);
+  if (!rl.allowed) {
+    log.warn('Rate limit exceeded', { clientIp });
+    return NextResponse.json(
+      { error: 'Too many requests. Please try again shortly.' },
+      { status: 429, headers: { 'X-Request-Id': log.requestId, 'Retry-After': '60', 'X-RateLimit-Limit': String(rl.limit), 'X-RateLimit-Remaining': '0' } }
+    );
+  }
+
   try {
     const { prompt, nlpId }: NLPRequest = await request.json();
 
@@ -96,13 +114,15 @@ export async function POST(request: NextRequest) {
       nlpPayload.nlpId = nlpId;
     }
 
-    const response = await fetch(`${REPLIERS_API_URL}/nlp`, {
+    const response = await fetchWithRetry(`${REPLIERS_API_URL}/nlp`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'REPLIERS-API-KEY': REPLIERS_API_KEY,
       },
       body: JSON.stringify(nlpPayload),
+      timeoutMs: NLP_TIMEOUT_MS,
+      maxRetries: 1,
     });
 
     if (response.status === 406) {
@@ -176,19 +196,23 @@ export async function POST(request: NextRequest) {
     // Fetch listings — use POST with polygon body if available, otherwise GET
     let listingsResponse: Response;
     if (postBody) {
-      listingsResponse = await fetch(`${REPLIERS_API_URL}/listings?${generatedUrl.searchParams.toString()}`, {
+      listingsResponse = await fetchWithRetry(`${REPLIERS_API_URL}/listings?${generatedUrl.searchParams.toString()}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'REPLIERS-API-KEY': REPLIERS_API_KEY,
         },
         body: JSON.stringify(postBody),
+        timeoutMs: LISTINGS_TIMEOUT_MS,
+        maxRetries: 2,
       });
     } else {
-      listingsResponse = await fetch(`${REPLIERS_API_URL}/listings?${generatedUrl.searchParams.toString()}`, {
+      listingsResponse = await fetchWithRetry(`${REPLIERS_API_URL}/listings?${generatedUrl.searchParams.toString()}`, {
         headers: {
           'REPLIERS-API-KEY': REPLIERS_API_KEY,
         },
+        timeoutMs: LISTINGS_TIMEOUT_MS,
+        maxRetries: 2,
       });
     }
 

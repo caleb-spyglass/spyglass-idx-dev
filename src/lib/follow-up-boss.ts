@@ -3,10 +3,18 @@
  * 
  * Routes IDX lead capture form submissions to FUB as new leads/events.
  * Docs: https://docs.followupboss.com/reference
+ * 
+ * Resilience: All calls use fetchWithRetry (8 s timeout, 1 retry)
+ * per Enterprise Architecture Guidelines v1.0, §8 and §Integration Patterns.
  */
+
+import { fetchWithRetry } from '@/lib/fetch-with-retry';
 
 const FUB_API_URL = 'https://api.followupboss.com/v1';
 const FUB_API_KEY = process.env.FUB_API_KEY || '';
+
+/** Timeout for FUB API calls (ms). */
+const FUB_TIMEOUT_MS = 8_000;
 
 interface FUBRequestOptions {
   endpoint: string;
@@ -20,13 +28,15 @@ async function fubRequest<T>({ endpoint, method = 'GET', body }: FUBRequestOptio
   // FUB uses Basic auth with API key as username, no password
   const authHeader = 'Basic ' + Buffer.from(`${FUB_API_KEY}:`).toString('base64');
 
-  const response = await fetch(url, {
+  const response = await fetchWithRetry(url, {
     method,
     headers: {
       'Content-Type': 'application/json',
       'Authorization': authHeader,
     },
     body: body ? JSON.stringify(body) : undefined,
+    timeoutMs: FUB_TIMEOUT_MS,
+    maxRetries: 1, // Single retry — POST to CRM is not strictly idempotent but FUB dedupes by email
   });
 
   if (!response.ok) {

@@ -3,6 +3,7 @@
 **Status:** Accepted  
 **Date:** 2025-02-05  
 **Deciders:** Spyglass Realty Engineering  
+**Governance:** [Enterprise Architecture Guidelines v1.0](../docs/spyglass_enterprise_arch.pdf), February 2026
 
 ## Context
 
@@ -110,3 +111,12 @@ Note the dual polygon formats:
 | `src/data/communities-polygons.ts.backup` | Pre-merge backup |
 | `src/data/austin-communities.ts` | Austin-specific community subset |
 | `scripts/` | Merge and processing scripts |
+
+## Rollback Plan
+
+If static bundle approach becomes unsustainable (bundle size, staleness):
+1. **Database migration:** Load polygons into PostgreSQL with PostGIS extension (schema draft: `src/db/schema.sql`)
+2. **Spatial queries:** Replace in-memory `findCommunityFromPrompt()` with `ST_Contains()` / `ST_Intersects()`
+3. **Admin UI:** Build polygon editor for manual corrections
+4. **Data retained:** Current `communities-polygons.ts` serves as seed data for the database migration
+5. Static file stays in repo as backup / fallback

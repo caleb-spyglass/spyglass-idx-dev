@@ -4,7 +4,16 @@ info:
   description: |
     Real estate listing search API for the Spyglass IDX application.
     Proxies MLS data from Repliers API and lead capture to Follow Up Boss CRM.
-  version: 0.1.0
+
+    Conforms to Enterprise Architecture Guidelines v1.0, February 2026:
+    - API Paved Road Standards (resource naming, pagination, filtering, sorting)
+    - Rate limiting per IP per endpoint
+    - Timeouts + retries on all external calls
+    - Structured error responses
+
+    All API responses include `X-Request-Id` and `X-Correlation-Id` headers.
+    Rate-limited responses (429) include `Retry-After` header.
+  version: 0.2.0
   contact:
     name: Spyglass Realty Engineering
 

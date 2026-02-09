@@ -3,6 +3,7 @@
 **Status:** Accepted  
 **Date:** 2025-02-04  
 **Deciders:** Spyglass Realty Engineering  
+**Governance:** [Enterprise Architecture Guidelines v1.0](../docs/spyglass_enterprise_arch.pdf), February 2026
 
 ## Context
 
@@ -93,3 +94,10 @@ if (matchedCommunity) {
 - Polygon rings must be **closed** (first point = last point)
 - Our community data stores polygons in `[lng, lat]` format, matching Repliers
 - The `map` parameter is an array of rings: `[[[lng, lat], ...]]` (supports multi-polygon)
+
+## Rollback Plan
+
+If POST-with-polygon approach needs to change:
+1. **Switch to server-side slug lookup:** Client sends `?community=barton-hills`, server looks up polygon from static data and makes the Repliers POST call. Reduces client complexity but adds coupling.
+2. **Simplify polygons for GET:** Use `@turf/simplify` with aggressive tolerance to fit polygons in GET query strings. Loses boundary precision.
+3. No data migration needed — only API route handler and client-side fetch logic changes.

@@ -3,6 +3,7 @@
 **Status:** Accepted  
 **Date:** 2025-02-03  
 **Deciders:** Spyglass Realty Engineering  
+**Governance:** [Enterprise Architecture Guidelines v1.0](../docs/spyglass_enterprise_arch.pdf), February 2026
 
 ## Context
 
@@ -73,3 +74,12 @@ If cross-device sync or email notifications become requirements:
 - Lead capture form validates email format before submitting to FUB
 - User-facing messaging sets expectations ("saved to this browser")
 - Consider periodic localStorage → server sync as an opt-in feature later
+
+## Rollback Plan
+
+If localStorage-only becomes insufficient (cross-device demand, analytics needs):
+1. Add magic-link email authentication (NextAuth.js or custom)
+2. Create `users`, `favorites`, `saved_searches` tables in PostgreSQL (schema draft exists in `src/db/schema.sql`)
+3. Migrate client-side hooks (`useFavorites`, `useSavedSearches`) to API-backed versions
+4. Keep localStorage as offline cache with sync-on-auth pattern
+5. This ADR would be **superseded** by a new ADR documenting the server-auth migration

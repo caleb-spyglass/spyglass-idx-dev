@@ -1,15 +1,23 @@
 /**
  * Structured Logging Utility
- * 
- * Provides JSON-formatted logs with request IDs for traceability.
- * Designed for Vercel serverless functions where log aggregation
- * depends on structured output.
- * 
+ *
+ * Provides JSON-formatted logs with request IDs and correlation IDs for
+ * distributed tracing. Designed for Vercel serverless functions where log
+ * aggregation depends on structured stdout.
+ *
+ * Implements Enterprise Architecture Guidelines v1.0, §Observability Baseline:
+ *   - Structured logs (JSON)
+ *   - Request IDs
+ *   - Correlation IDs (propagated from upstream via X-Correlation-Id header)
+ *   - Key metrics: latency (duration_ms), error/warn level, throughput counts
+ *
  * Usage:
  *   import { createRequestLogger } from '@/lib/logger';
- *   const log = createRequestLogger('GET', '/api/listings');
+ *   const log = createRequestLogger(request, '/api/listings');
  *   log.info('Search completed', { resultCount: 24 });
  *   log.error('Failed to fetch', { error: err.message });
+ *
+ * @module logger
  */
 
 export type LogLevel = 'debug' | 'info' | 'warn' | 'error';
@@ -18,6 +26,7 @@ export interface LogEntry {
   timestamp: string;
   level: LogLevel;
   requestId: string;
+  correlationId: string;
   route: string;
   method: string;
   message: string;
@@ -27,7 +36,7 @@ export interface LogEntry {
 
 /**
  * Generate a unique request ID.
- * Format: req_<random> (short enough for log readability)
+ * Format: req_<random12> — short enough for log readability.
  */
 export function generateRequestId(): string {
   const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
@@ -39,7 +48,7 @@ export function generateRequestId(): string {
 }
 
 /**
- * Create a structured log entry and write it to stdout as JSON.
+ * Write a structured log entry as a single JSON line.
  */
 function writeLog(entry: LogEntry): void {
   const { level, ...rest } = entry;
@@ -61,45 +70,68 @@ function writeLog(entry: LogEntry): void {
 }
 
 export interface RequestLogger {
+  /** Unique ID for this request — include in X-Request-Id response header */
   requestId: string;
+  /** Correlation ID — propagated from upstream or generated fresh */
+  correlationId: string;
   debug: (message: string, extra?: Record<string, unknown>) => void;
   info: (message: string, extra?: Record<string, unknown>) => void;
   warn: (message: string, extra?: Record<string, unknown>) => void;
   error: (message: string, extra?: Record<string, unknown>) => void;
-  /** Log a completed request with duration */
+  /** Log a completed request with automatic duration_ms calculation */
   done: (message: string, extra?: Record<string, unknown>) => void;
 }
 
 /**
  * Create a request-scoped logger.
- * 
- * @param method - HTTP method (GET, POST, etc.)
- * @param route - Route path (e.g., '/api/listings')
- * @returns Logger instance with bound request ID
- * 
+ *
+ * Accepts either a full Request object (to extract method + correlation ID
+ * from headers) or a plain method string for backward compatibility.
+ *
  * @example
  * ```ts
  * export async function GET(request: NextRequest) {
- *   const log = createRequestLogger('GET', '/api/listings');
+ *   const log = createRequestLogger(request, '/api/listings');
  *   log.info('Search started', { filters: { city: 'Austin' } });
  *   // ... do work ...
  *   log.done('Search completed', { resultCount: 24 });
- *   
+ *
  *   return NextResponse.json(data, {
- *     headers: { 'X-Request-Id': log.requestId }
+ *     headers: {
+ *       'X-Request-Id': log.requestId,
+ *       'X-Correlation-Id': log.correlationId,
+ *     }
  *   });
  * }
  * ```
  */
-export function createRequestLogger(method: string, route: string): RequestLogger {
+export function createRequestLogger(
+  methodOrRequest: string | Request,
+  route: string,
+): RequestLogger {
   const requestId = generateRequestId();
   const startTime = Date.now();
+
+  let method: string;
+  let correlationId: string;
+
+  if (typeof methodOrRequest === 'string') {
+    method = methodOrRequest;
+    correlationId = requestId; // no upstream header — use requestId
+  } else {
+    method = methodOrRequest.method;
+    correlationId =
+      methodOrRequest.headers.get('x-correlation-id') ||
+      methodOrRequest.headers.get('x-request-id') ||
+      requestId;
+  }
 
   function log(level: LogLevel, message: string, extra?: Record<string, unknown>): void {
     writeLog({
       timestamp: new Date().toISOString(),
       level,
       requestId,
+      correlationId,
       route,
       method,
       message,
@@ -109,6 +141,7 @@ export function createRequestLogger(method: string, route: string): RequestLogge
 
   return {
     requestId,
+    correlationId,
     debug: (message, extra) => log('debug', message, extra),
     info: (message, extra) => log('info', message, extra),
     warn: (message, extra) => log('warn', message, extra),

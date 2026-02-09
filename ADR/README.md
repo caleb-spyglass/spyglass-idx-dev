@@ -4,6 +4,8 @@ This directory contains Architecture Decision Records (ADRs) for the Spyglass ID
 
 ADRs document significant architectural decisions, their context, and consequences.
 
+Per [Enterprise Architecture Guidelines v1.0](../docs/spyglass_enterprise_arch.pdf), February 2026.
+
 ## Index
 
 | ADR | Title | Status | Date |
@@ -16,19 +18,28 @@ ADRs document significant architectural decisions, their context, and consequenc
 
 ## Template
 
+Per Enterprise Architecture Guidelines v1.0, §ADR Template:
+
 ```markdown
 # ADR-NNN: Title
 
 **Status:** Proposed | Accepted | Deprecated | Superseded  
 **Date:** YYYY-MM-DD  
 **Deciders:** Names  
+**Governance:** Enterprise Architecture Guidelines v1.0, February 2026
 
 ## Context
 What is the issue? What forces are at play?
+
+## Alternatives Considered
+List of options evaluated with pros/cons.
 
 ## Decision
 What is the change we're making?
 
 ## Consequences
 What becomes easier or harder?
+
+## Rollback Plan
+How to reverse this decision if needed.
 ```

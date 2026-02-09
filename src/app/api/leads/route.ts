@@ -1,9 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { submitLead } from '@/lib/follow-up-boss';
 import { createRequestLogger } from '@/lib/logger';
+import { leadsLimiter, getClientIp } from '@/lib/rate-limit';
 
 export async function POST(request: NextRequest) {
   const log = createRequestLogger('POST', '/api/leads');
+
+  // Rate limiting (5 req/min per IP)
+  const clientIp = getClientIp(request);
+  const rl = leadsLimiter.check(clientIp);
+  if (!rl.allowed) {
+    log.warn('Rate limit exceeded on lead submission', { clientIp });
+    return NextResponse.json(
+      { error: 'Too many requests. Please try again shortly.' },
+      { status: 429, headers: { 'X-Request-Id': log.requestId, 'Retry-After': '60' } }
+    );
+  }
+
   try {
     const body = await request.json();
     
