@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { SearchFilters } from '@/types/listing';
 import { searchListings } from '@/lib/repliers-api';
+import { createRequestLogger } from '@/lib/logger';
 
 export async function GET(request: NextRequest) {
+  const log = createRequestLogger('GET', '/api/listings');
   try {
     const { searchParams } = new URL(request.url);
     
@@ -36,19 +38,22 @@ export async function GET(request: NextRequest) {
       sort: (searchParams.get('sort') as SearchFilters['sort']) || 'date-desc',
     };
 
+    log.info('Listings search started', { city: filters.city, zip: filters.zip, area: filters.area, page: filters.page });
     const results = await searchListings(filters);
+    log.done('Listings search completed', { resultCount: results.listings.length, total: results.total });
     
-    return NextResponse.json(results);
+    return NextResponse.json(results, { headers: { 'X-Request-Id': log.requestId } });
   } catch (error) {
-    console.error('Listings API error:', error);
+    log.error('Listings search failed', { error: String(error) });
     return NextResponse.json(
-      { error: 'Failed to fetch listings', details: String(error) },
-      { status: 500 }
+      { error: 'Failed to fetch listings' },
+      { status: 500, headers: { 'X-Request-Id': log.requestId } }
     );
   }
 }
 
 export async function POST(request: NextRequest) {
+  const log = createRequestLogger('POST', '/api/listings');
   try {
     const filters: SearchFilters = await request.json();
     
@@ -57,14 +62,16 @@ export async function POST(request: NextRequest) {
       filters.area = 'Travis';
     }
     
+    log.info('Listings POST search started', { hasPolygon: !!filters.polygon, area: filters.area });
     const results = await searchListings(filters);
+    log.done('Listings POST search completed', { resultCount: results.listings.length, total: results.total });
     
-    return NextResponse.json(results);
+    return NextResponse.json(results, { headers: { 'X-Request-Id': log.requestId } });
   } catch (error) {
-    console.error('Listings API error:', error);
+    log.error('Listings POST search failed', { error: String(error) });
     return NextResponse.json(
-      { error: 'Failed to fetch listings', details: String(error) },
-      { status: 500 }
+      { error: 'Failed to fetch listings' },
+      { status: 500, headers: { 'X-Request-Id': log.requestId } }
     );
   }
 }

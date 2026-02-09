@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { COMMUNITIES, CommunityPolygon as PolygonData } from '@/data/communities-polygons';
+import { createRequestLogger } from '@/lib/logger';
+import { validateNLPPrompt, sanitizeNLPSummary } from '@/lib/nlp-guard';
 
 const REPLIERS_API_URL = process.env.REPLIERS_API_URL || 'https://api.repliers.io';
 const REPLIERS_API_KEY = process.env.REPLIERS_API_KEY || '';
@@ -61,27 +63,35 @@ function findCommunityFromPrompt(prompt: string): PolygonData | null {
 }
 
 export async function POST(request: NextRequest) {
+  const log = createRequestLogger('POST', '/api/nlp-search');
+
   try {
     const { prompt, nlpId }: NLPRequest = await request.json();
 
-    if (!prompt || prompt.trim().length === 0) {
+    // Validate and sanitize input (length limits, injection detection)
+    const validation = validateNLPPrompt(prompt);
+    if (!validation.valid) {
+      log.warn('NLP prompt validation failed', { errorCode: validation.errorCode });
       return NextResponse.json(
-        { error: 'Prompt is required' },
-        { status: 400 }
+        { error: validation.error },
+        { status: 400, headers: { 'X-Request-Id': log.requestId } }
       );
     }
 
+    const sanitizedPrompt = validation.sanitized!;
+    log.info('NLP search started', { promptLength: sanitizedPrompt.length, hasNlpId: !!nlpId });
+
     // Pre-extract zip code from prompt as fallback
-    const extractedZip = extractZipCode(prompt);
+    const extractedZip = extractZipCode(sanitizedPrompt);
     
     // Try to match a community/neighborhood from the prompt
-    const matchedCommunity = findCommunityFromPrompt(prompt);
+    const matchedCommunity = findCommunityFromPrompt(sanitizedPrompt);
     if (matchedCommunity) {
-      console.log(`Matched community: "${matchedCommunity.name}" (${matchedCommunity.slug}), polygon has ${matchedCommunity.polygon.length} points`);
+      log.info('Matched community from prompt', { community: matchedCommunity.name, slug: matchedCommunity.slug, polygonPoints: matchedCommunity.polygon.length });
     }
 
     // Call Repliers NLP endpoint
-    const nlpPayload: NLPRequest = { prompt };
+    const nlpPayload: NLPRequest = { prompt: sanitizedPrompt };
     if (nlpId) {
       nlpPayload.nlpId = nlpId;
     }
@@ -96,19 +106,19 @@ export async function POST(request: NextRequest) {
     });
 
     if (response.status === 406) {
-      // Prompt was not related to real estate search
+      log.info('NLP rejected prompt as non-real-estate');
       return NextResponse.json({
         error: 'not_real_estate',
         message: 'Please ask about real estate listings. For example: "Find me a 3 bedroom house in Austin under $500k"',
-      }, { status: 406 });
+      }, { status: 406, headers: { 'X-Request-Id': log.requestId } });
     }
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Repliers NLP error:', response.status, errorText);
+      log.error('Repliers NLP error', { status: response.status, error: errorText });
       return NextResponse.json(
-        { error: 'Failed to process search', details: errorText },
-        { status: response.status }
+        { error: 'Failed to process search' },
+        { status: response.status, headers: { 'X-Request-Id': log.requestId } }
       );
     }
 
@@ -118,12 +128,11 @@ export async function POST(request: NextRequest) {
     const generatedUrl = new URL(nlpResult.request.url);
     const searchParams = Object.fromEntries(generatedUrl.searchParams.entries());
     
-    console.log('NLP generated URL:', generatedUrl.toString());
-    console.log('NLP searchParams:', searchParams);
+    log.info('NLP generated search params', { url: generatedUrl.pathname, params: searchParams });
 
     // If NLP didn't extract zip but we found one in the prompt, add it
     if (extractedZip && !searchParams.zip) {
-      console.log('Adding extracted zip code:', extractedZip);
+      log.info('Adding extracted zip code', { zip: extractedZip });
       generatedUrl.searchParams.set('zip', extractedZip);
       // Remove area param if zip is specified (zip is more specific)
       generatedUrl.searchParams.delete('area');
@@ -161,7 +170,7 @@ export async function POST(request: NextRequest) {
         ring.push([first[0], first[1]]);
       }
       postBody = { map: [ring] };
-      console.log(`Using polygon filter for "${matchedCommunity.name}" with ${ring.length} points`);
+      log.info('Using polygon filter', { community: matchedCommunity.name, ringPoints: ring.length });
     }
 
     // Fetch listings — use POST with polygon body if available, otherwise GET
@@ -217,10 +226,12 @@ export async function POST(request: NextRequest) {
       updatedAt: raw.lastUpdate || raw.listDate,
     })) || [];
 
+    log.done('NLP search completed', { resultCount: transformedListings.length, total: listingsData.count || transformedListings.length, matchedCommunity: matchedCommunity?.name || null });
+
     return NextResponse.json({
       // NLP metadata
       nlpId: nlpResult.nlpId,
-      summary: nlpResult.request.summary,
+      summary: sanitizeNLPSummary(nlpResult.request.summary),
       searchParams,
       
       // Listings
@@ -235,13 +246,13 @@ export async function POST(request: NextRequest) {
       
       // Image search body if present
       imageSearch: nlpResult.request.body?.imageSearchItems || null,
-    });
+    }, { headers: { 'X-Request-Id': log.requestId } });
 
   } catch (error) {
-    console.error('NLP Search error:', error);
+    log.error('NLP search failed', { error: String(error) });
     return NextResponse.json(
-      { error: 'Failed to process AI search', details: String(error) },
-      { status: 500 }
+      { error: 'Failed to process AI search' },
+      { status: 500, headers: { 'X-Request-Id': log.requestId } }
     );
   }
 }

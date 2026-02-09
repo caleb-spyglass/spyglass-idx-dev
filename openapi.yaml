@@ -1,0 +1,757 @@
+openapi: 3.1.0
+info:
+  title: Spyglass IDX API
+  description: |
+    Real estate listing search API for the Spyglass IDX application.
+    Proxies MLS data from Repliers API and lead capture to Follow Up Boss CRM.
+  version: 0.1.0
+  contact:
+    name: Spyglass Realty Engineering
+
+servers:
+  - url: https://spyglass-idx.vercel.app
+    description: Production
+  - url: http://localhost:3000
+    description: Local development
+
+paths:
+  /api/listings:
+    get:
+      summary: Search listings with filters
+      description: |
+        Search MLS listings with query parameter filters.
+        Defaults to Travis County active listings sorted by newest.
+      operationId: searchListingsGet
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            default: 24
+            maximum: 100
+        - name: minPrice
+          in: query
+          schema:
+            type: integer
+        - name: maxPrice
+          in: query
+          schema:
+            type: integer
+        - name: minBeds
+          in: query
+          schema:
+            type: integer
+        - name: minBaths
+          in: query
+          schema:
+            type: integer
+        - name: city
+          in: query
+          schema:
+            type: string
+          example: Austin
+        - name: zip
+          in: query
+          schema:
+            type: string
+          example: "78704"
+        - name: area
+          in: query
+          description: County or MLS area. Defaults to "Travis" if no other location filter provided.
+          schema:
+            type: string
+          example: Travis
+        - name: sort
+          in: query
+          schema:
+            type: string
+            enum: [price-asc, price-desc, date-desc, sqft-desc]
+            default: date-desc
+        - name: polygon
+          in: query
+          description: |
+            Polygon as semicolon-separated lat,lng pairs.
+            Example: "30.26,-97.74;30.27,-97.73;30.26,-97.72"
+            Minimum 3 points required.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Search results
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SearchResults"
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    post:
+      summary: Search listings with polygon body
+      description: |
+        Search MLS listings with polygon filter in request body.
+        Use this when polygon data is too large for query string.
+      operationId: searchListingsPost
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SearchFilters"
+      responses:
+        "200":
+          description: Search results
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SearchResults"
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/listings/{mls}:
+    get:
+      summary: Get single listing by MLS number
+      operationId: getListingByMls
+      parameters:
+        - name: mls
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "T1234567"
+      responses:
+        "200":
+          description: Listing detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Listing"
+        "404":
+          description: Listing not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/listings/similar:
+    get:
+      summary: Get similar listings by price range
+      description: Returns up to 6 listings within ±25% of the given price, excluding the source listing.
+      operationId: getSimilarListings
+      parameters:
+        - name: mlsNumber
+          in: query
+          required: true
+          schema:
+            type: string
+          description: MLS number of the source listing to exclude
+        - name: price
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: Price to base similarity on
+        - name: city
+          in: query
+          schema:
+            type: string
+          description: Optionally filter by city
+      responses:
+        "200":
+          description: Similar listings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SearchResults"
+        "400":
+          description: Missing required parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/communities:
+    get:
+      summary: List all communities
+      description: Returns all community polygons. Filterable by county, featured status, and name search.
+      operationId: listCommunities
+      parameters:
+        - name: county
+          in: query
+          schema:
+            type: string
+          example: Travis
+        - name: featured
+          in: query
+          schema:
+            type: string
+            enum: ["true", "false"]
+        - name: search
+          in: query
+          description: Case-insensitive name search
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of communities
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  communities:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Community"
+                  total:
+                    type: integer
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/communities/{slug}:
+    get:
+      summary: Get community detail with listings
+      description: Returns community metadata, active listings within the polygon, and basic market stats.
+      operationId: getCommunityBySlug
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+          example: barton-hills
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        "200":
+          description: Community detail with listings
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  community:
+                    $ref: "#/components/schemas/Community"
+                  listings:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Listing"
+                  stats:
+                    $ref: "#/components/schemas/CommunityBasicStats"
+                  total:
+                    type: integer
+                  page:
+                    type: integer
+                  pageSize:
+                    type: integer
+        "404":
+          description: Community not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/communities/{slug}/stats:
+    get:
+      summary: Get community market statistics
+      description: |
+        Returns detailed market statistics for a community.
+        Fetches up to 200 active listings within the polygon and calculates
+        median price, price per sqft, property mix, price tiers, etc.
+      operationId: getCommunityStats
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+          example: barton-hills
+      responses:
+        "200":
+          description: Community statistics
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  stats:
+                    $ref: "#/components/schemas/CommunityStats"
+        "404":
+          description: Community not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/nlp-search:
+    post:
+      summary: AI-powered natural language search
+      description: |
+        Interprets a natural language prompt (e.g., "3 bed house in Barton Hills under 600k")
+        using the Repliers NLP endpoint, optionally matches a community polygon for geographic
+        filtering, and returns listings matching the interpreted search.
+        
+        Security: Input is validated for length (max 500 chars) and prompt injection patterns.
+      operationId: nlpSearch
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - prompt
+              properties:
+                prompt:
+                  type: string
+                  maxLength: 500
+                  description: Natural language real estate search query
+                  example: "3 bedroom house in Barton Hills under $600k"
+                nlpId:
+                  type: string
+                  description: Conversation ID for follow-up queries (from previous response)
+      responses:
+        "200":
+          description: NLP search results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  nlpId:
+                    type: string
+                    description: Conversation ID for follow-up queries
+                  summary:
+                    type: string
+                    description: Human-readable summary of interpreted search
+                  searchParams:
+                    type: object
+                    additionalProperties:
+                      type: string
+                    description: Parsed search parameters from NLP
+                  listings:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Listing"
+                  total:
+                    type: integer
+                  matchedCommunity:
+                    type: object
+                    nullable: true
+                    properties:
+                      name:
+                        type: string
+                      slug:
+                        type: string
+                    description: Matched community polygon info, if any
+                  imageSearch:
+                    type: object
+                    nullable: true
+                    description: Image search items from NLP, if any
+        "400":
+          description: Invalid input (empty prompt, too long, injection detected)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "406":
+          description: Prompt not related to real estate
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: not_real_estate
+                  message:
+                    type: string
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/leads:
+    post:
+      summary: Submit a lead to Follow Up Boss
+      description: |
+        Captures a lead from the IDX site and forwards it to Follow Up Boss CRM.
+        If FUB is not configured, the lead is logged locally and a success response is still returned.
+        Errors are never exposed to the user — always returns success.
+      operationId: submitLead
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+              properties:
+                name:
+                  type: string
+                  description: Full name
+                  example: "Jane Smith"
+                email:
+                  type: string
+                  format: email
+                  description: Email address (validated)
+                  example: "jane@example.com"
+                phone:
+                  type: string
+                  example: "512-555-0123"
+                message:
+                  type: string
+                  description: Optional message from the user
+                formType:
+                  type: string
+                  enum: [contact, showing, info]
+                  default: contact
+                listingAddress:
+                  type: string
+                  description: Address of listing being inquired about
+                mlsNumber:
+                  type: string
+                  description: MLS number of listing being inquired about
+                communityName:
+                  type: string
+                  description: Community name if inquiry is community-related
+                preferredDate:
+                  type: string
+                  description: Preferred showing date
+                preferredTime:
+                  type: string
+                  description: Preferred showing time
+      responses:
+        "200":
+          description: Lead captured successfully (always returns success)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Lead submitted successfully"
+                  personId:
+                    type: integer
+                    nullable: true
+                    description: FUB person ID (null if CRM not configured)
+        "400":
+          description: Validation error (missing name/email, invalid email)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+components:
+  schemas:
+    Listing:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Same as mlsNumber
+        mlsNumber:
+          type: string
+          example: "T1234567"
+        address:
+          type: object
+          properties:
+            street:
+              type: string
+              example: "123 Main St"
+            city:
+              type: string
+              example: "Austin"
+            state:
+              type: string
+              example: "TX"
+            zip:
+              type: string
+              example: "78704"
+            full:
+              type: string
+              example: "123 Main St, Austin, TX 78704"
+            neighborhood:
+              type: string
+              nullable: true
+        price:
+          type: integer
+          example: 450000
+        bedrooms:
+          type: integer
+          example: 3
+        bathrooms:
+          type: integer
+          example: 2
+        sqft:
+          type: integer
+          example: 1800
+        lotSize:
+          type: number
+          nullable: true
+        yearBuilt:
+          type: integer
+          nullable: true
+        propertyType:
+          type: string
+          enum: [Single Family, Condo, Townhouse, Multi-Family, Land]
+        status:
+          type: string
+          enum: [Active, Pending, Sold, Coming Soon]
+        daysOnMarket:
+          type: integer
+        photos:
+          type: array
+          items:
+            type: string
+            format: uri
+        description:
+          type: string
+          nullable: true
+        coordinates:
+          type: object
+          properties:
+            lat:
+              type: number
+            lng:
+              type: number
+        listDate:
+          type: string
+          format: date
+        updatedAt:
+          type: string
+          format: date-time
+
+    SearchResults:
+      type: object
+      properties:
+        listings:
+          type: array
+          items:
+            $ref: "#/components/schemas/Listing"
+        total:
+          type: integer
+        page:
+          type: integer
+        pageSize:
+          type: integer
+        hasMore:
+          type: boolean
+
+    SearchFilters:
+      type: object
+      properties:
+        page:
+          type: integer
+          default: 1
+        pageSize:
+          type: integer
+          default: 24
+        minPrice:
+          type: integer
+        maxPrice:
+          type: integer
+        minBeds:
+          type: integer
+        maxBeds:
+          type: integer
+        minBaths:
+          type: integer
+        maxBaths:
+          type: integer
+        minSqft:
+          type: integer
+        maxSqft:
+          type: integer
+        propertyTypes:
+          type: array
+          items:
+            type: string
+        status:
+          type: array
+          items:
+            type: string
+        type:
+          type: string
+          enum: [Sale, Lease]
+          default: Sale
+        city:
+          type: string
+        area:
+          type: string
+        zip:
+          type: string
+        neighborhood:
+          type: string
+        bounds:
+          type: object
+          properties:
+            north:
+              type: number
+            south:
+              type: number
+            east:
+              type: number
+            west:
+              type: number
+        polygon:
+          type: array
+          items:
+            type: object
+            properties:
+              lat:
+                type: number
+              lng:
+                type: number
+        sort:
+          type: string
+          enum: [price-asc, price-desc, date-desc, sqft-desc]
+          default: date-desc
+
+    Community:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Barton Hills"
+        slug:
+          type: string
+          example: "barton-hills"
+        county:
+          type: string
+          example: "Travis"
+        featured:
+          type: boolean
+        polygon:
+          type: array
+          description: "Coordinates in [lng, lat] format (GeoJSON standard)"
+          items:
+            type: array
+            items:
+              type: number
+            minItems: 2
+            maxItems: 2
+        displayPolygon:
+          type: array
+          description: "Coordinates in [lat, lng] format (Leaflet standard)"
+          items:
+            type: array
+            items:
+              type: number
+            minItems: 2
+            maxItems: 2
+
+    CommunityBasicStats:
+      type: object
+      properties:
+        activeListings:
+          type: integer
+        medianPrice:
+          type: integer
+        avgPricePerSqft:
+          type: integer
+        avgDaysOnMarket:
+          type: integer
+
+    CommunityStats:
+      type: object
+      properties:
+        activeListings:
+          type: integer
+        medianPrice:
+          type: integer
+        avgPrice:
+          type: integer
+        pricePerSqft:
+          type: integer
+        avgDaysOnMarket:
+          type: integer
+        minPrice:
+          type: integer
+        maxPrice:
+          type: integer
+        singleFamilyCount:
+          type: integer
+        condoCount:
+          type: integer
+        townhouseCount:
+          type: integer
+        avgBedrooms:
+          type: number
+        avgBathrooms:
+          type: number
+        avgSqft:
+          type: integer
+        under500k:
+          type: integer
+        range500kTo750k:
+          type: integer
+        range750kTo1m:
+          type: integer
+        over1m:
+          type: integer
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        details:
+          type: string
+          nullable: true
