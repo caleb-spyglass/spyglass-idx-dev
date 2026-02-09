@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { sampleCommunities } from '@/data/sample-communities';
-// import { searchByPolygon, getMarketStats } from '@/lib/repliers-api';
-import { mockListings } from '@/lib/mock-data';
-import { isPointInPolygon } from '@/lib/polygon-utils';
+import { getCommunityBySlug } from '@/data/communities-polygons';
+import { searchListings } from '@/lib/repliers-api';
 
 interface RouteContext {
   params: Promise<{ slug: string }>;
@@ -12,51 +10,57 @@ interface RouteContext {
 export async function GET(request: NextRequest, context: RouteContext) {
   try {
     const { slug } = await context.params;
-    
-    // TODO: Replace with database query
-    // const community = await db.query('SELECT * FROM community_zones WHERE slug = $1', [slug]);
-    const community = sampleCommunities.find(c => c.slug === slug);
-    
+    const { searchParams } = new URL(request.url);
+    const page = parseInt(searchParams.get('page') || '1');
+    const pageSize = parseInt(searchParams.get('pageSize') || '20');
+
+    const community = getCommunityBySlug(slug);
+
     if (!community) {
       return NextResponse.json(
         { error: 'Community not found' },
         { status: 404 }
       );
     }
-    
-    // Get listings within this community polygon
-    // TODO: Replace with Repliers API
-    // const repliersPolygon = community.coordinates.map(c => [c.lng, c.lat]);
-    // const listings = await searchByPolygon(repliersPolygon);
-    // const stats = await getMarketStats(repliersPolygon);
-    
-    // Mock: filter listings by polygon
-    // Convert coordinates to the expected format
-    const polygonCoords = community.coordinates.map(c => 
-      Array.isArray(c) ? { lat: c[0], lng: c[1] } : c
-    );
-    const listings = mockListings.filter(listing => 
-      isPointInPolygon(listing.coordinates, polygonCoords)
-    );
-    
-    // Mock stats
+
+    // Fetch real listings within the polygon from Repliers
+    const { listings, total } = await searchListings({
+      polygon: community.polygon.map(([lng, lat]) => ({ lat, lng })),
+      page,
+      pageSize,
+    });
+
+    // Calculate basic stats from returned listings
+    const prices = listings.map(l => l.price).filter(p => p > 0).sort((a, b) => a - b);
+    const sqftListings = listings.filter(l => l.sqft > 0);
+
     const stats = {
-      activeListings: listings.length,
-      medianPrice: listings.length > 0 
-        ? listings.sort((a, b) => a.price - b.price)[Math.floor(listings.length / 2)].price 
+      activeListings: total,
+      medianPrice: prices.length > 0
+        ? prices[Math.floor(prices.length / 2)]
         : 0,
-      avgPricePerSqft: listings.length > 0
-        ? Math.round(listings.reduce((sum, l) => sum + (l.price / l.sqft), 0) / listings.length)
+      avgPricePerSqft: sqftListings.length > 0
+        ? Math.round(sqftListings.reduce((sum, l) => sum + (l.price / l.sqft), 0) / sqftListings.length)
         : 0,
       avgDaysOnMarket: listings.length > 0
-        ? Math.round(listings.reduce((sum, l) => sum + l.daysOnMarket, 0) / listings.length)
+        ? Math.round(listings.reduce((sum, l) => sum + (l.daysOnMarket || 0), 0) / listings.length)
         : 0,
     };
-    
+
     return NextResponse.json({
-      community,
+      community: {
+        name: community.name,
+        slug: community.slug,
+        county: community.county,
+        featured: community.featured,
+        polygon: community.polygon,
+        displayPolygon: community.displayPolygon,
+      },
       listings,
       stats,
+      total,
+      page,
+      pageSize,
     });
   } catch (error) {
     console.error('Community detail API error:', error);
