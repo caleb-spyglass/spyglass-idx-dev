@@ -19,6 +19,7 @@ import {
   ArrowTrendingDownIcon,
 } from '@heroicons/react/24/outline';
 import ContactModal from '@/components/forms/ContactModal';
+import AreaCommunityListingsIsland from '@/components/community/AreaCommunityListingsIsland';
 import { formatPrice } from '@/lib/utils';
 
 type TabType = 'listings' | 'market' | 'about';
@@ -40,23 +41,48 @@ export default function ZipCodeHeroIsland({
   const router = useRouter();
   const searchParams = useSearchParams();
   const isEmbed = searchParams.get('embed') === 'true';
-  const initialTab = (searchParams.get('tab') as TabType) || 'market';
+  const initialTab = (searchParams.get('tab') as TabType) || 'listings';
 
   const [activeTab, setActiveTab] = useState<TabType>(initialTab);
   const [showContactModal, setShowContactModal] = useState(false);
+  const [total, setTotal] = useState<number | null>(zipCodeData.marketData?.activeListings ?? null);
+  const [medianPrice, setMedianPrice] = useState<number | null>(zipCodeData.marketData?.medianPrice ?? null);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch real listing stats from the API
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await fetch(`/api/listings?zip=${zipCodeData.zipCode}&pageSize=100`);
+        if (response.ok) {
+          const data = await response.json();
+          setTotal(data.total || 0);
+          if (data.listings && data.listings.length > 0) {
+            const sorted = [...data.listings].sort((a: any, b: any) => a.price - b.price);
+            const median = sorted[Math.floor(sorted.length / 2)].price;
+            setMedianPrice(median);
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch stats:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchStats();
+  }, [zipCodeData.zipCode]);
 
   const tabs = [
-    { 
-      id: 'market' as TabType, 
-      label: 'Market Data', 
-      icon: ChartBarIcon,
-      count: zipCodeData.marketData?.activeListings 
-    },
     { 
       id: 'listings' as TabType, 
       label: 'Listings', 
       icon: Squares2X2Icon, 
-      count: zipCodeData.marketData?.activeListings 
+      count: total 
+    },
+    { 
+      id: 'market' as TabType, 
+      label: 'Market Data', 
+      icon: ChartBarIcon,
     },
     { id: 'about' as TabType, label: 'About', icon: InformationCircleIcon },
   ];
@@ -95,16 +121,18 @@ export default function ZipCodeHeroIsland({
                   <MapPinIcon className="w-4 h-4" />
                   <span>{zipCodeData.county} County, Austin TX</span>
                 </div>
-                {marketData && (
+                {!loading && total !== null && (
                   <>
                     <div className="flex items-center gap-1">
                       <HomeIcon className="w-4 h-4" />
-                      <span>{marketData.activeListings} Active Listings</span>
+                      <span>{total} Active Listings</span>
                     </div>
-                    <div className="flex items-center gap-1">
-                      <CurrencyDollarIcon className="w-4 h-4" />
-                      <span>Median: {formatPrice(marketData.medianPrice)}</span>
-                    </div>
+                    {medianPrice && medianPrice > 0 && (
+                      <div className="flex items-center gap-1">
+                        <CurrencyDollarIcon className="w-4 h-4" />
+                        <span>Median: {formatPrice(medianPrice)}</span>
+                      </div>
+                    )}
                   </>
                 )}
               </div>
@@ -284,24 +312,13 @@ export default function ZipCodeHeroIsland({
       )}
 
       {activeTab === 'listings' && (
-        <div className="flex-1 overflow-y-auto">
-          <div className="max-w-5xl mx-auto px-4 py-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">
-              Active Listings in {zipCodeData.zipCode}
-            </h2>
-            <div className="bg-white rounded-xl p-6 text-center">
-              <p className="text-gray-600 mb-4">
-                View all active listings in the {zipCodeData.zipCode} area.
-              </p>
-              <a
-                href={`/search?zip=${zipCodeData.zipCode}`}
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors"
-              >
-                View {zipCodeData.zipCode} Listings
-              </a>
-            </div>
-          </div>
-        </div>
+        <AreaCommunityListingsIsland
+          communitySlug={zipCodeData.slug}
+          communityName={zipCodeData.name}
+          areaType="zip"
+          filterValue={zipCodeData.zipCode}
+          isEmbed={isEmbed}
+        />
       )}
 
       {activeTab === 'about' && (
