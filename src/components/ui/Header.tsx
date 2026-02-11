@@ -27,6 +27,9 @@ export function Header() {
             <Link href="/communities" className="text-sm hover:text-spyglass-orange transition-colors">
               Communities
             </Link>
+            <Link href="/zip-codes" className="text-sm hover:text-spyglass-orange transition-colors">
+              Zip Codes
+            </Link>
             <Link href="/agents" className="text-sm hover:text-spyglass-orange transition-colors">
               Agents
             </Link>
