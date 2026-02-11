@@ -57,6 +57,8 @@ interface DemographicData {
 interface CommunityStatsProps {
   communitySlug: string;
   communityName: string;
+  /** Override the default stats API endpoint (e.g. for zip codes) */
+  statsUrl?: string;
 }
 
 // ─── HELPER FUNCTIONS ────────────────────────────────────────────────────
@@ -375,6 +377,7 @@ function PropertyTypeMix({ stats }: { stats: CommunityStats }) {
 export default function CommunityStats({
   communitySlug,
   communityName,
+  statsUrl,
 }: CommunityStatsProps) {
   const [stats, setStats] = useState<CommunityStats | null>(null);
   const [demographics, setDemographics] = useState<DemographicData | null>(null);
@@ -383,7 +386,8 @@ export default function CommunityStats({
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await fetch(`/api/communities/${communitySlug}/stats`);
+        const url = statsUrl || `/api/communities/${communitySlug}/stats`;
+        const response = await fetch(url);
         if (response.ok) {
           const data = await response.json();
           setStats(data.stats);

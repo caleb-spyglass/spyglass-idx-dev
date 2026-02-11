@@ -20,6 +20,7 @@ import {
 } from '@heroicons/react/24/outline';
 import ContactModal from '@/components/forms/ContactModal';
 import AreaCommunityListingsIsland from '@/components/community/AreaCommunityListingsIsland';
+import CommunityStats from '@/components/community/CommunityStats';
 import { formatPrice } from '@/lib/utils';
 
 type TabType = 'listings' | 'market' | 'about';
@@ -188,125 +189,14 @@ export default function ZipCodeHeroIsland({
       </div>
 
       {/* Tab Content */}
-      {activeTab === 'market' && marketData && (
+      {activeTab === 'market' && (
         <div className="flex-1 overflow-y-auto">
           <div className="max-w-5xl mx-auto px-4 py-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">
-              Market Statistics for {zipCodeData.zipCode}
-            </h2>
-
-            {/* Market Temperature */}
-            <div className={`rounded-xl p-6 mb-8 border ${getMarketTempBg(marketData.marketTemperature)}`}>
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-900">Market Temperature</h3>
-                <span className={`text-lg font-bold ${getMarketTempColor(marketData.marketTemperature)} capitalize`}>
-                  {marketData.marketTemperature}
-                </span>
-              </div>
-              <p className="text-gray-600 text-sm">
-                {marketData.marketTemperature === 'hot' 
-                  ? 'Homes are selling fast with high competition' 
-                  : marketData.marketTemperature === 'warm'
-                  ? 'Active market with steady demand'
-                  : marketData.marketTemperature === 'cool' 
-                  ? 'Buyers have more negotiating power'
-                  : 'Buyer-friendly market with less competition'}
-              </p>
-            </div>
-
-            {/* Market Overview */}
-            <h3 className="text-lg font-bold text-gray-900 mb-4">Market Overview</h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-              <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 bg-red-50 rounded-lg flex items-center justify-center">
-                    <HomeIcon className="w-5 h-5 text-red-600" />
-                  </div>
-                  <span className="text-sm text-gray-500">Active Listings</span>
-                </div>
-                <div className="text-2xl font-bold text-gray-900">{marketData.activeListings}</div>
-              </div>
-
-              <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 bg-red-50 rounded-lg flex items-center justify-center">
-                    <CurrencyDollarIcon className="w-5 h-5 text-red-600" />
-                  </div>
-                  <span className="text-sm text-gray-500">Median Price</span>
-                </div>
-                <div className="text-2xl font-bold text-gray-900">{formatPrice(marketData.medianPrice)}</div>
-                <div className="flex items-center gap-1 mt-1">
-                  {marketData.medianPrice > AUSTIN_METRO_MEDIAN ? (
-                    <ArrowTrendingUpIcon className="w-3.5 h-3.5 text-green-600" />
-                  ) : (
-                    <ArrowTrendingDownIcon className="w-3.5 h-3.5 text-red-500" />
-                  )}
-                  <span className="text-xs text-gray-500">
-                    {Math.round(((marketData.medianPrice - AUSTIN_METRO_MEDIAN) / AUSTIN_METRO_MEDIAN) * 100)}% vs metro avg
-                  </span>
-                </div>
-              </div>
-
-              <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 bg-red-50 rounded-lg flex items-center justify-center">
-                    <ChartBarIcon className="w-5 h-5 text-red-600" />
-                  </div>
-                  <span className="text-sm text-gray-500">Price/Sqft</span>
-                </div>
-                <div className="text-2xl font-bold text-gray-900">${marketData.pricePerSqft}</div>
-                <div className="flex items-center gap-1 mt-1">
-                  {marketData.pricePerSqft > AUSTIN_METRO_PRICE_SQFT ? (
-                    <ArrowTrendingUpIcon className="w-3.5 h-3.5 text-green-600" />
-                  ) : (
-                    <ArrowTrendingDownIcon className="w-3.5 h-3.5 text-red-500" />
-                  )}
-                  <span className="text-xs text-gray-500">Metro avg ${AUSTIN_METRO_PRICE_SQFT}</span>
-                </div>
-              </div>
-
-              <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 bg-red-50 rounded-lg flex items-center justify-center">
-                    <ClockIcon className="w-5 h-5 text-red-600" />
-                  </div>
-                  <span className="text-sm text-gray-500">Avg Days on Market</span>
-                </div>
-                <div className="text-2xl font-bold text-gray-900">{marketData.avgDaysOnMarket}</div>
-                <div className="text-xs text-gray-500 mt-1">days</div>
-                <div className="flex items-center gap-1 mt-1">
-                  {marketData.avgDaysOnMarket < AUSTIN_METRO_AVG_DOM ? (
-                    <ArrowTrendingUpIcon className="w-3.5 h-3.5 text-green-600" />
-                  ) : (
-                    <ArrowTrendingDownIcon className="w-3.5 h-3.5 text-red-500" />
-                  )}
-                  <span className="text-xs text-gray-500">
-                    {marketData.avgDaysOnMarket < AUSTIN_METRO_AVG_DOM ? 'Faster' : 'Slower'} than metro avg ({AUSTIN_METRO_AVG_DOM}d)
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* vs Austin Metro Comparison */}
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-              <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                <ChartBarIcon className="w-5 h-5 text-spyglass-orange" />
-                vs. Austin Metro Average
-              </h3>
-              
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-2">
-                  <div className="bg-spyglass-orange/5 rounded-lg px-3 py-2 text-center">
-                    <div className="text-sm font-bold text-gray-900">{formatPrice(marketData.medianPrice)}</div>
-                    <div className="text-xs text-gray-500">This community</div>
-                  </div>
-                  <div className="bg-gray-50 rounded-lg px-3 py-2 text-center">
-                    <div className="text-sm font-bold text-gray-500">{formatPrice(AUSTIN_METRO_MEDIAN)}</div>
-                    <div className="text-xs text-gray-400">Austin metro</div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <CommunityStats
+              communitySlug={zipCodeData.slug}
+              communityName={`${zipCodeData.zipCode} (${zipCodeData.name})`}
+              statsUrl={`/api/zip-codes/${zipCodeData.zipCode}/stats`}
+            />
           </div>
         </div>
       )}

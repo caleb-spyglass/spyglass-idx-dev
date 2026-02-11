@@ -1,5 +1,5 @@
-import { NextRequest } from 'next/server';
-import { getZipCodeBySlug } from '@/data/zip-codes-data';
+import { NextRequest, NextResponse } from 'next/server';
+import { searchListings } from '@/lib/repliers-api';
 
 export async function GET(
   request: NextRequest,
@@ -7,98 +7,101 @@ export async function GET(
 ) {
   try {
     const { zipcode } = await params;
-    
-    // Get zip code data
-    const zipCodeData = getZipCodeBySlug(zipcode);
-    
-    if (!zipCodeData) {
-      return Response.json(
-        { error: 'Zip code not found' },
-        { status: 404 }
-      );
+
+    // Fetch listings by zip code
+    const { listings, total } = await searchListings({
+      zip: zipcode,
+      pageSize: 200,
+    });
+
+    if (listings.length === 0) {
+      return NextResponse.json({
+        stats: {
+          activeListings: 0,
+          medianPrice: 0,
+          avgPrice: 0,
+          pricePerSqft: 0,
+          avgDaysOnMarket: 0,
+          minPrice: 0,
+          maxPrice: 0,
+          singleFamilyCount: 0,
+          condoCount: 0,
+          townhouseCount: 0,
+          avgBedrooms: 0,
+          avgBathrooms: 0,
+          avgSqft: 0,
+          under500k: 0,
+          range500kTo750k: 0,
+          range750kTo1m: 0,
+          over1m: 0,
+        },
+      });
     }
 
-    // Mock data for now - in production, this would fetch from Pulse app or MLS API
+    // Calculate statistics (same logic as community stats)
+    const prices = listings.map((l) => l.price).sort((a, b) => a - b);
+    const medianPrice = prices[Math.floor(prices.length / 2)];
+    const avgPrice = Math.round(prices.reduce((a, b) => a + b, 0) / prices.length);
+
+    const sqftListings = listings.filter((l) => l.sqft > 0);
+    const totalSqft = sqftListings.reduce((a, l) => a + l.sqft, 0);
+    const avgSqft = sqftListings.length > 0 ? Math.round(totalSqft / sqftListings.length) : 0;
+
+    const pricePerSqft =
+      sqftListings.length > 0
+        ? Math.round(sqftListings.reduce((a, l) => a + l.price / l.sqft, 0) / sqftListings.length)
+        : 0;
+
+    const avgDaysOnMarket = Math.round(
+      listings.reduce((a, l) => a + (l.daysOnMarket || 0), 0) / listings.length
+    );
+
+    const avgBedrooms =
+      Math.round((listings.reduce((a, l) => a + l.bedrooms, 0) / listings.length) * 10) / 10;
+
+    const avgBathrooms =
+      Math.round((listings.reduce((a, l) => a + l.bathrooms, 0) / listings.length) * 10) / 10;
+
+    // Property type counts
+    const singleFamilyCount = listings.filter(
+      (l) => l.propertyType === 'Single Family' || l.propertyType?.toLowerCase().includes('single')
+    ).length;
+    const condoCount = listings.filter(
+      (l) => l.propertyType === 'Condo' || l.propertyType?.toLowerCase().includes('condo')
+    ).length;
+    const townhouseCount = listings.filter(
+      (l) => l.propertyType === 'Townhouse' || l.propertyType?.toLowerCase().includes('town')
+    ).length;
+
+    // Price tier counts
+    const under500k = listings.filter((l) => l.price < 500000).length;
+    const range500kTo750k = listings.filter((l) => l.price >= 500000 && l.price < 750000).length;
+    const range750kTo1m = listings.filter((l) => l.price >= 750000 && l.price < 1000000).length;
+    const over1m = listings.filter((l) => l.price >= 1000000).length;
+
     const stats = {
-      zipCode: zipCodeData.zipCode,
-      activeListings: zipCodeData.marketData?.activeListings || 0,
-      medianPrice: zipCodeData.marketData?.medianPrice || 0,
-      avgPrice: Math.round((zipCodeData.marketData?.medianPrice || 0) * 1.15),
-      pricePerSqft: zipCodeData.marketData?.pricePerSqft || 0,
-      avgDaysOnMarket: zipCodeData.marketData?.avgDaysOnMarket || 0,
-      marketTemperature: zipCodeData.marketData?.marketTemperature || 'cool',
-      
-      // Additional mock data that could come from Pulse app
-      minPrice: Math.round((zipCodeData.marketData?.medianPrice || 500000) * 0.6),
-      maxPrice: Math.round((zipCodeData.marketData?.medianPrice || 500000) * 2.1),
-      singleFamilyCount: Math.round((zipCodeData.marketData?.activeListings || 0) * 0.65),
-      condoCount: Math.round((zipCodeData.marketData?.activeListings || 0) * 0.25),
-      townhouseCount: Math.round((zipCodeData.marketData?.activeListings || 0) * 0.1),
-      avgBedrooms: 3.2,
-      avgBathrooms: 2.5,
-      avgSqft: Math.round((zipCodeData.marketData?.medianPrice || 500000) / (zipCodeData.marketData?.pricePerSqft || 300)),
-      
-      // Price distribution
-      under500k: Math.round((zipCodeData.marketData?.activeListings || 0) * 0.2),
-      range500kTo750k: Math.round((zipCodeData.marketData?.activeListings || 0) * 0.3),
-      range750kTo1m: Math.round((zipCodeData.marketData?.activeListings || 0) * 0.3),
-      over1m: Math.round((zipCodeData.marketData?.activeListings || 0) * 0.2),
+      activeListings: total,
+      medianPrice,
+      avgPrice,
+      pricePerSqft,
+      avgDaysOnMarket,
+      minPrice: prices[0],
+      maxPrice: prices[prices.length - 1],
+      singleFamilyCount,
+      condoCount,
+      townhouseCount,
+      avgBedrooms,
+      avgBathrooms,
+      avgSqft,
+      under500k,
+      range500kTo750k,
+      range750kTo1m,
+      over1m,
     };
 
-    return Response.json({
-      success: true,
-      zipCode: zipCodeData.zipCode,
-      stats,
-      lastUpdated: new Date().toISOString(),
-      // This could indicate data source in the future
-      dataSource: 'mock', // In production: 'pulse-app' or 'mls-api'
-    });
-
+    return NextResponse.json({ stats });
   } catch (error) {
-    console.error('Error fetching zip code stats:', error);
-    return Response.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
-  }
-}
-
-// This endpoint could be called by your Pulse app to update real-time data
-export async function POST(
-  request: NextRequest,
-  { params }: { params: Promise<{ zipcode: string }> }
-) {
-  try {
-    const { zipcode } = await params;
-    const body = await request.json();
-    
-    // Validate the data format
-    const requiredFields = ['activeListings', 'medianPrice', 'pricePerSqft', 'avgDaysOnMarket'];
-    const missingFields = requiredFields.filter(field => !(field in body));
-    
-    if (missingFields.length > 0) {
-      return Response.json(
-        { error: `Missing required fields: ${missingFields.join(', ')}` },
-        { status: 400 }
-      );
-    }
-
-    // In production, you would:
-    // 1. Validate the API key/authentication 
-    // 2. Update your database with the new market data
-    // 3. Possibly trigger cache invalidation for the zip code pages
-    
-    return Response.json({
-      success: true,
-      message: `Market data updated for zip code ${zipcode}`,
-      updated: new Date().toISOString(),
-    });
-
-  } catch (error) {
-    console.error('Error updating zip code stats:', error);
-    return Response.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    console.error('Zip code stats error:', error);
+    return NextResponse.json({ error: 'Failed to fetch zip code stats' }, { status: 500 });
   }
 }
