@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 export function Footer() {
   return (
@@ -8,10 +9,13 @@ export function Footer() {
           {/* Company Info */}
           <div>
             <div className="flex items-center gap-2 mb-6">
-              <span className="text-2xl font-bold tracking-tight">
-                <span className="text-spyglass-orange">SPYGLASS</span>
-                <span className="font-light ml-1">REALTY</span>
-              </span>
+              <Image
+                src="/spyglass-logo.png"
+                alt="Spyglass Realty"
+                width={60}
+                height={60}
+                className="h-12 w-auto filter brightness-0 invert"
+              />
             </div>
             
             <div className="space-y-2 text-gray-300">
