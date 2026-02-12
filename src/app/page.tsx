@@ -2,6 +2,7 @@
 
 import { useState, useEffect, lazy, Suspense } from 'react';
 import { Header } from '@/components/ui/Header';
+import { HomePage } from '@/components/home/HomePage';
 import { FilterBar } from '@/components/search/FilterBar';
 import { AISearchBar } from '@/components/search/AISearchBar';
 import { ListingsGrid } from '@/components/listings/ListingsGrid';
@@ -11,7 +12,7 @@ import { CommunityPolygon } from '@/types/community';
 import { useListings } from '@/hooks/useListings';
 import { useSavedSearches } from '@/hooks/useSavedSearches';
 import { ListingDetailOverlay } from '@/components/listings/ListingDetailOverlay';
-import { SparklesIcon, AdjustmentsHorizontalIcon, BookmarkIcon } from '@heroicons/react/24/outline';
+import { SparklesIcon, AdjustmentsHorizontalIcon, BookmarkIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
 
 // Lazy load Leaflet map to avoid SSR issues
 const LeafletMap = lazy(() => 
@@ -26,7 +27,10 @@ function MapLoadingFallback() {
   );
 }
 
-export default function SearchPage() {
+export default function Page() {
+  // Page state - controls whether to show homepage or search interface
+  const [showHomepage, setShowHomepage] = useState(true);
+  
   const [filters, setFilters] = useState<SearchFilters>({});
   const [selectedListing, setSelectedListing] = useState<Listing | null>(null);
   const [hoveredListing, setHoveredListing] = useState<Listing | null>(null);
@@ -55,22 +59,22 @@ export default function SearchPage() {
     hasMore, 
     fetchListings, 
     loadMore 
-  } = useListings({ autoFetch: searchMode === 'filters' });
+  } = useListings({ autoFetch: !showHomepage && searchMode === 'filters' });
   
   // Use AI listings when AI search is active, otherwise use filter listings
   const listings = isAiActive ? aiListings : filterListings;
   const total = isAiActive ? aiTotal : filterTotal;
 
-  // Refetch when filters change (only in filter mode)
+  // Refetch when filters change (only in filter mode and not on homepage)
   useEffect(() => {
-    if (searchMode === 'filters' || !isAiActive) {
+    if (!showHomepage && (searchMode === 'filters' || !isAiActive)) {
       const searchFilters: SearchFilters = {
         ...filters,
         polygon: selectedCommunity?.coordinates,
       };
       fetchListings(searchFilters);
     }
-  }, [filters, selectedCommunity, searchMode, isAiActive]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [filters, selectedCommunity, searchMode, isAiActive, showHomepage]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSelectCommunity = (community: CommunityPolygon) => {
     if (selectedCommunity?.id === community.id) {
@@ -85,7 +89,7 @@ export default function SearchPage() {
     setFilters(newFilters);
   };
 
-  const handleAIResults = (results: { listings: Listing[]; total: number; summary: string; nlpId: string; matchedCommunity?: { name: string; slug: string } | null }) => {
+  const handleSearchResults = (results: { listings: Listing[]; total: number; summary: string; nlpId: string; matchedCommunity?: { name: string; slug: string } | null }) => {
     setAiListings(results.listings);
     setAiTotal(results.total);
     setAiSummary(results.summary);
@@ -114,7 +118,9 @@ export default function SearchPage() {
     setIsAiActive(false);
     setMatchedCommunityName(null);
     setSelectedCommunity(null);
-    fetchListings(filters);
+    if (!showHomepage) {
+      fetchListings(filters);
+    }
   };
 
   // Check if any meaningful filter is active
@@ -138,17 +144,53 @@ export default function SearchPage() {
     setShowSaveSearchPrompt(false);
   };
 
+  const handleShowSearchPage = () => {
+    setShowHomepage(false);
+  };
+
+  const handleBackToHome = () => {
+    setShowHomepage(true);
+    setAiListings([]);
+    setAiTotal(0);
+    setAiSummary(null);
+    setIsAiActive(false);
+    setMatchedCommunityName(null);
+    setSelectedCommunity(null);
+  };
+
+  // Show homepage
+  if (showHomepage) {
+    return (
+      <div className="flex flex-col min-h-screen">
+        <Header />
+        <HomePage 
+          onSearchResults={handleSearchResults}
+          onShowSearchPage={handleShowSearchPage}
+        />
+      </div>
+    );
+  }
+
+  // Show search interface
   return (
     <div className="flex flex-col h-screen">
       <Header />
       
       {/* Search Mode Toggle + Search Bar */}
       <div className="bg-white border-b border-gray-200 sticky top-0 z-30">
-        {/* Mode Toggle */}
+        {/* Back to Home + Mode Toggle */}
         <div className="px-4 pt-3 pb-2 flex items-center gap-4">
+          <button
+            onClick={handleBackToHome}
+            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+          >
+            <ArrowLeftIcon className="w-4 h-4" />
+            <span className="text-sm">Home</span>
+          </button>
+          
           <div className="flex bg-gray-100 rounded-lg p-1">
             <button
-              onClick={() => { setSearchMode('ai'); if (!isAiActive) fetchListings(filters); }}
+              onClick={() => { setSearchMode('ai'); if (!isAiActive && !showHomepage) fetchListings(filters); }}
               className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
                 searchMode === 'ai'
                   ? 'bg-white text-spyglass-orange shadow-sm'
@@ -182,7 +224,7 @@ export default function SearchPage() {
         {searchMode === 'ai' && (
           <div className="px-4 pb-3">
             <AISearchBar
-              onResults={handleAIResults}
+              onResults={handleSearchResults}
               onClear={handleAIClear}
             />
           </div>
