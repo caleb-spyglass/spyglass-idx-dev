@@ -10,7 +10,7 @@ export function Footer() {
           <div>
             <div className="flex items-center gap-2 mb-6">
               <Image
-                src="/spyglass-logo.png"
+                src="/spyglass-logo-footer.svg"
                 alt="Spyglass Realty"
                 width={60}
                 height={60}

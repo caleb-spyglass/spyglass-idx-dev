@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { useState } from 'react';
 import { ChevronDownIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 
@@ -18,13 +17,11 @@ export function Header() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
-            <Image
-              src="/spyglass-logo.png"
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/spyglass-logo-white.svg"
               alt="Spyglass Realty"
-              width={45}
-              height={45}
-              className="h-10 w-auto"
-              priority
+              className="h-12 w-auto"
             />
           </Link>
 

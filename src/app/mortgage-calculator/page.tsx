@@ -14,6 +14,8 @@ export default function MortgageCalculatorPage() {
   
   // Additional costs
   const [propertyTax, setPropertyTax] = useState<string>('8000');
+  const [propertyTaxPercent, setPropertyTaxPercent] = useState<string>('1.6');
+  const [useTaxPercent, setUseTaxPercent] = useState<boolean>(true);
   const [homeInsurance, setHomeInsurance] = useState<string>('2000');
   const [hoa, setHoa] = useState<string>('0');
   const [pmi, setPmi] = useState<string>('0');
@@ -31,7 +33,15 @@ export default function MortgageCalculatorPage() {
     const down = usePercent ? (price * parseFloat(downPaymentPercent)) / 100 : parseFloat(downPayment) || 0;
     const rate = parseFloat(interestRate) || 0;
     const term = parseFloat(loanTerm) || 30;
-    const tax = parseFloat(propertyTax) || 0;
+    const tax = useTaxPercent ? (price * (parseFloat(propertyTaxPercent) || 0)) / 100 : (parseFloat(propertyTax) || 0);
+
+    // Sync property tax values
+    if (useTaxPercent) {
+      setPropertyTax(Math.round(tax).toString());
+    } else {
+      const taxPct = price > 0 ? ((parseFloat(propertyTax) || 0) / price * 100).toFixed(2) : '0';
+      setPropertyTaxPercent(taxPct);
+    }
     const insurance = parseFloat(homeInsurance) || 0;
     const hoaAmount = parseFloat(hoa) || 0;
     const pmiAmount = parseFloat(pmi) || 0;
@@ -68,7 +78,7 @@ export default function MortgageCalculatorPage() {
     setMonthlyPmi(monthlyPmiAmount);
     setMonthlyPayment(totalMonthly);
 
-  }, [homePrice, downPayment, downPaymentPercent, interestRate, loanTerm, usePercent, propertyTax, homeInsurance, hoa, pmi]);
+  }, [homePrice, downPayment, downPaymentPercent, interestRate, loanTerm, usePercent, propertyTax, propertyTaxPercent, useTaxPercent, homeInsurance, hoa, pmi]);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -221,20 +231,55 @@ export default function MortgageCalculatorPage() {
               <div className="space-y-6">
                 {/* Property Tax */}
                 <div>
-                  <label htmlFor="propertyTax" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
                     Annual Property Tax
                   </label>
+                  <div className="flex gap-2 mb-3">
+                    <button
+                      onClick={() => setUseTaxPercent(false)}
+                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                        !useTaxPercent
+                          ? 'bg-spyglass-orange text-white'
+                          : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                      }`}
+                    >
+                      Dollar Amount
+                    </button>
+                    <button
+                      onClick={() => setUseTaxPercent(true)}
+                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                        useTaxPercent
+                          ? 'bg-spyglass-orange text-white'
+                          : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                      }`}
+                    >
+                      Percentage
+                    </button>
+                  </div>
                   <div className="relative">
-                    <span className="absolute left-3 top-3 text-gray-500">$</span>
+                    <span className="absolute left-3 top-3 text-gray-500">
+                      {useTaxPercent ? '%' : '$'}
+                    </span>
                     <input
                       type="text"
-                      id="propertyTax"
-                      value={formatNumber(propertyTax)}
-                      onChange={(e) => setPropertyTax(e.target.value.replace(/,/g, ''))}
+                      value={useTaxPercent ? propertyTaxPercent : formatNumber(propertyTax)}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/,/g, '');
+                        if (useTaxPercent) {
+                          setPropertyTaxPercent(value);
+                        } else {
+                          setPropertyTax(value);
+                        }
+                      }}
                       className="w-full pl-8 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-spyglass-orange focus:border-transparent"
-                      placeholder="8,000"
+                      placeholder={useTaxPercent ? "1.6" : "8,000"}
                     />
                   </div>
+                  {useTaxPercent && (
+                    <p className="text-xs text-gray-500 mt-1">
+                      = {formatCurrency(parseFloat(propertyTax) || 0)}/year
+                    </p>
+                  )}
                 </div>
 
                 {/* Home Insurance */}
