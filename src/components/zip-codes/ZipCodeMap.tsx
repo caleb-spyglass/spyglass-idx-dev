@@ -1,172 +1,197 @@
 'use client';
 
-import { useState } from 'react';
-import { ZipCodeData } from '@/data/zip-codes-data';
-import { formatPrice } from '@/lib/utils';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import {
-  HomeIcon,
-  CurrencyDollarIcon,
-  MapPinIcon,
-  ArrowTopRightOnSquareIcon,
-} from '@heroicons/react/24/outline';
+import { ZipCodeData } from '@/data/zip-codes-data';
+
+// Use dynamic import for mapbox-gl to avoid SSR issues
+// Import CSS via link tag or import statement
+
+const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || '';
+
+const ZIP_COLORS = [
+  '#e6194b', '#3cb44b', '#ffe119', '#4363d8', '#f58231',
+  '#911eb4', '#42d4f4', '#f032e6', '#bfef45', '#fabed4',
+  '#469990', '#dcbeff', '#9A6324', '#800000', '#aaffc3',
+  '#808000', '#ffd8b1', '#000075', '#a9a9a9', '#000000',
+  '#e6beff', '#1abc9c', '#16a085', '#2ecc71', '#27ae60',
+  '#3498db', '#2980b9', '#9b59b6', '#8e44ad', '#34495e',
+  '#f39c12', '#e74c3c', '#c0392b', '#d35400', '#7f8c8d',
+  '#2c3e50', '#1a5276', '#7d3c98', '#a04000', '#1b4f72',
+  '#117a65', '#b7950b'
+];
 
 interface ZipCodeMapProps {
   zipCodes: ZipCodeData[];
 }
 
 export default function ZipCodeMap({ zipCodes }: ZipCodeMapProps) {
-  const [selectedZip, setSelectedZip] = useState<ZipCodeData | null>(null);
+  const mapContainer = useRef<HTMLDivElement>(null);
+  const map = useRef<any>(null);
+  const [mapLoaded, setMapLoaded] = useState(false);
+  const [loadError, setLoadError] = useState(false);
   const router = useRouter();
 
-  // Simple map representation - in a real implementation you'd use Google Maps or Mapbox
-  return (
-    <div className="relative w-full h-full bg-gradient-to-br from-blue-100 to-green-100 rounded-lg overflow-hidden">
-      {/* Map Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-green-50" />
-      
-      {/* Zip Code Regions */}
-      <div className="relative w-full h-full">
-        {zipCodes.map((zipCode, index) => (
-          <div
-            key={zipCode.zipCode}
-            className={`absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer transition-all duration-200 hover:scale-110 ${
-              selectedZip?.zipCode === zipCode.zipCode ? 'z-10 scale-110' : 'z-0'
-            }`}
-            style={{
-              left: `${30 + (index * 25)}%`,
-              top: `${40 + (index * 15)}%`,
-            }}
-            onClick={() => setSelectedZip(zipCode)}
-          >
-            {/* Zip Code Marker */}
-            <div
-              className={`w-16 h-16 rounded-full border-4 shadow-lg flex items-center justify-center text-white font-bold text-sm transition-all duration-200 ${
-                selectedZip?.zipCode === zipCode.zipCode
-                  ? 'bg-spyglass-orange border-white scale-110 shadow-xl'
-                  : zipCode.marketData?.marketTemperature === 'hot'
-                  ? 'bg-red-500 border-red-300 hover:bg-red-600'
-                  : zipCode.marketData?.marketTemperature === 'warm'
-                  ? 'bg-orange-500 border-orange-300 hover:bg-orange-600'
-                  : 'bg-blue-500 border-blue-300 hover:bg-blue-600'
-              }`}
-            >
-              {zipCode.zipCode}
-            </div>
+  useEffect(() => {
+    if (!mapContainer.current || !MAPBOX_TOKEN || mapLoaded) return;
+    
+    // Dynamic import to avoid SSR
+    import('mapbox-gl')
+      .then((mapboxgl) => {
+        // Import CSS dynamically
+        const link = document.createElement('link');
+        link.href = 'https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css';
+        link.rel = 'stylesheet';
+        document.head.appendChild(link);
+
+        mapboxgl.default.accessToken = MAPBOX_TOKEN;
+        
+        map.current = new mapboxgl.default.Map({
+          container: mapContainer.current!,
+          style: 'mapbox://styles/mapbox/light-v11',
+          center: [-97.74, 30.27],
+          zoom: 9,
+        });
+
+        map.current.on('load', () => {
+          setMapLoaded(true);
+          
+          zipCodes.forEach((zip, index) => {
+            if (!zip.polygon || zip.polygon.length < 3) return;
             
-            {/* Hover Label */}
-            <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 whitespace-nowrap text-xs text-gray-600 font-medium">
-              {zipCode.marketData?.activeListings || 0} homes
-            </div>
-          </div>
-        ))}
+            const coordinates = zip.polygon.map(p => [p.lng, p.lat]);
+            // Close the polygon
+            coordinates.push(coordinates[0]);
+            
+            const sourceId = `zip-${zip.zipCode}`;
+            const color = ZIP_COLORS[index % ZIP_COLORS.length];
+            
+            map.current.addSource(sourceId, {
+              type: 'geojson',
+              data: {
+                type: 'Feature',
+                geometry: {
+                  type: 'Polygon',
+                  coordinates: [coordinates],
+                },
+                properties: { 
+                  zipCode: zip.zipCode, 
+                  name: zip.name,
+                  slug: zip.slug 
+                },
+              },
+            });
+            
+            // Fill layer
+            map.current.addLayer({
+              id: `${sourceId}-fill`,
+              type: 'fill',
+              source: sourceId,
+              paint: {
+                'fill-color': color,
+                'fill-opacity': 0.4,
+              },
+            });
+            
+            // Outline layer
+            map.current.addLayer({
+              id: `${sourceId}-outline`,
+              type: 'line',
+              source: sourceId,
+              paint: {
+                'line-color': color,
+                'line-width': 2,
+              },
+            });
+            
+            // Label layer
+            map.current.addLayer({
+              id: `${sourceId}-label`,
+              type: 'symbol',
+              source: sourceId,
+              layout: {
+                'text-field': zip.zipCode,
+                'text-size': 12,
+                'text-font': ['DIN Pro Medium', 'Arial Unicode MS Regular'],
+                'text-allow-overlap': true,
+              },
+              paint: {
+                'text-color': '#333',
+                'text-halo-color': '#fff',
+                'text-halo-width': 1.5,
+              },
+            });
+            
+            // Click handler
+            map.current.on('click', `${sourceId}-fill`, (e: any) => {
+              const properties = e.features[0].properties;
+              router.push(`/zip-codes/${properties.slug}`);
+            });
+            
+            // Hover handlers
+            map.current.on('mouseenter', `${sourceId}-fill`, () => {
+              map.current.getCanvas().style.cursor = 'pointer';
+              map.current.setPaintProperty(`${sourceId}-fill`, 'fill-opacity', 0.7);
+              map.current.setPaintProperty(`${sourceId}-outline`, 'line-width', 4);
+            });
+            
+            map.current.on('mouseleave', `${sourceId}-fill`, () => {
+              map.current.getCanvas().style.cursor = '';
+              map.current.setPaintProperty(`${sourceId}-fill`, 'fill-opacity', 0.4);
+              map.current.setPaintProperty(`${sourceId}-outline`, 'line-width', 2);
+            });
+          });
+        });
+        
+        // Add navigation controls
+        map.current.addControl(new mapboxgl.default.NavigationControl(), 'bottom-left');
 
-        {/* Austin Label */}
-        <div className="absolute top-4 left-4 bg-white/90 rounded-lg px-3 py-2 shadow-sm">
-          <div className="flex items-center gap-2">
-            <MapPinIcon className="w-4 h-4 text-gray-600" />
-            <span className="font-medium text-gray-900">Austin, TX</span>
-          </div>
-        </div>
+        map.current.on('error', (e: any) => {
+          console.error('Mapbox error:', e);
+          setLoadError(true);
+        });
+      })
+      .catch((error) => {
+        console.error('Failed to load Mapbox GL:', error);
+        setLoadError(true);
+      });
 
-        {/* Legend */}
-        <div className="absolute top-4 right-4 bg-white/90 rounded-lg p-3 shadow-sm">
-          <div className="text-xs font-medium text-gray-900 mb-2">Market Temperature</div>
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-red-500 rounded-full" />
-              <span className="text-xs text-gray-600">Hot</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-orange-500 rounded-full" />
-              <span className="text-xs text-gray-600">Warm</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-blue-500 rounded-full" />
-              <span className="text-xs text-gray-600">Cool</span>
-            </div>
-          </div>
+    return () => {
+      if (map.current) {
+        map.current.remove();
+        map.current = null;
+      }
+    };
+  }, [zipCodes, router, mapLoaded]);
+
+  if (!MAPBOX_TOKEN || loadError) {
+    // Fallback to static image
+    return (
+      <div className="relative w-full h-full bg-gradient-to-br from-blue-100 to-green-100 rounded-lg overflow-hidden flex items-center justify-center">
+        <div className="text-center">
+          <img
+            src="https://www.spyglassrealty.com/uploads/agent-1/Austin%20Zip%20Code%20Map.webp"
+            alt="Greater Austin Zip Code Map"
+            className="max-w-full max-h-full object-contain"
+            loading="lazy"
+          />
+          <p className="mt-4 text-sm text-gray-600">
+            {!MAPBOX_TOKEN ? 'Interactive map unavailable' : 'Map failed to load'}
+          </p>
         </div>
       </div>
+    );
+  }
 
-      {/* Selected Zip Info Panel */}
-      {selectedZip && (
-        <div className="absolute bottom-4 left-4 right-4 bg-white rounded-xl shadow-lg p-4 border border-gray-200">
-          <div className="flex items-start justify-between">
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-2">
-                <h3 className="font-bold text-lg text-gray-900">
-                  {selectedZip.zipCode}
-                </h3>
-                {selectedZip.marketData && (
-                  <span
-                    className={`text-xs px-2 py-1 rounded-full capitalize font-medium ${
-                      selectedZip.marketData.marketTemperature === 'hot'
-                        ? 'bg-red-100 text-red-800'
-                        : selectedZip.marketData.marketTemperature === 'warm'
-                        ? 'bg-orange-100 text-orange-800'
-                        : 'bg-blue-100 text-blue-800'
-                    }`}
-                  >
-                    {selectedZip.marketData.marketTemperature}
-                  </span>
-                )}
-              </div>
-              
-              <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-                {selectedZip.description.substring(0, 100)}...
-              </p>
-
-              {selectedZip.marketData && (
-                <div className="grid grid-cols-3 gap-3">
-                  <div className="flex items-center gap-1">
-                    <HomeIcon className="w-4 h-4 text-gray-400" />
-                    <div>
-                      <div className="text-sm font-semibold text-gray-900">
-                        {selectedZip.marketData.activeListings}
-                      </div>
-                      <div className="text-xs text-gray-500">Active</div>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center gap-1">
-                    <CurrencyDollarIcon className="w-4 h-4 text-gray-400" />
-                    <div>
-                      <div className="text-sm font-semibold text-gray-900">
-                        {formatPrice(selectedZip.marketData.medianPrice)}
-                      </div>
-                      <div className="text-xs text-gray-500">Median</div>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center gap-1">
-                    <div className="w-4 h-4 text-gray-400">📍</div>
-                    <div>
-                      <div className="text-sm font-semibold text-gray-900">
-                        ${selectedZip.marketData.pricePerSqft}
-                      </div>
-                      <div className="text-xs text-gray-500">Per Sqft</div>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <button
-              onClick={() => router.push(`/zip-codes/${selectedZip.slug}`)}
-              className="ml-4 inline-flex items-center gap-1 px-3 py-2 bg-spyglass-orange text-white rounded-lg text-sm font-medium hover:bg-red-700 transition-colors"
-            >
-              View Details
-              <ArrowTopRightOnSquareIcon className="w-4 h-4" />
-            </button>
+  return (
+    <div className="relative w-full h-full">
+      <div ref={mapContainer} className="absolute inset-0" />
+      {!mapLoaded && (
+        <div className="absolute inset-0 bg-gray-100 flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-spyglass-orange mx-auto mb-2"></div>
+            <p className="text-sm text-gray-600">Loading interactive map...</p>
           </div>
-        </div>
-      )}
-
-      {/* Instructions */}
-      {!selectedZip && (
-        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-white/90 rounded-lg px-4 py-2 text-sm text-gray-600">
-          Click on any zip code to view details
         </div>
       )}
     </div>

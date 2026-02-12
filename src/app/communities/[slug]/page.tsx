@@ -12,6 +12,8 @@ import CommunityBreadcrumbs from '@/components/community/CommunityBreadcrumbs';
 import CommunitySchemaMarkup from '@/components/community/CommunitySchemaMarkup';
 import NearbyNeighborhoods from '@/components/community/NearbyNeighborhoods';
 import CommunityFAQServer from '@/components/community/CommunityFAQServer';
+import CommunityTOC from '@/components/community/CommunityTOC';
+import { slugify } from '@/lib/slugify';
 import {
   SparklesIcon,
   MapPinIcon,
@@ -84,11 +86,33 @@ function renderPolygonCommunity(slug: string, community: ReturnType<typeof getCo
   const nearby = getNearbyCommunities(slug, 6);
   const centroid = getCommunityCentroid(slug);
 
+  // Build TOC items from all available sections
+  const tocItems: { id: string; label: string }[] = [];
+  const aboutId = slugify(`about-${communityName}`);
+  tocItems.push({ id: aboutId, label: `About ${communityName}` });
+  if (content?.bestFor && content.bestFor.length > 0) {
+    tocItems.push({ id: 'best-for', label: 'Best For' });
+  }
+  if (content?.highlights && content.highlights.length > 0) {
+    tocItems.push({ id: 'neighborhood-highlights', label: 'Neighborhood Highlights' });
+  }
+  if (content?.nearbyLandmarks && content.nearbyLandmarks.length > 0) {
+    tocItems.push({ id: 'nearby', label: 'Nearby' });
+  }
+  if (scrapedContent) {
+    scrapedContent.sections.forEach((section) => {
+      if (section.heading) {
+        tocItems.push({ id: slugify(section.heading), label: section.heading });
+      }
+    });
+  }
+
   const aboutContent = (
     <div className="prose prose-gray max-w-none">
+      <CommunityTOC items={tocItems} />
       {content ? (
         <div className="space-y-8">
-          <div>
+          <div id={aboutId}>
             <h2 className="text-xl font-bold text-gray-900 mb-4">About {communityName}</h2>
             <div className="text-gray-600 leading-relaxed space-y-4">
               {content.description.split('\n\n').map((paragraph, i) => (
@@ -98,7 +122,7 @@ function renderPolygonCommunity(slug: string, community: ReturnType<typeof getCo
           </div>
 
           {content.bestFor.length > 0 && (
-            <div>
+            <div id="best-for">
               <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
                 <StarIcon className="w-5 h-5 text-spyglass-orange" />
                 Best For
@@ -117,7 +141,7 @@ function renderPolygonCommunity(slug: string, community: ReturnType<typeof getCo
           )}
 
           {content.highlights.length > 0 && (
-            <div>
+            <div id="neighborhood-highlights">
               <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
                 <SparklesIcon className="w-5 h-5 text-spyglass-orange" />
                 Neighborhood Highlights
@@ -142,7 +166,7 @@ function renderPolygonCommunity(slug: string, community: ReturnType<typeof getCo
           )}
 
           {content.nearbyLandmarks.length > 0 && (
-            <div>
+            <div id="nearby">
               <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
                 <MapPinIcon className="w-5 h-5 text-spyglass-orange" />
                 Nearby
@@ -163,9 +187,9 @@ function renderPolygonCommunity(slug: string, community: ReturnType<typeof getCo
           {scrapedContent && scrapedContent.sections.length > 0 && (
             <div className="mt-8 pt-8 border-t border-gray-200 space-y-6">
               {scrapedContent.sections.map((section, idx) => (
-                <div key={idx}>
+                <div key={idx} id={section.heading ? slugify(section.heading) : undefined}>
                   {section.heading && (
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">{section.heading}</h3>
+                    <h2 className="text-xl font-bold text-gray-900 mb-3">{section.heading}</h2>
                   )}
                   <div
                     className="text-gray-600 leading-relaxed space-y-4 [&>p]:mb-4 [&>p:last-child]:mb-0 [&_a]:text-spyglass-orange [&_a]:underline [&_a:hover]:text-orange-700"
@@ -178,13 +202,13 @@ function renderPolygonCommunity(slug: string, community: ReturnType<typeof getCo
         </div>
       ) : scrapedContent ? (
         <div className="space-y-8">
-          <div>
+          <div id={aboutId}>
             <h2 className="text-xl font-bold text-gray-900 mb-4">About {communityName}</h2>
           </div>
           {scrapedContent.sections.map((section, idx) => (
-            <div key={idx}>
+            <div key={idx} id={section.heading ? slugify(section.heading) : undefined}>
               {section.heading && (
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">{section.heading}</h3>
+                <h2 className="text-xl font-bold text-gray-900 mb-3">{section.heading}</h2>
               )}
               <div
                 className="text-gray-600 leading-relaxed space-y-4 [&>p]:mb-4 [&>p:last-child]:mb-0 [&_a]:text-spyglass-orange [&_a]:underline [&_a:hover]:text-orange-700"
@@ -195,7 +219,7 @@ function renderPolygonCommunity(slug: string, community: ReturnType<typeof getCo
         </div>
       ) : (
         <div>
-          <h2 className="text-xl font-bold text-gray-900 mb-4">About {communityName}</h2>
+          <h2 id={aboutId} className="text-xl font-bold text-gray-900 mb-4">About {communityName}</h2>
           <p className="text-gray-600 leading-relaxed">
             {communityName} is a sought-after neighborhood in {community.county} County, located in
             the greater Austin, Texas metropolitan area. Whether you&apos;re looking to buy or sell
