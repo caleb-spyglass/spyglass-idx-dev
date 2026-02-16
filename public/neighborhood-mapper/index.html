@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Austin Neighborhood Polygon Mapper</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        body { 
+            margin: 0; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-bottom: 1px solid #dee2e6;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            margin: 0 0 0.5rem 0;
+            color: #212529;
+            font-size: 1.5rem;
+        }
+        
+        .header p {
+            margin: 0 0 1rem 0;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        select, button {
+            padding: 0.5rem 1rem;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        
+        button {
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+            border: none;
+        }
+        
+        button:hover:not(:disabled) {
+            background: #0056b3;
+        }
+        
+        button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        
+        .map-container {
+            flex: 1;
+            position: relative;
+        }
+        
+        #map {
+            height: 100%;
+            width: 100%;
+        }
+        
+        .drawing-controls {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+            max-width: 280px;
+        }
+        
+        .drawing-controls h3 {
+            margin: 0 0 1rem 0;
+            font-size: 1rem;
+            color: #212529;
+        }
+        
+        .status {
+            background: #e9ecef;
+            padding: 0.75rem;
+            border-radius: 4px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+        
+        .instructions {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+            max-width: 300px;
+            font-size: 0.85rem;
+        }
+        
+        .instructions h4 {
+            margin: 0 0 0.5rem 0;
+            color: #212529;
+        }
+        
+        .instructions ul {
+            margin: 0;
+            padding-left: 1.2rem;
+        }
+        
+        .instructions li {
+            margin-bottom: 0.3rem;
+        }
+        
+        .alert {
+            padding: 0.75rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        
+        .alert-danger {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🗺️ Austin Neighborhood Polygon Mapper</h1>
+        <p>Create community-recognized boundaries based on visual analysis of Maps of Austin and consumer mapping services</p>
+        
+        <div class="controls">
+            <label for="neighborhood-select">Select Neighborhood:</label>
+            <select id="neighborhood-select">
+                <option value="">-- Select a neighborhood --</option>
+            </select>
+            <button id="start-drawing">Start Drawing Polygon</button>
+            <button id="clear-polygon" disabled>Clear Polygon</button>
+        </div>
+        
+        <div id="status" class="status" style="display: none;"></div>
+    </div>
+
+    <div class="map-container">
+        <div id="map"></div>
+        
+        <div class="drawing-controls" id="drawing-controls" style="display: none;">
+            <h3>🎨 Drawing Mode</h3>
+            <p id="drawing-status">Click on the map to add boundary points</p>
+            <div style="margin: 1rem 0;">
+                <strong>Points:</strong> <span id="point-count">0</span>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+                <button id="finish-drawing">✅ Finish</button>
+                <button id="cancel-drawing">❌ Cancel</button>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <h4>📋 Instructions:</h4>
+            <ul>
+                <li>📝 Select a neighborhood from the dropdown</li>
+                <li>🔗 Open reference maps in separate tabs:</li>
+                <li style="margin-left: 1rem;">
+                    <a href="https://www.google.com/maps/@30.2672,-97.7431,11z" target="_blank">Google Maps</a> |
+                    <a href="https://www.zillow.com/austin-tx/" target="_blank">Zillow</a>
+                </li>
+                <li>📍 Click "Start Drawing" to begin tracing</li>
+                <li>🖱️ Click on map to add boundary points</li>
+                <li>✅ Click "Finish" when complete</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Sample neighborhood data
+        const neighborhoods = [
+            { name: "Downtown Austin", description: "Central business district" },
+            { name: "East Austin", description: "Historic east side community" },
+            { name: "South Austin", description: "South of the river" },
+            { name: "North Austin", description: "North of downtown" },
+            { name: "West Austin", description: "West side hills" }
+        ];
+
+        let map;
+        let drawingMode = false;
+        let tempPoints = [];
+        let currentPolygon = null;
+        let savedPolygons = {};
+        let tempMarkers = [];
+
+        // Initialize map
+        function initMap() {
+            map = L.map('map').setView([30.2672, -97.7431], 11);
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+
+            // Handle map clicks
+            map.on('click', function(e) {
+                if (drawingMode) {
+                    addPoint(e.latlng);
+                }
+            });
+        }
+
+        // Initialize page
+        function init() {
+            initMap();
+            populateNeighborhoods();
+            bindEvents();
+            showStatus('🗺️ Ready! Select a neighborhood to begin.', 'success');
+        }
+
+        function populateNeighborhoods() {
+            const select = document.getElementById('neighborhood-select');
+            neighborhoods.forEach(neighborhood => {
+                const option = document.createElement('option');
+                option.value = neighborhood.name;
+                option.textContent = neighborhood.name;
+                select.appendChild(option);
+            });
+        }
+
+        function bindEvents() {
+            document.getElementById('neighborhood-select').addEventListener('change', onNeighborhoodChange);
+            document.getElementById('start-drawing').addEventListener('click', startDrawing);
+            document.getElementById('clear-polygon').addEventListener('click', clearPolygon);
+            document.getElementById('finish-drawing').addEventListener('click', finishDrawing);
+            document.getElementById('cancel-drawing').addEventListener('click', cancelDrawing);
+        }
+
+        function onNeighborhoodChange(e) {
+            const neighborhood = e.target.value;
+            document.getElementById('clear-polygon').disabled = !neighborhood;
+            
+            if (neighborhood) {
+                showStatus(`Selected: ${neighborhood}. Click "Start Drawing" to begin tracing.`, 'success');
+            } else {
+                showStatus('Select a neighborhood to begin.', 'success');
+            }
+        }
+
+        function startDrawing() {
+            const selectedNeighborhood = document.getElementById('neighborhood-select').value;
+            
+            if (!selectedNeighborhood) {
+                showStatus('❌ Please select a neighborhood first!', 'danger');
+                return;
+            }
+
+            drawingMode = true;
+            tempPoints = [];
+            updatePointCount();
+            
+            document.getElementById('drawing-controls').style.display = 'block';
+            document.getElementById('start-drawing').disabled = true;
+            document.getElementById('clear-polygon').disabled = true;
+            
+            showStatus(`🎨 Drawing mode active for ${selectedNeighborhood}. Click on the map to add points!`, 'success');
+        }
+
+        function addPoint(latlng) {
+            tempPoints.push([latlng.lat, latlng.lng]);
+            
+            // Add marker
+            const marker = L.marker([latlng.lat, latlng.lng])
+                .addTo(map)
+                .bindPopup(`Point ${tempPoints.length}`);
+            tempMarkers.push(marker);
+            
+            updatePointCount();
+            
+            // Preview polygon if we have enough points
+            if (tempPoints.length > 2) {
+                updatePreviewPolygon();
+            }
+        }
+
+        function updatePointCount() {
+            document.getElementById('point-count').textContent = tempPoints.length;
+        }
+
+        function updatePreviewPolygon() {
+            if (currentPolygon) {
+                map.removeLayer(currentPolygon);
+            }
+            
+            currentPolygon = L.polygon(tempPoints, {
+                color: '#ff8800',
+                weight: 2,
+                fillOpacity: 0.3,
+                dashArray: '5, 5'
+            }).addTo(map);
+        }
+
+        function finishDrawing() {
+            if (tempPoints.length < 3) {
+                showStatus('❌ Need at least 3 points to create a polygon!', 'danger');
+                return;
+            }
+
+            const selectedNeighborhood = document.getElementById('neighborhood-select').value;
+            
+            // Save the polygon
+            savedPolygons[selectedNeighborhood] = [...tempPoints];
+            
+            // Create final polygon
+            if (currentPolygon) {
+                map.removeLayer(currentPolygon);
+            }
+            
+            currentPolygon = L.polygon(tempPoints, {
+                color: '#007bff',
+                weight: 3,
+                fillOpacity: 0.2
+            }).addTo(map).bindPopup(selectedNeighborhood);
+
+            // Clean up
+            resetDrawing();
+            
+            showStatus(`✅ Polygon saved for ${selectedNeighborhood}! (${tempPoints.length} points)`, 'success');
+            
+            // Generate export data
+            generateExportData();
+        }
+
+        function cancelDrawing() {
+            if (currentPolygon) {
+                map.removeLayer(currentPolygon);
+            }
+            resetDrawing();
+            showStatus('❌ Drawing cancelled.', 'danger');
+        }
+
+        function clearPolygon() {
+            const selectedNeighborhood = document.getElementById('neighborhood-select').value;
+            
+            if (!selectedNeighborhood) return;
+            
+            if (!confirm(`Clear polygon for ${selectedNeighborhood}?`)) return;
+            
+            // Remove from saved polygons
+            delete savedPolygons[selectedNeighborhood];
+            
+            // Remove from map
+            if (currentPolygon) {
+                map.removeLayer(currentPolygon);
+                currentPolygon = null;
+            }
+            
+            showStatus(`🗑️ Polygon cleared for ${selectedNeighborhood}.`, 'success');
+        }
+
+        function resetDrawing() {
+            drawingMode = false;
+            tempPoints = [];
+            
+            // Clear temp markers
+            tempMarkers.forEach(marker => map.removeLayer(marker));
+            tempMarkers = [];
+            
+            document.getElementById('drawing-controls').style.display = 'none';
+            document.getElementById('start-drawing').disabled = false;
+            document.getElementById('clear-polygon').disabled = false;
+            
+            updatePointCount();
+        }
+
+        function showStatus(message, type = 'success') {
+            const statusEl = document.getElementById('status');
+            statusEl.textContent = message;
+            statusEl.className = `status alert alert-${type}`;
+            statusEl.style.display = 'block';
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                statusEl.style.display = 'none';
+            }, 5000);
+        }
+
+        function generateExportData() {
+            const exportData = [];
+            
+            for (const [neighborhood, points] of Object.entries(savedPolygons)) {
+                points.forEach((point, index) => {
+                    exportData.push({
+                        neighborhood: neighborhood,
+                        point_number: index + 1,
+                        latitude: point[0],
+                        longitude: point[1]
+                    });
+                });
+            }
+            
+            console.log('📊 Polygon Data (copy this to save):', JSON.stringify(exportData, null, 2));
+        }
+
+        // Initialize when page loads
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>
