@@ -2,6 +2,13 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useSiteContent } from '@/hooks/useSiteContent';
+
+const DEFAULTS = {
+  heading: "Featured Listings",
+  viewAllText: "View All Listings →",
+  viewAllLink: "/featured-listings",
+};
 
 interface FeaturedListing {
   mlsNumber: string;
@@ -15,6 +22,7 @@ interface FeaturedListing {
 }
 
 export function FeaturedListingsSection() {
+  const content = useSiteContent('featuredListings', DEFAULTS);
   const [listings, setListings] = useState<FeaturedListing[]>([]);
 
   useEffect(() => {
@@ -50,7 +58,7 @@ export function FeaturedListingsSection() {
     <section className="py-20 bg-white">
       <div className="max-w-6xl mx-auto px-4">
         <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">
-          Featured Listings
+          {content.heading}
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -87,10 +95,10 @@ export function FeaturedListingsSection() {
 
         <div className="text-center mt-10">
           <Link
-            href="/featured-listings"
+            href={content.viewAllLink}
             className="inline-flex items-center text-spyglass-orange font-semibold hover:text-spyglass-orange-hover transition-colors"
           >
-            View All Listings →
+            {content.viewAllText}
           </Link>
         </div>
       </div>

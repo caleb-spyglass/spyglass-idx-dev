@@ -1,37 +1,47 @@
-export function SpyglassDifferenceSection() {
-  const differences = [
+'use client';
+
+import { useSiteContent } from '@/hooks/useSiteContent';
+
+const DEFAULTS = {
+  heading: "The Spyglass Difference",
+  subtitle: "What sets us apart from every other brokerage in Austin",
+  items: [
     {
-      title: "We don't just list it. We launch it.",
-      description: "Professional photography, staging, and advanced marketing drive results. Our listings get unmatched exposure.",
       stat: "$50K+",
       statLabel: "More per sale on average",
+      title: "We don't just list it. We launch it.",
+      description: "Professional photography, staging, and advanced marketing drive results. Our listings get unmatched exposure.",
     },
     {
-      title: "Your bottom line is our obsession.",
-      description: "Data-driven pricing and expert negotiation ensures exceptional results for every client.",
       stat: "102%",
       statLabel: "Average sale-to-list ratio",
+      title: "Your bottom line is our obsession.",
+      description: "Data-driven pricing and expert negotiation ensures exceptional results for every client.",
     },
     {
-      title: "Boutique service. Big results.",
-      description: "Highly trained agents with personalized attention means you get the experience you deserve.",
       stat: "23",
       statLabel: "Days less on market",
+      title: "Boutique service. Big results.",
+      description: "Highly trained agents with personalized attention means you get the experience you deserve.",
     },
-  ];
+  ],
+};
+
+export function SpyglassDifferenceSection() {
+  const content = useSiteContent('spyglassDifference', DEFAULTS);
 
   return (
     <section className="py-20 bg-gray-50">
       <div className="max-w-6xl mx-auto px-4">
         <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-4">
-          The Spyglass Difference
+          {content.heading}
         </h2>
         <p className="text-center text-gray-500 mb-14 max-w-2xl mx-auto">
-          What sets us apart from every other brokerage in Austin
+          {content.subtitle}
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {differences.map((item, index) => (
+          {content.items.map((item: any, index: number) => (
             <div key={index} className="text-center p-8">
               <div className="text-5xl font-bold text-spyglass-orange mb-3">
                 {item.stat}

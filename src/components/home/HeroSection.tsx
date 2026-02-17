@@ -4,6 +4,26 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { AISearchBar } from '@/components/search/AISearchBar';
 import { AdjustmentsHorizontalIcon } from '@heroicons/react/24/outline';
+import { useSiteContent } from '@/hooks/useSiteContent';
+
+const DEFAULTS = {
+  headline: "Your Home. Our Obsession.",
+  subtitleStats: "1,200+ 5-star reviews  |  2,500+ Homes Sold  |  $2B+ in Volume  |  #1 Independent Brokerage",
+  subtitleTagline: "Austin's premier real estate brokerage",
+  backgroundImage: "/images/austin-skyline-hero.jpg",
+  backgroundImageFallback: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80",
+  primaryCtaText: "Search Homes",
+  primaryCtaLink: "/search",
+  secondaryCtaText: "What's My Home Worth?",
+  secondaryCtaLink: "/sell",
+  searchPlaceholder: "Enter neighborhood, address, or ZIP code",
+  trustBarItems: [
+    "1,200+ Reviews",
+    "2,500+ Homes Sold",
+    "$2B+ in Volume",
+    "#1 Independent Brokerage",
+  ],
+};
 
 interface HeroSectionProps {
   onSearchResults: (results: {
@@ -17,6 +37,8 @@ interface HeroSectionProps {
 }
 
 export function HeroSection({ onSearchResults, onShowSearchPage }: HeroSectionProps) {
+  const content = useSiteContent('hero', DEFAULTS);
+
   const handleSearchResults = (results: any) => {
     onSearchResults(results);
     onShowSearchPage();
@@ -29,7 +51,7 @@ export function HeroSection({ onSearchResults, onShowSearchPage }: HeroSectionPr
         <div 
           className="w-full h-full bg-cover bg-center bg-no-repeat"
           style={{
-            backgroundImage: `url('/images/austin-skyline-hero.jpg'), url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')`
+            backgroundImage: `url('${content.backgroundImage}'), url('${content.backgroundImageFallback}')`
           }}
         />
         <div className="absolute inset-0 bg-black/50"></div>
@@ -48,15 +70,15 @@ export function HeroSection({ onSearchResults, onShowSearchPage }: HeroSectionPr
 
         {/* Main Heading */}
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-4">
-          Your Home. Our Obsession.
+          {content.headline}
         </h1>
 
         {/* Subtitle Stats */}
         <p className="text-lg md:text-xl text-white/80 mb-3">
-          1,200+ 5-star reviews&nbsp;&nbsp;|&nbsp;&nbsp;2,500+ Homes Sold&nbsp;&nbsp;|&nbsp;&nbsp;$2B+ in Volume&nbsp;&nbsp;|&nbsp;&nbsp;#1 Independent Brokerage
+          {content.subtitleStats}
         </p>
         <p className="text-base text-white/60 mb-8">
-          Austin&apos;s premier real estate brokerage
+          {content.subtitleTagline}
         </p>
 
         {/* Dual CTA Buttons */}
@@ -65,13 +87,13 @@ export function HeroSection({ onSearchResults, onShowSearchPage }: HeroSectionPr
             onClick={onShowSearchPage}
             className="px-8 py-3.5 bg-spyglass-orange hover:bg-spyglass-orange-hover text-white font-semibold rounded-lg transition-all text-lg shadow-lg hover:shadow-xl"
           >
-            Search Homes
+            {content.primaryCtaText}
           </button>
           <Link
-            href="/sell"
+            href={content.secondaryCtaLink}
             className="px-8 py-3.5 bg-white/10 backdrop-blur-sm border-2 border-white/40 text-white font-semibold rounded-lg hover:bg-white/20 transition-all text-lg"
           >
-            What&apos;s My Home Worth?
+            {content.secondaryCtaText}
           </Link>
         </div>
 
@@ -82,7 +104,7 @@ export function HeroSection({ onSearchResults, onShowSearchPage }: HeroSectionPr
               <AISearchBar
                 onResults={handleSearchResults}
                 onClear={() => {}}
-                placeholder="Enter neighborhood, address, or ZIP code"
+                placeholder={content.searchPlaceholder}
               />
             </div>
             <button
@@ -105,14 +127,14 @@ export function HeroSection({ onSearchResults, onShowSearchPage }: HeroSectionPr
                 </svg>
               ))}
             </div>
-            <span className="ml-1">1,200+ Reviews</span>
+            <span className="ml-1">{content.trustBarItems[0]}</span>
           </div>
-          <span className="hidden sm:inline text-white/30">|</span>
-          <span>2,500+ Homes Sold</span>
-          <span className="hidden sm:inline text-white/30">|</span>
-          <span>$2B+ in Volume</span>
-          <span className="hidden sm:inline text-white/30">|</span>
-          <span>#1 Independent Brokerage</span>
+          {content.trustBarItems.slice(1).map((item: string, i: number) => (
+            <span key={i}>
+              <span className="hidden sm:inline text-white/30 mr-6">|</span>
+              {item}
+            </span>
+          ))}
         </div>
       </div>
     </section>

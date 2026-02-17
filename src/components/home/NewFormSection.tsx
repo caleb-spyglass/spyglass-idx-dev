@@ -1,8 +1,16 @@
 'use client';
 
 import { useState } from 'react';
+import { useSiteContent } from '@/hooks/useSiteContent';
+
+const DEFAULTS = {
+  heading: "Ready to make your move?",
+  description: "Connect with Austin's most trusted real estate experts. We're here to help you navigate the Austin market with confidence — whether you're buying, selling, or just exploring your options.",
+  buttonText: "Get Started",
+};
 
 export function NewFormSection() {
+  const content = useSiteContent('newForm', DEFAULTS);
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
 
@@ -25,12 +33,10 @@ export function NewFormSection() {
           {/* Left - Copy */}
           <div>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Ready to make your move?
+              {content.heading}
             </h2>
             <p className="text-lg text-gray-600 leading-relaxed">
-              Connect with Austin&apos;s most trusted real estate experts. We&apos;re here 
-              to help you navigate the Austin market with confidence — whether you&apos;re 
-              buying, selling, or just exploring your options.
+              {content.description}
             </p>
           </div>
 
@@ -73,7 +79,7 @@ export function NewFormSection() {
                   type="submit"
                   className="w-full py-3 bg-spyglass-orange hover:bg-spyglass-orange-hover text-white font-semibold rounded-lg transition-colors text-lg"
                 >
-                  Get Started
+                  {content.buttonText}
                 </button>
                 <p className="text-xs text-gray-400 text-center">
                   By submitting, you agree to our terms of service.
