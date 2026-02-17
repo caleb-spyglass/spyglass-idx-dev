@@ -1,18 +1,13 @@
 'use client';
 
-import { useState } from 'react';
 import { HeroSection } from './HeroSection';
 import { StatsBar } from './StatsBar';
-import { AwardsSection } from './AwardsSection';
-import { SellerSection } from './SellerSection';
-import { BuyerSection } from './BuyerSection';
+import { WhatBringsYouSection } from './WhatBringsYouSection';
+import { SpyglassDifferenceSection } from './SpyglassDifferenceSection';
+import { FeaturedListingsSection } from './FeaturedListingsSection';
 import { TestimonialsSection } from './TestimonialsSection';
-import { ReviewsSection } from './ReviewsSection';
-import { WhyChooseSection } from './WhyChooseSection';
-import { ThreeReasonsSection } from './ThreeReasonsSection';
+import { NeighborhoodsSection } from './NeighborhoodsSection';
 import { NewFormSection } from './NewFormSection';
-import { YouTubeSection } from './YouTubeSection';
-import { CTABar } from './CTABar';
 import { Footer } from './Footer';
 
 interface HomePageProps {
@@ -34,16 +29,12 @@ export function HomePage({ onSearchResults, onShowSearchPage }: HomePageProps) {
         onShowSearchPage={onShowSearchPage} 
       />
       <StatsBar />
-      <AwardsSection />
-      <SellerSection />
-      <BuyerSection />
+      <WhatBringsYouSection />
+      <SpyglassDifferenceSection />
+      <FeaturedListingsSection />
       <TestimonialsSection />
-      <ReviewsSection />
-      <WhyChooseSection />
-      <ThreeReasonsSection />
+      <NeighborhoodsSection />
       <NewFormSection />
-      <YouTubeSection />
-      <CTABar />
       <Footer />
     </div>
   );

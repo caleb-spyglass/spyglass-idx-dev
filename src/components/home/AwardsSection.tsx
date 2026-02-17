@@ -55,7 +55,7 @@ export function AwardsSection() {
               <span className="text-lg font-bold">5.0</span>
             </div>
             <p className="text-sm font-medium">Google Reviews</p>
-            <p className="text-xs text-gray-400">Based on 700+ reviews</p>
+            <p className="text-xs text-gray-400">Based on 1,200+ reviews</p>
           </div>
 
           {/* Zillow Reviews */}

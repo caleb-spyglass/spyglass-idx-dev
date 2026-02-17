@@ -20,7 +20,7 @@ export function ReviewsSection() {
 
             {/* Heading */}
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-              Over 700 5-Star Reviews
+              Over 1,200 5-Star Reviews
             </h2>
 
             {/* Body Text */}

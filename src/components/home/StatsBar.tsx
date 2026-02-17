@@ -1,37 +1,25 @@
+import { HomeIcon, UserGroupIcon, MapPinIcon, CurrencyDollarIcon } from '@heroicons/react/24/outline';
+
 export function StatsBar() {
   const stats = [
-    {
-      value: "6x Times",
-      description: "Volume of Average Agent",
-      subtext: "We sell more homes than the typical agent"
-    },
-    {
-      value: "3% Higher",
-      description: "Sale Price",
-      subtext: "On average compared to other agents"
-    },
-    {
-      value: "23 Days Less",
-      description: "Than Average Agent",
-      subtext: "Faster time on market"
-    }
+    { icon: HomeIcon, label: 'For Sale', value: '3,400+' },
+    { icon: UserGroupIcon, label: 'Sold', value: '2,500+' },
+    { icon: MapPinIcon, label: 'Neighborhoods', value: '200+' },
+    { icon: CurrencyDollarIcon, label: 'Listings Sold', value: '$2B+' },
   ];
 
   return (
-    <section className="py-12 bg-gray-50">
-      <div className="max-w-6xl mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
+    <section className="bg-white border-b border-gray-100">
+      <div className="max-w-5xl mx-auto">
+        <div className="grid grid-cols-2 md:grid-cols-4">
           {stats.map((stat, index) => (
-            <div key={index} className="text-center">
-              <div className="text-4xl md:text-5xl font-bold text-spyglass-orange mb-2">
-                {stat.value}
-              </div>
-              <div className="text-lg font-semibold text-gray-900 mb-1">
-                {stat.description}
-              </div>
-              <div className="text-sm text-gray-600">
-                {stat.subtext}
-              </div>
+            <div 
+              key={index} 
+              className="flex flex-col items-center justify-center py-6 px-4 border-r border-gray-100 last:border-r-0 hover:bg-gray-50 transition-colors cursor-default"
+            >
+              <stat.icon className="w-6 h-6 text-spyglass-orange mb-2" />
+              <div className="text-xl font-bold text-gray-900">{stat.value}</div>
+              <div className="text-xs text-gray-500 uppercase tracking-wider">{stat.label}</div>
             </div>
           ))}
         </div>

@@ -17,106 +17,102 @@ interface HeroSectionProps {
 }
 
 export function HeroSection({ onSearchResults, onShowSearchPage }: HeroSectionProps) {
-  const [activeTab, setActiveTab] = useState('buy');
-
   const handleSearchResults = (results: any) => {
     onSearchResults(results);
     onShowSearchPage();
   };
 
   return (
-    <section className="relative min-h-[80vh] flex items-center justify-center">
+    <section className="relative min-h-[85vh] flex items-center justify-center">
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 z-0">
         <div 
           className="w-full h-full bg-cover bg-center bg-no-repeat"
           style={{
-            backgroundImage: `url('/images/austin-skyline-hero.jpg'), url('https://images.unsplash.com/photo-1531218150217-54595bc2b934?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')`
+            backgroundImage: `url('/images/austin-skyline-hero.jpg'), url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')`
           }}
         />
-        <div className="absolute inset-0 bg-black bg-opacity-60"></div>
+        <div className="absolute inset-0 bg-black/50"></div>
       </div>
 
       {/* Content */}
       <div className="relative z-10 max-w-4xl mx-auto px-4 text-center text-white">
-        {/* Welcome Label */}
-        <div className="inline-block mb-4">
-          <span className="px-4 py-2 bg-spyglass-orange/20 border border-spyglass-orange/40 rounded-full text-sm font-medium text-spyglass-orange uppercase tracking-wider">
-            Welcome to Spyglass Realty
-          </span>
+        {/* Logo Mark */}
+        <div className="flex justify-center mb-6">
+          <img 
+            src="/spyglass-logo-white.svg" 
+            alt="Spyglass Realty" 
+            className="h-10 w-auto opacity-80"
+          />
         </div>
 
         {/* Main Heading */}
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-8">
-          Highly Reviewed, Trained, and Experienced{' '}
-          <span className="text-spyglass-orange">Real Estate Agents</span>{' '}
-          in Austin
+        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-4">
+          Your Home. Our Obsession.
         </h1>
 
-        {/* Search Bar Container */}
-        <div className="max-w-3xl mx-auto mb-8">
-          {/* Search Tabs */}
-          <div className="flex justify-center mb-4">
-            <div className="inline-flex bg-black/20 backdrop-blur-sm rounded-xl p-1">
-              {[
-                { id: 'buy', label: 'Buy' },
-                { id: 'sell', label: 'Sell' },
-                { id: 'rent', label: 'Rent' }
-              ].map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`px-6 py-2 rounded-lg text-sm font-medium transition-all ${
-                    activeTab === tab.id
-                      ? 'bg-white text-gray-900 shadow-md'
-                      : 'text-white/80 hover:text-white hover:bg-white/10'
-                  }`}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-          </div>
+        {/* Subtitle Stats */}
+        <p className="text-lg md:text-xl text-white/80 mb-3">
+          1,200+ 5-star reviews&nbsp;&nbsp;|&nbsp;&nbsp;2,500+ Homes Sold&nbsp;&nbsp;|&nbsp;&nbsp;$2B+ in Volume&nbsp;&nbsp;|&nbsp;&nbsp;#1 Independent Brokerage
+        </p>
+        <p className="text-base text-white/60 mb-8">
+          Austin&apos;s premier real estate brokerage
+        </p>
 
-          {/* AI Search Bar */}
+        {/* Dual CTA Buttons */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
+          <button
+            onClick={onShowSearchPage}
+            className="px-8 py-3.5 bg-spyglass-orange hover:bg-spyglass-orange-hover text-white font-semibold rounded-lg transition-all text-lg shadow-lg hover:shadow-xl"
+          >
+            Search Homes
+          </button>
+          <Link
+            href="/sell"
+            className="px-8 py-3.5 bg-white/10 backdrop-blur-sm border-2 border-white/40 text-white font-semibold rounded-lg hover:bg-white/20 transition-all text-lg"
+          >
+            What&apos;s My Home Worth?
+          </Link>
+        </div>
+
+        {/* Search Bar */}
+        <div className="max-w-3xl mx-auto mb-8">
           <div className="flex items-center gap-3">
             <div className="flex-1">
               <AISearchBar
                 onResults={handleSearchResults}
                 onClear={() => {}}
-                placeholder="Try: '3 bed house in Austin under $500k with a pool'"
+                placeholder="Enter neighborhood, address, or ZIP code"
               />
             </div>
-            
-            {/* Filters Button */}
             <button
               onClick={onShowSearchPage}
-              className="px-6 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white hover:bg-white/20 transition-all flex items-center gap-2"
+              className="px-5 py-3 bg-spyglass-orange hover:bg-spyglass-orange-hover rounded-lg text-white transition-all flex items-center gap-2 font-medium"
             >
               <AdjustmentsHorizontalIcon className="w-5 h-5" />
               <span className="hidden md:inline">Filters</span>
             </button>
           </div>
-
-          {/* Search Button is integrated in AISearchBar */}
         </div>
 
-        {/* Get Consultation Link */}
-        <div className="text-center">
-          <Link 
-            href="/contact"
-            className="inline-flex items-center text-spyglass-orange hover:text-white text-lg font-medium transition-colors group"
-          >
-            GET A CONSULTATION
-            <svg 
-              className="ml-2 w-5 h-5 transform group-hover:translate-x-1 transition-transform" 
-              fill="none" 
-              viewBox="0 0 24 24" 
-              stroke="currentColor"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
-          </Link>
+        {/* Trust Bar - Star Ratings */}
+        <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-white/70">
+          <div className="flex items-center gap-1">
+            <div className="flex text-yellow-400">
+              {[...Array(5)].map((_, i) => (
+                <svg key={i} className="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                  <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                </svg>
+              ))}
+            </div>
+            <span className="ml-1">1,200+ Reviews</span>
+          </div>
+          <span className="hidden sm:inline text-white/30">|</span>
+          <span>2,500+ Homes Sold</span>
+          <span className="hidden sm:inline text-white/30">|</span>
+          <span>$2B+ in Volume</span>
+          <span className="hidden sm:inline text-white/30">|</span>
+          <span>#1 Independent Brokerage</span>
         </div>
       </div>
     </section>
