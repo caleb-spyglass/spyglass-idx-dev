@@ -25,7 +25,7 @@ export function FeaturedListingsSection() {
         if (data.listings && data.listings.length > 0) {
           setListings(data.listings.slice(0, 4).map((l: any) => ({
             mlsNumber: l.mlsNumber || l.mls,
-            address: l.address || l.streetAddress || 'Austin, TX',
+            address: (typeof l.address === 'object' ? (l.address.full || l.address.street || 'Austin, TX') : l.address) || l.streetAddress || 'Austin, TX',
             listPrice: l.listPrice || l.price || 0,
             bedrooms: l.bedrooms || l.beds || 0,
             bathrooms: l.bathrooms || l.baths || 0,
