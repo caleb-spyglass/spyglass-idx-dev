@@ -5,6 +5,8 @@ import { notFound } from 'next/navigation';
 import { Header } from '@/components/ui/Header';
 import { Footer } from '@/components/home/Footer';
 
+const MISSION_CONTROL_URL = process.env.NEXT_PUBLIC_MISSION_CONTROL_URL || 'https://missioncontrol-tjfm.onrender.com';
+
 // ── Types ──────────────────────────────────────────────────────────────
 
 interface BlogPost {
@@ -64,7 +66,7 @@ interface RelatedPostsResponse {
 
 async function getBlogPost(slug: string): Promise<BlogPost | null> {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_MISSION_CONTROL_URL}/api/blog/posts/${slug}`, {
+    const res = await fetch(`${MISSION_CONTROL_URL}/api/blog/posts/${slug}`, {
       next: { revalidate: 300 }, // Revalidate every 5 minutes
     });
     
@@ -86,7 +88,7 @@ async function getBlogPost(slug: string): Promise<BlogPost | null> {
 
 async function getRelatedPosts(currentSlug: string): Promise<BlogPost[]> {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_MISSION_CONTROL_URL}/api/blog/posts?limit=3`, {
+    const res = await fetch(`${MISSION_CONTROL_URL}/api/blog/posts?limit=3`, {
       next: { revalidate: 300 },
     });
     

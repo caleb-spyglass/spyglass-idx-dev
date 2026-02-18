@@ -5,6 +5,8 @@ import { notFound } from 'next/navigation';
 import { Header } from '@/components/ui/Header';
 import { Footer } from '@/components/home/Footer';
 
+const MISSION_CONTROL_URL = process.env.NEXT_PUBLIC_MISSION_CONTROL_URL || 'https://missioncontrol-tjfm.onrender.com';
+
 // ── Types ──────────────────────────────────────────────────────────────
 
 interface BlogPost {
@@ -47,7 +49,7 @@ async function getCategoryPosts(categorySlug: string, page: number = 1): Promise
   try {
     // For now, we'll get all posts and filter client-side
     // In a real implementation, you'd pass the category parameter to the API
-    const res = await fetch(`${process.env.NEXT_PUBLIC_MISSION_CONTROL_URL}/api/blog/posts?page=${page}&limit=12`, {
+    const res = await fetch(`${MISSION_CONTROL_URL}/api/blog/posts?page=${page}&limit=12`, {
       next: { revalidate: 300 }, // Revalidate every 5 minutes
     });
     
@@ -60,7 +62,7 @@ async function getCategoryPosts(categorySlug: string, page: number = 1): Promise
     const posts = data.posts || [];
     
     // Get category info from categories endpoint
-    const categoriesRes = await fetch(`${process.env.NEXT_PUBLIC_MISSION_CONTROL_URL}/api/blog/categories`, {
+    const categoriesRes = await fetch(`${MISSION_CONTROL_URL}/api/blog/categories`, {
       next: { revalidate: 3600 },
     });
     
@@ -90,7 +92,7 @@ async function getCategoryPosts(categorySlug: string, page: number = 1): Promise
 
 async function getAllCategories(): Promise<BlogCategory[]> {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_MISSION_CONTROL_URL}/api/blog/categories`, {
+    const res = await fetch(`${MISSION_CONTROL_URL}/api/blog/categories`, {
       next: { revalidate: 3600 },
     });
     
