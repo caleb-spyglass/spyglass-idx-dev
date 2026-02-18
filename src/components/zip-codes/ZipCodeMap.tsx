@@ -176,7 +176,7 @@ export default function ZipCodeMap({ zipCodes }: ZipCodeMapProps) {
             loading="lazy"
           />
           <p className="mt-4 text-sm text-gray-600">
-            {!MAPBOX_TOKEN ? 'Interactive map unavailable' : 'Map failed to load'}
+            {!MAPBOX_TOKEN ? 'Interactive map unavailable — Mapbox token not configured' : 'Map failed to load — using static fallback'}
           </p>
         </div>
       </div>

@@ -61,6 +61,24 @@ export default function ZipCodesPage() {
         </div>
       </div>
 
+      {/* Interactive Map Section */}
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+          <div className="bg-gray-900 text-white px-6 py-4">
+            <h2 className="text-xl font-bold tracking-wide uppercase">
+              Austin and Surrounding Area Zip Codes
+            </h2>
+            <p className="text-white/90 text-sm mt-1">
+              Click on any zip code to view detailed market information, active listings, and neighborhood insights.
+            </p>
+          </div>
+          
+          <div style={{ height: '500px' }} className="md:h-[500px] h-[350px]">
+            <ZipCodeMap zipCodes={zipCodes} />
+          </div>
+        </div>
+      </div>
+
       {/* Intro Overview */}
       <div className="max-w-4xl mx-auto px-4 py-12">
         <div className="bg-white rounded-xl p-8 shadow-sm">
@@ -112,24 +130,6 @@ export default function ZipCodesPage() {
             <p className="text-gray-700 font-medium">
               Click on a zip code below on our Austin Zip Code Lookup to view the listings and know more details about the area.
             </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Interactive Map Section */}
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-          <div className="bg-gray-900 text-white px-6 py-4">
-            <h2 className="text-xl font-bold tracking-wide uppercase">
-              Austin and Surrounding Area Zip Codes
-            </h2>
-            <p className="text-white/90 text-sm mt-1">
-              Click on any zip code to view detailed market information, active listings, and neighborhood insights.
-            </p>
-          </div>
-          
-          <div style={{ height: '500px' }} className="md:h-[500px] h-[350px]">
-            <ZipCodeMap zipCodes={zipCodes} />
           </div>
         </div>
       </div>

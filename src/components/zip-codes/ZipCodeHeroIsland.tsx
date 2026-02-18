@@ -22,6 +22,7 @@ import ContactModal from '@/components/forms/ContactModal';
 import AreaCommunityListingsIsland from '@/components/community/AreaCommunityListingsIsland';
 import CommunityStats from '@/components/community/CommunityStats';
 import { formatPrice } from '@/lib/utils';
+import { getPulseData, formatDollar, formatNumber } from '@/data/pulse-market-data';
 
 type TabType = 'listings' | 'market' | 'about';
 
@@ -49,6 +50,8 @@ export default function ZipCodeHeroIsland({
   const [total, setTotal] = useState<number | null>(zipCodeData.marketData?.activeListings ?? null);
   const [medianPrice, setMedianPrice] = useState<number | null>(zipCodeData.marketData?.medianPrice ?? null);
   const [loading, setLoading] = useState(true);
+
+  const pulseData = getPulseData(zipCodeData.zipCode);
 
   // Fetch real listing stats from the API
   useEffect(() => {
@@ -156,6 +159,35 @@ export default function ZipCodeHeroIsland({
               </button>
             </div>
           </div>
+
+          {/* Market Snapshot from Pulse */}
+          {pulseData && !isEmbed && (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6">
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-3">
+                <p className="text-white/60 text-xs uppercase tracking-wide">Median Home Value</p>
+                <p className="text-white text-lg font-bold">{formatDollar(pulseData.medianHomeValue)}</p>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-3">
+                <p className="text-white/60 text-xs uppercase tracking-wide">YoY Change</p>
+                <p className={`text-lg font-bold flex items-center gap-1 ${pulseData.yoyChange >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                  {pulseData.yoyChange >= 0 ? (
+                    <ArrowTrendingUpIcon className="w-4 h-4" />
+                  ) : (
+                    <ArrowTrendingDownIcon className="w-4 h-4" />
+                  )}
+                  {pulseData.yoyChange >= 0 ? '+' : ''}{pulseData.yoyChange}%
+                </p>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-3">
+                <p className="text-white/60 text-xs uppercase tracking-wide">Median Income</p>
+                <p className="text-white text-lg font-bold">{formatDollar(pulseData.medianIncome)}</p>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-3">
+                <p className="text-white/60 text-xs uppercase tracking-wide">Population</p>
+                <p className="text-white text-lg font-bold">{formatNumber(pulseData.population)}</p>
+              </div>
+            </div>
+          )}
 
           {/* Tabs */}
           {!isEmbed && (
