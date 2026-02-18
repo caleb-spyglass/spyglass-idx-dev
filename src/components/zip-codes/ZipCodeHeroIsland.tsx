@@ -230,13 +230,6 @@ export default function ZipCodeHeroIsland({
         </div>
       </div>
 
-      {/* Map Section — above content */}
-      {!isEmbed && (
-        <div className="max-w-7xl mx-auto px-4 py-6">
-          <ZipCodeDetailMap zipCodeData={zipCodeData} />
-        </div>
-      )}
-
       {/* Tab Content */}
       {activeTab === 'market' && (
         <div className="flex-1 overflow-y-auto">

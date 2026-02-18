@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { ListingsGrid } from '@/components/listings/ListingsGrid';
 import { ListingDetailOverlay } from '@/components/listings/ListingDetailOverlay';
@@ -8,6 +8,18 @@ import { Listing } from '@/types/listing';
 import { useDismissedListings } from '@/hooks/useDismissedListings';
 import { FilterBar, FilterState, defaultFilters } from '@/components/filters';
 import { EyeSlashIcon } from '@heroicons/react/24/outline';
+
+const LeafletMap = lazy(() =>
+  import('@/components/map/LeafletMap').then((mod) => ({ default: mod.LeafletMap }))
+);
+
+function MapLoadingFallback() {
+  return (
+    <div className="w-full h-full bg-gray-100 flex items-center justify-center">
+      <div className="text-gray-500">Loading map...</div>
+    </div>
+  );
+}
 
 interface AreaCommunityListingsIslandProps {
   communitySlug: string;
@@ -87,8 +99,8 @@ export default function AreaCommunityListingsIsland({
       )}
 
       <div className="flex-1 flex md:overflow-hidden">
-        {/* Listings panel — full width (no map for area communities) */}
-        <div className="w-full md:overflow-y-auto bg-gray-50">
+        {/* Listings panel — left side */}
+        <div className="w-full md:w-1/2 lg:w-[45%] md:overflow-y-auto bg-gray-50">
           <div className="sticky top-0 bg-gray-50 px-4 py-3 border-b border-gray-200 flex items-center justify-between z-10">
             <span className="text-sm text-gray-600">
               {loading
@@ -124,6 +136,19 @@ export default function AreaCommunityListingsIsland({
             isLoading={loading}
           />
         </div>
+
+        {/* Map panel — right side */}
+        <div className="hidden md:block md:w-1/2 lg:w-[55%] border-l border-gray-200">
+          <Suspense fallback={<MapLoadingFallback />}>
+            <LeafletMap
+              listings={visibleListings}
+              selectedListing={selectedListing}
+              hoveredListing={hoveredListing}
+              onSelectListing={setSelectedListing}
+              onHoverListing={setHoveredListing}
+            />
+          </Suspense>
+        </div>
       </div>
 
       <ListingDetailOverlay
@@ -131,7 +156,8 @@ export default function AreaCommunityListingsIsland({
         isOpen={!!selectedListing}
         onClose={() => {
           setSelectedListing(null);
-          window.history.pushState({}, '', `/communities/${communitySlug}`);
+          const basePath = areaType === 'zip' ? `/zip-codes/${communitySlug}` : `/communities/${communitySlug}`;
+          window.history.pushState({}, '', basePath);
         }}
         onPrevious={() => {
           if (!selectedListing) return;
