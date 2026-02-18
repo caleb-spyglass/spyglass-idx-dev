@@ -47,6 +47,7 @@ export function Header() {
 
   const searchItems = [
     { href: '/featured-listings', label: 'Featured Listings' },
+    { href: '/commercial', label: 'Commercial Space' },
     { href: '/agents', label: 'Agents' },
     { href: '/communities', label: 'Communities' },
     { href: '/zip-codes', label: 'Search by Zip Code' },
