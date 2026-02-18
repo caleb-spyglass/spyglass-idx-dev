@@ -22,6 +22,16 @@ import ContactModal from '@/components/forms/ContactModal';
 import AreaCommunityListingsIsland from '@/components/community/AreaCommunityListingsIsland';
 import CommunityStats from '@/components/community/CommunityStats';
 import { formatPrice } from '@/lib/utils';
+import dynamic from 'next/dynamic';
+
+const ZipCodeDetailMap = dynamic(
+  () => import('@/components/zip-codes/ZipCodeDetailMap'),
+  { ssr: false, loading: () => (
+    <div className="w-full h-[300px] md:h-[400px] bg-gray-100 rounded-lg flex items-center justify-center">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-spyglass-orange mx-auto mb-2"></div>
+    </div>
+  )}
+);
 import { getPulseData, formatDollar, formatNumber } from '@/data/pulse-market-data';
 
 type TabType = 'listings' | 'market' | 'about';
@@ -219,6 +229,13 @@ export default function ZipCodeHeroIsland({
           )}
         </div>
       </div>
+
+      {/* Map Section — above content */}
+      {!isEmbed && (
+        <div className="max-w-7xl mx-auto px-4 py-6">
+          <ZipCodeDetailMap zipCodeData={zipCodeData} />
+        </div>
+      )}
 
       {/* Tab Content */}
       {activeTab === 'market' && (
