@@ -3,6 +3,7 @@ import { Suspense } from 'react';
 import { getZipCodeBySlug } from '@/data/zip-codes-data';
 import ZipCodeHeroIsland from '@/components/zip-codes/ZipCodeHeroIsland';
 import ZipCodeBreadcrumbs from '@/components/zip-codes/ZipCodeBreadcrumbs';
+import { Footer } from '@/components/home/Footer';
 import {
   SparklesIcon,
   MapPinIcon,
@@ -231,6 +232,8 @@ export default async function ZipCodeDetailPage({ params }: PageProps) {
           aboutContent={aboutContent}
         />
       </Suspense>
+      
+      <Footer />
     </>
   );
 }

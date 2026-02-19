@@ -1,6 +1,7 @@
 import { COMMUNITIES } from '@/data/communities-polygons';
 import { ZIP_COMMUNITIES, CITY_COMMUNITIES } from '@/data/area-communities';
 import CommunitiesClientIsland from '@/components/community/CommunitiesClientIsland';
+import { Footer } from '@/components/home/Footer';
 import { formatCommunityName } from '@/lib/nearby-communities';
 import { getAllCommunityCardMeta } from '@/data/community-card-data';
 
@@ -122,6 +123,8 @@ export default function CommunitiesPage() {
 
       {/* Interactive client component */}
       <CommunitiesClientIsland cardMeta={cardMeta} />
+      
+      <Footer />
     </>
   );
 }

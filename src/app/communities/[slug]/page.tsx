@@ -13,6 +13,7 @@ import CommunitySchemaMarkup from '@/components/community/CommunitySchemaMarkup'
 import NearbyNeighborhoods from '@/components/community/NearbyNeighborhoods';
 import CommunityFAQServer from '@/components/community/CommunityFAQServer';
 import CommunityTOC from '@/components/community/CommunityTOC';
+import { Footer } from '@/components/home/Footer';
 import { slugify } from '@/lib/slugify';
 import {
   SparklesIcon,
@@ -475,6 +476,8 @@ function renderAreaCommunity(slug: string, areaCommunity: NonNullable<ReturnType
           aboutContent={aboutContent}
         />
       </Suspense>
+      
+      <Footer />
     </>
   );
 }

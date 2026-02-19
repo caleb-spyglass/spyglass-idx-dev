@@ -4,6 +4,7 @@ import { Suspense, useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Header } from '@/components/ui/Header';
+import { Footer } from '@/components/home/Footer';
 import { PhoneIcon, EnvelopeIcon, MapPinIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { BuildingOfficeIcon, UserIcon } from '@heroicons/react/24/solid';
 
@@ -274,6 +275,9 @@ function AgentsContent() {
           </>
         )}
       </div>
+
+      {/* Footer - only show if not in embed mode */}
+      {!isEmbed && <Footer />}
 
       {/* Powered by footer for embeds */}
       {isEmbed && (

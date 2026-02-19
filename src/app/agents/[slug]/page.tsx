@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { Header } from '@/components/ui/Header';
+import { Footer } from '@/components/home/Footer';
 import { 
   PhoneIcon, 
   EnvelopeIcon, 
@@ -417,6 +418,8 @@ export default async function AgentProfilePage({
           </div>
         </div>
       </div>
+      
+      <Footer />
     </>
   );
 }

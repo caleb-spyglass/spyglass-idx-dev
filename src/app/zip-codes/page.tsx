@@ -1,5 +1,6 @@
 import React from 'react';
 import { Header } from '@/components/ui/Header';
+import { Footer } from '@/components/home/Footer';
 import { getAllZipCodes } from '@/data/zip-codes-data';
 import ZipCodeMap from '@/components/zip-codes/ZipCodeMap';
 import ZipCodeGrid from '@/components/zip-codes/ZipCodeGrid';
@@ -240,6 +241,8 @@ export default function ZipCodesPage() {
           </div>
         </div>
       </div>
+      
+      <Footer />
     </div>
   );
 }
