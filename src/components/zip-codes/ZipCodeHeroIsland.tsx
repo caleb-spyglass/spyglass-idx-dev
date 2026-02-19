@@ -69,7 +69,7 @@ export default function ZipCodeHeroIsland({
   const staticPulseData = getPulseData(zipCodeData.zipCode);
 
   // Determine which market data to display
-  const marketData = {
+  const enhancedMarketData = {
     homeValue: pulseData?.metrics?.home_value || staticPulseData?.medianHomeValue || 0,
     yoyChange: pulseData?.metrics?.home_value_growth_yoy ?? staticPulseData?.yoyChange ?? 0,
     medianIncome: pulseData?.metrics?.median_income || staticPulseData?.medianIncome || 0,
@@ -188,50 +188,50 @@ export default function ZipCodeHeroIsland({
           </div>
 
           {/* Market Snapshot - Enhanced with Pulse API data */}
-          {(marketData.homeValue > 0 || staticPulseData) && !isEmbed && (
+          {(enhancedMarketData.homeValue > 0 || staticPulseData) && !isEmbed && (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6">
               <div className="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-3">
                 <p className="text-white/60 text-xs uppercase tracking-wide">
                   Median Home Value
-                  {marketData.isPulseData && (
+                  {enhancedMarketData.isPulseData && (
                     <span className="ml-1 text-xs bg-blue-500 text-white px-1 rounded">LIVE</span>
                   )}
                 </p>
                 <p className="text-white text-lg font-bold">
-                  {marketData.isPulseData 
-                    ? formatPulseCurrency(marketData.homeValue)
-                    : formatDollar(marketData.homeValue)
+                  {enhancedMarketData.isPulseData 
+                    ? formatPulseCurrency(enhancedMarketData.homeValue)
+                    : formatDollar(enhancedMarketData.homeValue)
                   }
                 </p>
               </div>
               <div className="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-3">
                 <p className="text-white/60 text-xs uppercase tracking-wide">YoY Change</p>
                 <p className={`text-lg font-bold flex items-center gap-1 ${
-                  marketData.yoyChange >= 0 ? 'text-green-400' : 'text-red-400'
+                  enhancedMarketData.yoyChange >= 0 ? 'text-green-400' : 'text-red-400'
                 }`}>
-                  {marketData.yoyChange >= 0 ? (
+                  {enhancedMarketData.yoyChange >= 0 ? (
                     <ArrowTrendingUpIcon className="w-4 h-4" />
                   ) : (
                     <ArrowTrendingDownIcon className="w-4 h-4" />
                   )}
-                  {marketData.yoyChange >= 0 ? '+' : ''}{marketData.yoyChange}%
+                  {enhancedMarketData.yoyChange >= 0 ? '+' : ''}{enhancedMarketData.yoyChange}%
                 </p>
               </div>
               <div className="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-3">
                 <p className="text-white/60 text-xs uppercase tracking-wide">Median Income</p>
                 <p className="text-white text-lg font-bold">
-                  {marketData.isPulseData 
-                    ? formatPulseCurrency(marketData.medianIncome)
-                    : formatDollar(marketData.medianIncome)
+                  {enhancedMarketData.isPulseData 
+                    ? formatPulseCurrency(enhancedMarketData.medianIncome)
+                    : formatDollar(enhancedMarketData.medianIncome)
                   }
                 </p>
               </div>
               <div className="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-3">
                 <p className="text-white/60 text-xs uppercase tracking-wide">Population</p>
                 <p className="text-white text-lg font-bold">
-                  {marketData.isPulseData 
-                    ? formatPulseNumber(marketData.population)
-                    : formatNumber(marketData.population)
+                  {enhancedMarketData.isPulseData 
+                    ? formatPulseNumber(enhancedMarketData.population)
+                    : formatNumber(enhancedMarketData.population)
                   }
                 </p>
               </div>
@@ -239,32 +239,32 @@ export default function ZipCodeHeroIsland({
           )}
 
           {/* Additional Pulse Data for Test Zips */}
-          {pulseData?.metrics && marketData.isPulseData && !isEmbed && (
+          {pulseData?.metrics && enhancedMarketData.isPulseData && !isEmbed && (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-3">
-              {marketData.daysOnMarket > 0 && (
+              {enhancedMarketData.daysOnMarket > 0 && (
                 <div className="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-3">
                   <p className="text-white/60 text-xs uppercase tracking-wide">Days on Market</p>
-                  <p className="text-white text-lg font-bold">{Math.round(marketData.daysOnMarket)} days</p>
+                  <p className="text-white text-lg font-bold">{Math.round(enhancedMarketData.daysOnMarket)} days</p>
                 </div>
               )}
-              {marketData.inventory > 0 && (
+              {enhancedMarketData.inventory > 0 && (
                 <div className="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-3">
                   <p className="text-white/60 text-xs uppercase tracking-wide">Active Inventory</p>
-                  <p className="text-white text-lg font-bold">{Math.round(marketData.inventory)}</p>
+                  <p className="text-white text-lg font-bold">{Math.round(enhancedMarketData.inventory)}</p>
                 </div>
               )}
-              {marketData.forecast !== 0 && (
+              {enhancedMarketData.forecast !== 0 && (
                 <div className="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-3">
                   <p className="text-white/60 text-xs uppercase tracking-wide">12-Mo Forecast</p>
                   <p className={`text-lg font-bold flex items-center gap-1 ${
-                    marketData.forecast >= 0 ? 'text-green-400' : 'text-red-400'
+                    enhancedMarketData.forecast >= 0 ? 'text-green-400' : 'text-red-400'
                   }`}>
-                    {marketData.forecast >= 0 ? (
+                    {enhancedMarketData.forecast >= 0 ? (
                       <ArrowTrendingUpIcon className="w-4 h-4" />
                     ) : (
                       <ArrowTrendingDownIcon className="w-4 h-4" />
                     )}
-                    {marketData.forecast >= 0 ? '+' : ''}{marketData.forecast}%
+                    {enhancedMarketData.forecast >= 0 ? '+' : ''}{enhancedMarketData.forecast}%
                   </p>
                 </div>
               )}
@@ -313,7 +313,7 @@ export default function ZipCodeHeroIsland({
         <div className="flex-1 overflow-y-auto">
           <div className="max-w-5xl mx-auto px-4 py-8 space-y-8">
             {/* Enhanced Pulse Market Insights for Test Zip Codes */}
-            {pulseData?.metrics && marketData.isPulseData && (
+            {pulseData?.metrics && enhancedMarketData.isPulseData && (
               <PulseMarketInsights pulseData={pulseData} />
             )}
             

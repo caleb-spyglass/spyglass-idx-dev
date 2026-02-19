@@ -470,8 +470,8 @@ export default function ListingDetailPage() {
       <ListingCTABar
         listingAddress={listing.address.full || `${listing.address.street}, ${listing.address.city}`}
         mlsNumber={listing.mlsNumber}
-        price={formatPrice(listing.listPrice)}
-        listingAgentName={listing.listingAgent?.name}
+        price={formatPrice(listing.price)}
+        listingAgentName={undefined}
       />
 
       {/* Full screen gallery modal */}
