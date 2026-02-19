@@ -51,7 +51,7 @@ export function Header() {
     { href: '/agents', label: 'Agents' },
     { href: '/communities', label: 'Communities' },
     { href: '/zip-codes', label: 'Search by Zip Code' },
-    { href: '/', label: 'Search by Maps' },
+    { href: '/?mapView=true', label: 'Search by Maps' },
   ];
 
   const servicesItems = [

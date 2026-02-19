@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, lazy, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Header } from '@/components/ui/Header';
 import { HomePage } from '@/components/home/HomePage';
 import { FilterBar } from '@/components/search/FilterBar';
@@ -28,6 +29,8 @@ function MapLoadingFallback() {
 }
 
 export default function Page() {
+  const searchParams = useSearchParams();
+  
   // Page state - controls whether to show homepage or search interface
   const [showHomepage, setShowHomepage] = useState(true);
   
@@ -50,6 +53,18 @@ export default function Page() {
   const { saveSearch } = useSavedSearches();
   const [showSaveSearchPrompt, setShowSaveSearchPrompt] = useState(false);
   const [saveSearchName, setSaveSearchName] = useState('');
+
+  // Check for URL parameters to activate map view
+  useEffect(() => {
+    const mapViewParam = searchParams.get('mapView');
+    if (mapViewParam === 'true') {
+      setShowHomepage(false);
+      setViewMode('map');
+      setSearchMode('filters');
+      // Optionally fetch listings immediately
+      fetchListings({});
+    }
+  }, [searchParams, fetchListings]);
 
   const { 
     listings: filterListings, 
