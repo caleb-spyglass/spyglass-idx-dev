@@ -6,16 +6,11 @@
  * 
  * For other zip codes, falls back to existing Repliers MLS data.
  * 
- * API: https://missioncontrol-tjfm.onrender.com/api/pulse/v2/zip/:zip/summary
- * 
- * Note: The Pulse API currently requires Replit Auth. For server-to-server calls,
- * we'll need to implement a service authentication approach or create a public
- * endpoint for IDX site consumption.
+ * Auth: Uses X-API-Key header for server-to-server calls (PULSE_API_KEY env var).
  */
 
-import { fetchWithRetry } from '@/lib/fetch-with-retry';
-
-const MISSION_CONTROL_URL = 'https://missioncontrol-tjfm.onrender.com';
+const MISSION_CONTROL_URL = process.env.MISSION_CONTROL_URL || 'https://missioncontrol-tjfm.onrender.com';
+const PULSE_API_KEY = process.env.PULSE_API_KEY || '';
 const PULSE_API_TIMEOUT_MS = 8_000;
 
 // Test zip codes that should use Pulse API
@@ -212,16 +207,22 @@ async function makePulseRequest<T>(options: PulseRequestOptions): Promise<T> {
   const { endpoint, timeout = PULSE_API_TIMEOUT_MS } = options;
   const url = `${MISSION_CONTROL_URL}${endpoint}`;
 
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeout);
+
   try {
-    // For now, we'll try to make an unauthenticated request
-    // TODO: Implement proper server-to-server authentication
-    const response = await fetchWithRetry(url, {
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      'User-Agent': 'spyglass-idx/1.0',
+    };
+    if (PULSE_API_KEY) {
+      headers['X-API-Key'] = PULSE_API_KEY;
+    }
+
+    const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'User-Agent': 'spyglass-idx/1.0',
-      },
-      timeout,
+      headers,
+      signal: controller.signal,
     });
 
     if (!response.ok) {
@@ -232,6 +233,8 @@ async function makePulseRequest<T>(options: PulseRequestOptions): Promise<T> {
   } catch (error) {
     console.error(`[Pulse API] Request failed for ${endpoint}:`, error);
     throw error;
+  } finally {
+    clearTimeout(timer);
   }
 }
 
@@ -251,31 +254,27 @@ export async function getPulseZipSummary(zip: string): Promise<PulseZipSummary |
     return null;
   }
 
-  // For now, return enhanced mock data for test zip codes
-  // TODO: Once authentication is working, enable real API calls
+  // Try real API first if we have a key configured
+  if (PULSE_API_KEY) {
+    try {
+      const data = await makePulseRequest<PulseZipSummary>({
+        endpoint: `/api/pulse/v2/zip/${zip}/summary`,
+      });
+      console.log(`[Pulse API] Live data fetched for zip ${zip}`);
+      return data;
+    } catch (error) {
+      console.error(`[Pulse API] Live fetch failed for zip ${zip}, falling back to mock:`, error);
+    }
+  }
+
+  // Fallback to enhanced mock data
   const mockData = ENHANCED_PULSE_DATA[zip];
   if (mockData) {
-    console.log(`[Pulse API] Using enhanced mock data for zip ${zip}`);
+    console.log(`[Pulse API] Using mock data for zip ${zip} (no API key or fetch failed)`);
     return mockData as PulseZipSummary;
   }
-
-  try {
-    const data = await makePulseRequest<PulseZipSummary>({
-      endpoint: `/api/pulse/v2/zip/${zip}/summary`,
-    });
-
-    return data;
-  } catch (error) {
-    console.error(`[Pulse API] Failed to fetch summary for zip ${zip}:`, error);
-    
-    // Fallback to enhanced mock data if available
-    if (ENHANCED_PULSE_DATA[zip]) {
-      console.log(`[Pulse API] Falling back to enhanced mock data for zip ${zip}`);
-      return ENHANCED_PULSE_DATA[zip] as PulseZipSummary;
-    }
-    
-    return null;
-  }
+  
+  return null;
 }
 
 /**
