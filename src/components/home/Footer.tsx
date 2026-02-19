@@ -96,7 +96,9 @@ export function Footer() {
             <div className="space-y-2 text-gray-300">
               <p>{content.address}</p>
               <p>{content.city}</p>
-              <p className="text-spyglass-orange font-semibold">{content.phone}</p>
+              <a href={`tel:${content.phone}`} className="text-spyglass-orange font-semibold hover:text-spyglass-orange-hover transition-colors">
+                {content.phone}
+              </a>
             </div>
           </div>
 
