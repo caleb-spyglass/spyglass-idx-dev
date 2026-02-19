@@ -8,6 +8,7 @@ import { FeaturedListingsSection } from './FeaturedListingsSection';
 import { TestimonialsSection } from './TestimonialsSection';
 import { NeighborhoodsSection } from './NeighborhoodsSection';
 import { NewFormSection } from './NewFormSection';
+import HomeValuationCTA from './HomeValuationCTA';
 import { Footer } from './Footer';
 
 interface HomePageProps {
@@ -33,6 +34,7 @@ export function HomePage({ onSearchResults, onShowSearchPage }: HomePageProps) {
       <SpyglassDifferenceSection />
       <FeaturedListingsSection />
       <TestimonialsSection />
+      <HomeValuationCTA />
       <NeighborhoodsSection />
       <NewFormSection />
       <Footer />

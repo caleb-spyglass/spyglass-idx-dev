@@ -18,6 +18,7 @@ import {
   XMarkIcon
 } from '@heroicons/react/24/outline';
 import { SimilarListings } from '@/components/listings/SimilarListings';
+import ListingCTABar from '@/components/listings/ListingCTABar';
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
 
 export default function ListingDetailPage() {
@@ -464,6 +465,14 @@ export default function ListingDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Floating CTA Bar */}
+      <ListingCTABar
+        listingAddress={listing.address.full || `${listing.address.street}, ${listing.address.city}`}
+        mlsNumber={listing.mlsNumber}
+        price={formatPrice(listing.listPrice)}
+        listingAgentName={listing.listingAgent?.name}
+      />
 
       {/* Full screen gallery modal */}
       <PhotoGallery

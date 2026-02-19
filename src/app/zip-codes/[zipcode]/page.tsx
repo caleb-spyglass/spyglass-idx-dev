@@ -4,6 +4,7 @@ import { getZipCodeBySlug } from '@/data/zip-codes-data';
 import ZipCodeHeroIsland from '@/components/zip-codes/ZipCodeHeroIsland';
 import ZipCodeBreadcrumbs from '@/components/zip-codes/ZipCodeBreadcrumbs';
 import { Footer } from '@/components/home/Footer';
+import { getPulseZipSummary, shouldUsePulseData } from '@/lib/pulse-api';
 import {
   SparklesIcon,
   MapPinIcon,
@@ -46,6 +47,18 @@ export default async function ZipCodeDetailPage({ params }: PageProps) {
   
   if (!zipCodeData) {
     notFound();
+  }
+
+  // Fetch Pulse data for test zip codes
+  let pulseData = null;
+  if (shouldUsePulseData(zipCodeData.zipCode)) {
+    try {
+      pulseData = await getPulseZipSummary(zipCodeData.zipCode);
+      console.log(`[Zip ${zipCodeData.zipCode}] Pulse data fetched:`, !!pulseData);
+    } catch (error) {
+      console.error(`[Zip ${zipCodeData.zipCode}] Failed to fetch Pulse data:`, error);
+      // Continue without Pulse data
+    }
   }
 
   // Generate about content for the zip code
@@ -230,6 +243,7 @@ export default async function ZipCodeDetailPage({ params }: PageProps) {
         <ZipCodeHeroIsland
           zipCodeData={zipCodeData}
           aboutContent={aboutContent}
+          pulseData={pulseData}
         />
       </Suspense>
       

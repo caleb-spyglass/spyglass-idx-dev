@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Header } from '@/components/ui/Header';
 import { Footer } from '@/components/home/Footer';
+import ContactPageClient from './ContactPageClient';
 
 export const metadata: Metadata = {
   title: 'Contact Us | Free Consultation | Spyglass Realty',
@@ -31,98 +32,7 @@ export default function ContactPage() {
               {/* Contact Form */}
               <div className="bg-white rounded-lg shadow-lg p-8">
                 <h2 className="text-2xl font-bold text-gray-900 mb-6">Request Your Free Consultation</h2>
-                <form className="space-y-6">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-2">
-                        First Name *
-                      </label>
-                      <input
-                        type="text"
-                        id="firstName"
-                        name="firstName"
-                        required
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-spyglass-orange focus:border-transparent"
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-2">
-                        Last Name *
-                      </label>
-                      <input
-                        type="text"
-                        id="lastName"
-                        name="lastName"
-                        required
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-spyglass-orange focus:border-transparent"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                      Email *
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-spyglass-orange focus:border-transparent"
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
-                      Phone Number
-                    </label>
-                    <input
-                      type="tel"
-                      id="phone"
-                      name="phone"
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-spyglass-orange focus:border-transparent"
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="interest" className="block text-sm font-medium text-gray-700 mb-2">
-                      I'm interested in *
-                    </label>
-                    <select
-                      id="interest"
-                      name="interest"
-                      required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-spyglass-orange focus:border-transparent"
-                    >
-                      <option value="">Please select...</option>
-                      <option value="buying">Buying a home</option>
-                      <option value="selling">Selling a home</option>
-                      <option value="investing">Real estate investing</option>
-                      <option value="renting">Renting/Property management</option>
-                      <option value="other">Other</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
-                      Tell us about your needs
-                    </label>
-                    <textarea
-                      id="message"
-                      name="message"
-                      rows={4}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-spyglass-orange focus:border-transparent"
-                      placeholder="Describe your real estate needs, timeline, preferred areas, etc."
-                    ></textarea>
-                  </div>
-
-                  <button
-                    type="submit"
-                    className="w-full bg-spyglass-orange hover:bg-spyglass-orange-hover text-white font-semibold py-3 px-6 rounded-lg transition-colors"
-                  >
-                    Request Free Consultation
-                  </button>
-                </form>
+                <ContactPageClient />
               </div>
 
               {/* Contact Info */}
@@ -182,27 +92,43 @@ export default function ContactPage() {
                       <svg className="w-5 h-5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z" />
                       </svg>
-                      Deep Austin market expertise
+                      179+ agents across Austin & Houston
                     </li>
                     <li className="flex items-center">
                       <svg className="w-5 h-5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z" />
                       </svg>
-                      Personalized service & attention
+                      Deep Austin market expertise since 2010
                     </li>
                     <li className="flex items-center">
                       <svg className="w-5 h-5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z" />
                       </svg>
-                      Proven track record of success
+                      $500M+ in annual production
                     </li>
                     <li className="flex items-center">
                       <svg className="w-5 h-5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z" />
                       </svg>
-                      No upfront costs or obligations
+                      Personalized service — no upfront costs
                     </li>
                   </ul>
+                </div>
+
+                {/* Google Reviews Widget */}
+                <div className="bg-white rounded-lg shadow-lg p-6">
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="flex text-yellow-400">
+                      {'★★★★★'.split('').map((s, i) => <span key={i} className="text-xl">{s}</span>)}
+                    </div>
+                    <span className="text-lg font-bold text-gray-900">4.9</span>
+                  </div>
+                  <p className="text-sm text-gray-600">
+                    Based on 500+ reviews from happy clients on Google, Zillow, and Realtor.com
+                  </p>
+                  <a href="/reviews" className="text-sm text-spyglass-orange hover:underline mt-2 inline-block">
+                    Read our reviews →
+                  </a>
                 </div>
               </div>
             </div>

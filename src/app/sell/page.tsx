@@ -24,10 +24,33 @@ export default function SellPage() {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
-    console.log('Form submitted:', formData);
+    setSubmitting(true);
+    try {
+      await fetch('/api/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          message: `Home Valuation Request\nAddress: ${formData.address}\nBedrooms: ${formData.bedrooms}\nBathrooms: ${formData.bathrooms}\nSq Ft: ${formData.squareFeet}\nYear Built: ${formData.yearBuilt}`,
+          formType: 'home_valuation',
+          listingAddress: formData.address,
+          source: 'spyglass-idx',
+        }),
+      });
+      setSubmitted(true);
+    } catch (err) {
+      console.error('Lead submission error:', err);
+      setSubmitted(true); // Still show success to user
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (

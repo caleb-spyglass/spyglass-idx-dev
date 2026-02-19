@@ -33,12 +33,15 @@ const ZipCodeDetailMap = dynamic(
   )}
 );
 import { getPulseData, formatDollar, formatNumber } from '@/data/pulse-market-data';
+import { PulseZipSummary, formatPulseCurrency, formatPulseNumber } from '@/lib/pulse-api';
+import PulseMarketInsights from './PulseMarketInsights';
 
 type TabType = 'listings' | 'market' | 'about';
 
 interface ZipCodeHeroIslandProps {
   zipCodeData: ZipCodeData;
   aboutContent: React.ReactNode;
+  pulseData?: PulseZipSummary | null;
 }
 
 // Austin Metro averages for comparison
@@ -49,6 +52,7 @@ const AUSTIN_METRO_AVG_DOM = 35;
 export default function ZipCodeHeroIsland({
   zipCodeData,
   aboutContent,
+  pulseData,
 }: ZipCodeHeroIslandProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -61,7 +65,20 @@ export default function ZipCodeHeroIsland({
   const [medianPrice, setMedianPrice] = useState<number | null>(zipCodeData.marketData?.medianPrice ?? null);
   const [loading, setLoading] = useState(true);
 
-  const pulseData = getPulseData(zipCodeData.zipCode);
+  // Legacy static pulse data (fallback)
+  const staticPulseData = getPulseData(zipCodeData.zipCode);
+
+  // Determine which market data to display
+  const marketData = {
+    homeValue: pulseData?.metrics?.home_value || staticPulseData?.medianHomeValue || 0,
+    yoyChange: pulseData?.metrics?.home_value_growth_yoy ?? staticPulseData?.yoyChange ?? 0,
+    medianIncome: pulseData?.metrics?.median_income || staticPulseData?.medianIncome || 0,
+    population: pulseData?.metrics?.population || staticPulseData?.population || 0,
+    daysOnMarket: pulseData?.metrics?.days_on_market || 0,
+    inventory: pulseData?.metrics?.for_sale_inventory || 0,
+    forecast: pulseData?.forecast?.value || 0,
+    isPulseData: !!pulseData?.metrics,
+  };
 
   // Fetch real listing stats from the API
   useEffect(() => {
@@ -170,32 +187,93 @@ export default function ZipCodeHeroIsland({
             </div>
           </div>
 
-          {/* Market Snapshot from Pulse */}
-          {pulseData && !isEmbed && (
+          {/* Market Snapshot - Enhanced with Pulse API data */}
+          {(marketData.homeValue > 0 || staticPulseData) && !isEmbed && (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6">
               <div className="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-3">
-                <p className="text-white/60 text-xs uppercase tracking-wide">Median Home Value</p>
-                <p className="text-white text-lg font-bold">{formatDollar(pulseData.medianHomeValue)}</p>
+                <p className="text-white/60 text-xs uppercase tracking-wide">
+                  Median Home Value
+                  {marketData.isPulseData && (
+                    <span className="ml-1 text-xs bg-blue-500 text-white px-1 rounded">LIVE</span>
+                  )}
+                </p>
+                <p className="text-white text-lg font-bold">
+                  {marketData.isPulseData 
+                    ? formatPulseCurrency(marketData.homeValue)
+                    : formatDollar(marketData.homeValue)
+                  }
+                </p>
               </div>
               <div className="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-3">
                 <p className="text-white/60 text-xs uppercase tracking-wide">YoY Change</p>
-                <p className={`text-lg font-bold flex items-center gap-1 ${pulseData.yoyChange >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                  {pulseData.yoyChange >= 0 ? (
+                <p className={`text-lg font-bold flex items-center gap-1 ${
+                  marketData.yoyChange >= 0 ? 'text-green-400' : 'text-red-400'
+                }`}>
+                  {marketData.yoyChange >= 0 ? (
                     <ArrowTrendingUpIcon className="w-4 h-4" />
                   ) : (
                     <ArrowTrendingDownIcon className="w-4 h-4" />
                   )}
-                  {pulseData.yoyChange >= 0 ? '+' : ''}{pulseData.yoyChange}%
+                  {marketData.yoyChange >= 0 ? '+' : ''}{marketData.yoyChange}%
                 </p>
               </div>
               <div className="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-3">
                 <p className="text-white/60 text-xs uppercase tracking-wide">Median Income</p>
-                <p className="text-white text-lg font-bold">{formatDollar(pulseData.medianIncome)}</p>
+                <p className="text-white text-lg font-bold">
+                  {marketData.isPulseData 
+                    ? formatPulseCurrency(marketData.medianIncome)
+                    : formatDollar(marketData.medianIncome)
+                  }
+                </p>
               </div>
               <div className="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-3">
                 <p className="text-white/60 text-xs uppercase tracking-wide">Population</p>
-                <p className="text-white text-lg font-bold">{formatNumber(pulseData.population)}</p>
+                <p className="text-white text-lg font-bold">
+                  {marketData.isPulseData 
+                    ? formatPulseNumber(marketData.population)
+                    : formatNumber(marketData.population)
+                  }
+                </p>
               </div>
+            </div>
+          )}
+
+          {/* Additional Pulse Data for Test Zips */}
+          {pulseData?.metrics && marketData.isPulseData && !isEmbed && (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-3">
+              {marketData.daysOnMarket > 0 && (
+                <div className="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-3">
+                  <p className="text-white/60 text-xs uppercase tracking-wide">Days on Market</p>
+                  <p className="text-white text-lg font-bold">{Math.round(marketData.daysOnMarket)} days</p>
+                </div>
+              )}
+              {marketData.inventory > 0 && (
+                <div className="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-3">
+                  <p className="text-white/60 text-xs uppercase tracking-wide">Active Inventory</p>
+                  <p className="text-white text-lg font-bold">{Math.round(marketData.inventory)}</p>
+                </div>
+              )}
+              {marketData.forecast !== 0 && (
+                <div className="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-3">
+                  <p className="text-white/60 text-xs uppercase tracking-wide">12-Mo Forecast</p>
+                  <p className={`text-lg font-bold flex items-center gap-1 ${
+                    marketData.forecast >= 0 ? 'text-green-400' : 'text-red-400'
+                  }`}>
+                    {marketData.forecast >= 0 ? (
+                      <ArrowTrendingUpIcon className="w-4 h-4" />
+                    ) : (
+                      <ArrowTrendingDownIcon className="w-4 h-4" />
+                    )}
+                    {marketData.forecast >= 0 ? '+' : ''}{marketData.forecast}%
+                  </p>
+                </div>
+              )}
+              {pulseData.metrics.value_income_ratio && (
+                <div className="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-3">
+                  <p className="text-white/60 text-xs uppercase tracking-wide">Value/Income Ratio</p>
+                  <p className="text-white text-lg font-bold">{pulseData.metrics.value_income_ratio.toFixed(1)}x</p>
+                </div>
+              )}
             </div>
           )}
 
@@ -233,7 +311,13 @@ export default function ZipCodeHeroIsland({
       {/* Tab Content */}
       {activeTab === 'market' && (
         <div className="flex-1 overflow-y-auto">
-          <div className="max-w-5xl mx-auto px-4 py-8">
+          <div className="max-w-5xl mx-auto px-4 py-8 space-y-8">
+            {/* Enhanced Pulse Market Insights for Test Zip Codes */}
+            {pulseData?.metrics && marketData.isPulseData && (
+              <PulseMarketInsights pulseData={pulseData} />
+            )}
+            
+            {/* Standard Community Stats */}
             <CommunityStats
               communitySlug={zipCodeData.slug}
               communityName={`${zipCodeData.zipCode} (${zipCodeData.name})`}
