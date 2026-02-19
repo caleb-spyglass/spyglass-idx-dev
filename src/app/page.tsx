@@ -29,6 +29,14 @@ function MapLoadingFallback() {
 }
 
 export default function Page() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-white" />}>
+      <PageContent />
+    </Suspense>
+  );
+}
+
+function PageContent() {
   const searchParams = useSearchParams();
   
   // Page state - controls whether to show homepage or search interface
