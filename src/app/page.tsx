@@ -54,6 +54,16 @@ export default function Page() {
   const [showSaveSearchPrompt, setShowSaveSearchPrompt] = useState(false);
   const [saveSearchName, setSaveSearchName] = useState('');
 
+  const { 
+    listings: filterListings, 
+    loading, 
+    error, 
+    total: filterTotal, 
+    hasMore, 
+    fetchListings, 
+    loadMore 
+  } = useListings({ autoFetch: !showHomepage && searchMode === 'filters' });
+
   // Check for URL parameters to activate map view
   useEffect(() => {
     const mapViewParam = searchParams.get('mapView');
@@ -65,16 +75,6 @@ export default function Page() {
       fetchListings({});
     }
   }, [searchParams, fetchListings]);
-
-  const { 
-    listings: filterListings, 
-    loading, 
-    error, 
-    total: filterTotal, 
-    hasMore, 
-    fetchListings, 
-    loadMore 
-  } = useListings({ autoFetch: !showHomepage && searchMode === 'filters' });
   
   // Use AI listings when AI search is active, otherwise use filter listings
   const listings = isAiActive ? aiListings : filterListings;
