@@ -59,15 +59,6 @@ export function HeroSection({ onSearchResults, onShowSearchPage }: HeroSectionPr
 
       {/* Content */}
       <div className="relative z-10 max-w-4xl mx-auto px-4 text-center text-white">
-        {/* Logo Mark */}
-        <div className="flex justify-center mb-6">
-          <img 
-            src="/spyglass-logo-white.svg" 
-            alt="Spyglass Realty" 
-            className="h-10 w-auto opacity-80"
-          />
-        </div>
-
         {/* Main Heading */}
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-4">
           {content.headline}
