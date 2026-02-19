@@ -62,6 +62,8 @@ export function SimilarListings({ listing, onSelect }: SimilarListingsProps) {
     ...(listing.address.city && { city: listing.address.city }),
     minPrice: String(Math.round(listing.price * 0.75)),
     maxPrice: String(Math.round(listing.price * 1.25)),
+    beds: String(listing.bedrooms || ''),
+    baths: String(listing.bathrooms || ''),
   });
 
   if (loading) {
@@ -123,7 +125,7 @@ export function SimilarListings({ listing, onSelect }: SimilarListingsProps) {
       {/* View More link */}
       <div className="mt-4 text-center">
         <Link
-          href={`/?${viewMoreParams.toString()}`}
+          href={`/buy?${viewMoreParams.toString()}`}
           className="text-spyglass-orange hover:text-spyglass-orange/80 font-medium text-sm hover:underline transition-colors"
         >
           View More Like This →
