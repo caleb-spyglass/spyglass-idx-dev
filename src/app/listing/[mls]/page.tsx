@@ -145,7 +145,26 @@ export default function ListingDetailPage() {
       {/* Back button */}
       <div className="max-w-7xl mx-auto px-4 py-4">
         <button
-          onClick={() => router.back()}
+          onClick={() => {
+            // Check if we have a proper referrer from the same domain
+            if (typeof window !== 'undefined' && document.referrer) {
+              try {
+                const referrerUrl = new URL(document.referrer);
+                const currentUrl = new URL(window.location.href);
+                
+                // If referrer is from the same domain, use router.back()
+                if (referrerUrl.origin === currentUrl.origin) {
+                  router.back();
+                  return;
+                }
+              } catch (e) {
+                // If there's an error parsing URLs, fall back to default
+              }
+            }
+            
+            // Fallback to homepage (main search page) if no valid referrer
+            router.push('/');
+          }}
           className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
         >
           <ArrowLeftIcon className="w-5 h-5" />
