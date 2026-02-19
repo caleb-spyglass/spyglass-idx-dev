@@ -56,6 +56,7 @@ export function Header() {
 
   const servicesItems = [
     { href: '/services', label: 'Services' },
+    { href: '/home-value', label: "What's My Home Worth?" },
     { href: '/mortgage-calculator', label: 'Mortgage Calculator' },
     { href: '/relocation', label: 'Relocation' },
     { href: '/cash-offer', label: 'Cash Offer Trade In' },
@@ -92,18 +93,14 @@ export function Header() {
               Buying
             </Link>
 
-            <Link href="/home-value" className="text-sm hover:text-spyglass-orange transition-colors font-medium">
-              What's My Home Worth?
-            </Link>
+            <NavDropdown label="Selling" items={sellingItems} />
+            <NavDropdown label="Search" items={searchItems} />
+            <NavDropdown label="Services" items={servicesItems} />
+            <NavDropdown label="About Us" items={aboutItems} />
 
             <Link href="/blog" className="text-sm hover:text-spyglass-orange transition-colors">
               Blog
             </Link>
-            
-            <NavDropdown label="Search" items={searchItems} />
-            <NavDropdown label="Services" items={servicesItems} />
-            <NavDropdown label="Selling" items={sellingItems} />
-            <NavDropdown label="About Us" items={aboutItems} />
 
             <Link href="/sign-in" className="text-sm hover:text-spyglass-orange transition-colors">
               Sign In
@@ -140,12 +137,14 @@ export function Header() {
               <Link href="/buy" className="block px-3 py-2 text-sm hover:text-spyglass-orange" onClick={() => setMobileMenuOpen(false)}>
                 Buying
               </Link>
-              <Link href="/home-value" className="block px-3 py-2 text-sm hover:text-spyglass-orange font-medium" onClick={() => setMobileMenuOpen(false)}>
-                What's My Home Worth?
-              </Link>
-              <Link href="/blog" className="block px-3 py-2 text-sm hover:text-spyglass-orange" onClick={() => setMobileMenuOpen(false)}>
-                Blog
-              </Link>
+              <div className="px-3 py-1 text-xs font-medium text-gray-400 uppercase tracking-wide">
+                Selling
+              </div>
+              {sellingItems.map((item) => (
+                <Link key={item.href} href={item.href} className="block px-6 py-2 text-sm hover:text-spyglass-orange" onClick={() => setMobileMenuOpen(false)}>
+                  {item.label}
+                </Link>
+              ))}
               <div className="px-3 py-1 text-xs font-medium text-gray-400 uppercase tracking-wide">
                 Search
               </div>
@@ -163,14 +162,6 @@ export function Header() {
                 </Link>
               ))}
               <div className="px-3 py-1 text-xs font-medium text-gray-400 uppercase tracking-wide">
-                Selling
-              </div>
-              {sellingItems.map((item) => (
-                <Link key={item.href} href={item.href} className="block px-6 py-2 text-sm hover:text-spyglass-orange" onClick={() => setMobileMenuOpen(false)}>
-                  {item.label}
-                </Link>
-              ))}
-              <div className="px-3 py-1 text-xs font-medium text-gray-400 uppercase tracking-wide">
                 About Us
               </div>
               {aboutItems.map((item) => (
@@ -178,6 +169,9 @@ export function Header() {
                   {item.label}
                 </Link>
               ))}
+              <Link href="/blog" className="block px-3 py-2 text-sm hover:text-spyglass-orange" onClick={() => setMobileMenuOpen(false)}>
+                Blog
+              </Link>
               <Link href="/sign-in" className="block px-3 py-2 text-sm hover:text-spyglass-orange" onClick={() => setMobileMenuOpen(false)}>
                 Sign In
               </Link>
