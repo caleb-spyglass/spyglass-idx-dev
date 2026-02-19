@@ -66,9 +66,10 @@ async function getAgent(slug: string): Promise<AgentProfile | null> {
 export async function generateMetadata({ 
   params 
 }: { 
-  params: { slug: string } 
+  params: Promise<{ slug: string }> 
 }): Promise<Metadata> {
-  const agent = await getAgent(params.slug);
+  const { slug } = await params;
+  const agent = await getAgent(slug);
   
   if (!agent) {
     return {
@@ -163,9 +164,10 @@ function ContactForm({ agent }: { agent: AgentProfile }) {
 export default async function AgentProfilePage({ 
   params 
 }: { 
-  params: { slug: string } 
+  params: Promise<{ slug: string }> 
 }) {
-  const agent = await getAgent(params.slug);
+  const { slug } = await params;
+  const agent = await getAgent(slug);
 
   if (!agent) {
     notFound();
