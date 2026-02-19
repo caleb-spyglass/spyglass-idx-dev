@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { fetchCommunities } from '@/lib/mission-control-api';
+import { searchMLSCommunities } from '@/lib/mls-communities-api';
 import { COMMUNITIES } from '@/data/communities-polygons';
 
 // GET /api/communities - List all communities
@@ -12,7 +13,33 @@ export async function GET(request: NextRequest) {
     const page = parseInt(searchParams.get('page') || '1');
     const pageSize = parseInt(searchParams.get('pageSize') || '100');
 
-    // First try Mission Control API
+    // Check if live MLS data is requested
+    const includeLiveData = searchParams.get('live') === 'true';
+
+    // First try MLS-enhanced Mission Control API if live data requested
+    if (includeLiveData) {
+      try {
+        const mlsResponse = await searchMLSCommunities({
+          search,
+          county: county || undefined,
+          featured: featured === 'true' ? true : undefined,
+          published: true,
+          page,
+          limit: pageSize,
+          includeLiveData: true,
+        });
+
+        return NextResponse.json({
+          communities: mlsResponse.communities,
+          total: mlsResponse.total,
+          source: 'mls-enhanced',
+        });
+      } catch (mlsError) {
+        console.warn('[Communities API] MLS enhancement failed, falling back to standard API:', mlsError);
+      }
+    }
+
+    // Try standard Mission Control API
     try {
       const apiResponse = await fetchCommunities({
         search,
@@ -30,9 +57,49 @@ export async function GET(request: NextRequest) {
       });
 
     } catch (apiError) {
-      console.warn('[Communities API] Mission Control unavailable, falling back to static data:', apiError);
+      console.warn('[Communities API] Mission Control unavailable, trying database fallback:', apiError);
       
-      // Fallback to static data
+      // Try database fallback first
+      try {
+        const { query: dbQuery } = await import('../../../lib/database.ts');
+        
+        let queryText = `
+          SELECT 
+            slug,
+            community_data,
+            jsonb_array_length(polygon) as polygon_points,
+            last_updated
+          FROM communities_cache 
+          ORDER BY community_data->>'name'
+        `;
+        
+        const dbResult = await dbQuery(queryText + ` LIMIT ${pageSize}`);
+        
+        const dbCommunities = dbResult.rows.map(row => {
+          const communityData = typeof row.community_data === 'string' 
+            ? JSON.parse(row.community_data)
+            : row.community_data;
+          
+          return {
+            ...communityData,
+            polygonPoints: row.polygon_points,
+            lastUpdated: row.last_updated,
+          };
+        });
+
+        if (dbCommunities.length > 0) {
+          console.log(`[Communities API] Using database fallback: ${dbCommunities.length} communities`);
+          return NextResponse.json({
+            communities: dbCommunities,
+            total: dbCommunities.length,
+            source: 'database-fallback',
+          });
+        }
+      } catch (dbError) {
+        console.warn('[Communities API] Database fallback also failed:', dbError);
+      }
+      
+      // Final fallback to static data
       let filtered = COMMUNITIES;
 
       if (county) {

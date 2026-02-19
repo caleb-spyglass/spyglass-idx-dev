@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { fetchCommunityBySlug } from '@/lib/mission-control-api';
+import { getMLSCommunityBySlug, getCommunityListings } from '@/lib/mls-communities-api';
 import { getCommunityBySlug } from '@/data/communities-polygons';
 import { searchListings } from '@/lib/repliers-api';
 
@@ -14,6 +15,43 @@ export async function GET(request: NextRequest, context: RouteContext) {
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get('page') || '1');
     const pageSize = parseInt(searchParams.get('pageSize') || '20');
+    const includeLiveData = searchParams.get('live') === 'true';
+
+    // Try MLS-enhanced community data first if live data requested
+    if (includeLiveData) {
+      try {
+        const mlsCommunity = await getMLSCommunityBySlug(slug);
+        if (mlsCommunity) {
+          // Get listings for this community
+          const { listings, total } = await getCommunityListings(slug, { page, pageSize });
+          
+          return NextResponse.json({
+            community: {
+              name: mlsCommunity.name,
+              slug: mlsCommunity.slug,
+              county: mlsCommunity.county,
+              featured: mlsCommunity.featured,
+              polygon: mlsCommunity.polygon,
+              displayPolygon: mlsCommunity.displayPolygon,
+            },
+            listings,
+            stats: {
+              activeListings: mlsCommunity.liveStats.activeListings,
+              medianPrice: mlsCommunity.liveStats.medianPrice,
+              avgPricePerSqft: mlsCommunity.liveStats.pricePerSqft,
+              avgDaysOnMarket: mlsCommunity.liveStats.avgDaysOnMarket,
+              lastUpdated: mlsCommunity.liveStats.lastUpdated,
+            },
+            total,
+            page,
+            pageSize,
+            source: 'mls-enhanced',
+          });
+        }
+      } catch (mlsError) {
+        console.warn(`[Community API] MLS enhancement failed for ${slug}, falling back to standard data:`, mlsError);
+      }
+    }
 
     let community = null;
 
@@ -84,6 +122,7 @@ export async function GET(request: NextRequest, context: RouteContext) {
       total,
       page,
       pageSize,
+      source: 'standard',
     });
   } catch (error) {
     console.error('Community detail API error:', error);

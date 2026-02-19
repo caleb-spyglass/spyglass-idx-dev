@@ -68,6 +68,23 @@ export default function CommunityListingsIsland({
     const fetchListings = async () => {
       setLoading(true);
       try {
+        // Try MLS-enhanced community API first
+        const mlsResponse = await fetch(
+          `/api/communities/${communitySlug}?live=true&pageSize=100`
+        );
+        
+        if (mlsResponse.ok) {
+          const mlsData = await mlsResponse.json();
+          if (mlsData.source === 'mls-enhanced') {
+            console.log(`[CommunityListings] Using MLS-enhanced data for ${communityName}`);
+            setListings(mlsData.listings || []);
+            setTotal(mlsData.total || 0);
+            return;
+          }
+        }
+        
+        // Fallback to standard polygon search
+        console.log(`[CommunityListings] Using standard polygon search for ${communityName}`);
         const polygonString = polygon.map(([lng, lat]) => `${lat},${lng}`).join(';');
         const response = await fetch(
           `/api/listings?polygon=${encodeURIComponent(polygonString)}&pageSize=100`
@@ -79,12 +96,26 @@ export default function CommunityListingsIsland({
         }
       } catch (error) {
         console.error('Failed to fetch listings:', error);
+        // Try once more with basic polygon search as final fallback
+        try {
+          const polygonString = polygon.map(([lng, lat]) => `${lat},${lng}`).join(';');
+          const response = await fetch(
+            `/api/listings?polygon=${encodeURIComponent(polygonString)}&pageSize=100`
+          );
+          if (response.ok) {
+            const data = await response.json();
+            setListings(data.listings || []);
+            setTotal(data.total || 0);
+          }
+        } catch (fallbackError) {
+          console.error('Final fallback also failed:', fallbackError);
+        }
       } finally {
         setLoading(false);
       }
     };
     fetchListings();
-  }, [polygon]);
+  }, [polygon, communitySlug, communityName]);
 
   const mapCommunity = {
     id: communitySlug,

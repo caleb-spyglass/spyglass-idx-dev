@@ -7,14 +7,21 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "sync-communities": "node scripts/sync-communities-to-mission-control.mjs"
+    "sync-communities": "node scripts/sync-communities-to-mission-control.mjs",
+    "init-db": "tsx scripts/init-database.mjs",
+    "sync-mls": "tsx scripts/sync-mls-data.mjs",
+    "populate-direct": "tsx scripts/populate-communities-direct.mjs"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
+    "@types/pg": "^8.16.0",
+    "csv-parser": "^3.2.0",
+    "dotenv": "^17.3.1",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.572.0",
     "mapbox-gl": "^3.18.1",
     "next": "16.1.6",
+    "pg": "^8.18.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-leaflet": "^5.0.0"

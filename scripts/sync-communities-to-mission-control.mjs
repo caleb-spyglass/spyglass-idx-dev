@@ -11,9 +11,13 @@
  * MISSION_CONTROL_URL=https://custom.url.com PULSE_API_KEY=key npm run sync-communities
  */
 
+import { config } from 'dotenv';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+
+// Load environment variables
+config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -59,7 +63,7 @@ async function loadStaticCommunities() {
 }
 
 /**
- * Sync communities to Mission Control
+ * Sync communities to Mission Control in batches
  */
 async function syncCommunities() {
   try {
@@ -69,44 +73,74 @@ async function syncCommunities() {
     // Load static data
     const communities = await loadStaticCommunities();
     
-    // Prepare sync payload
-    const payload = {
-      apiKey: PULSE_API_KEY,
-      communities: communities.map(community => ({
-        slug: community.slug,
-        name: community.name,
-        county: community.county || 'Travis',
-        polygon: community.polygon,
-        displayPolygon: community.displayPolygon,
-        featured: community.featured || false,
-      })),
-    };
+    // Process in batches to avoid payload size limits
+    const BATCH_SIZE = 10;
+    const batches = [];
     
-    console.log(`📤 Syncing ${payload.communities.length} communities...`);
-    
-    // Make the sync request
-    const response = await fetch(`${MISSION_CONTROL_URL}/api/public/communities/sync`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-    });
-    
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`HTTP ${response.status}: ${errorText}`);
+    for (let i = 0; i < communities.length; i += BATCH_SIZE) {
+      batches.push(communities.slice(i, i + BATCH_SIZE));
     }
     
-    const result = await response.json();
+    console.log(`📤 Syncing ${communities.length} communities in ${batches.length} batches of ${BATCH_SIZE}...`);
     
-    console.log('✅ Sync completed successfully!');
-    console.log(`📊 Results:`);
-    console.log(`   • Synced: ${result.synced} communities`);
-    console.log(`   • Errors: ${result.errors} communities`);
-    console.log(`   • Message: ${result.message}`);
+    let totalSynced = 0;
+    let totalErrors = 0;
     
-    if (result.errors > 0) {
+    for (let i = 0; i < batches.length; i++) {
+      const batch = batches[i];
+      
+      console.log(`⏳ Processing batch ${i + 1}/${batches.length} (${batch.length} communities)...`);
+      
+      const payload = {
+        apiKey: PULSE_API_KEY,
+        communities: batch.map(community => ({
+          slug: community.slug,
+          name: community.name,
+          county: community.county || 'Travis',
+          polygon: community.polygon,
+          displayPolygon: community.displayPolygon,
+          featured: community.featured || false,
+        })),
+      };
+      
+      try {
+        // Make the sync request
+        const response = await fetch(`${MISSION_CONTROL_URL}/api/public/communities/sync`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+        });
+        
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`HTTP ${response.status}: ${errorText}`);
+        }
+        
+        const result = await response.json();
+        totalSynced += result.synced || 0;
+        totalErrors += result.errors || 0;
+        
+        console.log(`   ✅ Batch ${i + 1}: ${result.synced} synced, ${result.errors} errors`);
+        
+        // Add a small delay between batches to be nice to the server
+        if (i < batches.length - 1) {
+          await new Promise(resolve => setTimeout(resolve, 500));
+        }
+        
+      } catch (error) {
+        console.error(`   ❌ Batch ${i + 1} failed:`, error.message);
+        totalErrors += batch.length;
+      }
+    }
+    
+    console.log('✅ Sync completed!');
+    console.log(`📊 Final Results:`);
+    console.log(`   • Total Synced: ${totalSynced} communities`);
+    console.log(`   • Total Errors: ${totalErrors} communities`);
+    
+    if (totalErrors > 0) {
       console.warn('⚠️  Some communities had sync errors. Check Mission Control logs for details.');
     }
     
@@ -150,12 +184,9 @@ async function main() {
   console.log('🏠 Community Sync Tool');
   console.log('=======================');
   
-  // Verify connection first
-  const connected = await verifyConnection();
-  if (!connected) {
-    console.error('❌ Cannot connect to Mission Control. Aborting sync.');
-    process.exit(1);
-  }
+  // Skip connection verification for now since GET routes are having auth issues
+  console.log('⚠️  Skipping connection verification due to known API auth issues');
+  console.log('🔄 Proceeding directly to sync with authentication...');
   
   // Proceed with sync
   await syncCommunities();

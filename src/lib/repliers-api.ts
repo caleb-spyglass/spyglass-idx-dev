@@ -345,7 +345,7 @@ export async function getListing(mlsNumber: string): Promise<Listing | null> {
 }
 
 /**
- * Search listings within a community polygon
+ * Search listings within a community polygon using Repliers geo-spatial API
  */
 export async function searchByPolygon(
   polygon: Array<[number, number]>, // [lng, lat] format
@@ -355,6 +355,185 @@ export async function searchByPolygon(
     ...additionalFilters,
     polygon: polygon.map(([lng, lat]) => ({ lat, lng })),
   });
+}
+
+/**
+ * Search listings within multiple polygons (multipolygon support)
+ */
+export async function searchByMultiPolygon(
+  polygons: Array<Array<[number, number]>>, // Array of [lng, lat] format polygons
+  operator: 'OR' | 'AND' = 'OR',
+  additionalFilters?: Partial<SearchFilters>
+): Promise<SearchResults> {
+  const params: Record<string, string | number | boolean | undefined> = {
+    pageNum: additionalFilters?.page || 1,
+    resultsPerPage: additionalFilters?.pageSize || 24,
+    type: additionalFilters?.type || 'Sale',
+    status: 'A', // Active listings
+  };
+
+  // Add other filters
+  if (additionalFilters?.minPrice) params.minPrice = additionalFilters.minPrice;
+  if (additionalFilters?.maxPrice) params.maxPrice = additionalFilters.maxPrice;
+  if (additionalFilters?.minBeds) params.minBeds = additionalFilters.minBeds;
+  if (additionalFilters?.maxBeds) params.maxBeds = additionalFilters.maxBeds;
+  if (additionalFilters?.minBaths) params.minBaths = additionalFilters.minBaths;
+  if (additionalFilters?.city) params.city = additionalFilters.city;
+  if (additionalFilters?.area) params.area = additionalFilters.area;
+  if (additionalFilters?.zip) params.zip = additionalFilters.zip;
+
+  // Sort
+  if (additionalFilters?.sort) {
+    const sortMapping: Record<string, string> = {
+      'price-asc': 'listPriceAsc',
+      'price-desc': 'listPriceDesc',
+      'date-desc': 'createdOnDesc',
+      'sqft-desc': 'sqftDesc',
+    };
+    params.sortBy = sortMapping[additionalFilters.sort] || 'createdOnDesc';
+  } else {
+    params.sortBy = 'createdOnDesc';
+  }
+
+  // Add mapOperator if using AND
+  if (operator === 'AND') {
+    params.mapOperator = 'AND';
+  }
+
+  // Convert polygons to Repliers format: [[[lng, lat], ...], [[lng, lat], ...]]
+  const mapData = polygons.map(polygon => {
+    const ring = polygon.map(([lng, lat]) => [lng, lat]);
+    // Close the ring if not closed
+    if (ring[0][0] !== ring[ring.length-1][0] || ring[0][1] !== ring[ring.length-1][1]) {
+      ring.push(ring[0]);
+    }
+    return ring;
+  });
+
+  const response = await repliersRequest<RepliersResponse>({
+    endpoint: '/listings',
+    method: 'POST',
+    params,
+    body: { map: mapData },
+  });
+
+  return {
+    listings: response.listings.map(transformListing),
+    total: response.count,
+    page: response.page,
+    pageSize: response.pageSize,
+    hasMore: response.page < response.numPages,
+  };
+}
+
+/**
+ * Get listings within a zip code boundary polygon
+ */
+export async function getZipCodeListings(
+  zipCodePolygon: Array<[number, number]>,
+  additionalFilters?: Partial<SearchFilters>
+): Promise<SearchResults> {
+  return searchByPolygon(zipCodePolygon, additionalFilters);
+}
+
+/**
+ * Get dynamic market data for a community or area using live MLS data
+ */
+export async function getLiveMarketData(options: {
+  polygon?: Array<[number, number]>;
+  city?: string;
+  area?: string;
+  zip?: string;
+}): Promise<{
+  activeListings: number;
+  medianPrice: number;
+  averagePrice: number;
+  minPrice: number;
+  maxPrice: number;
+  avgDaysOnMarket: number;
+  pricePerSqft: number;
+  totalSqft: number;
+  averageListingAge: number;
+}> {
+  let searchResults: SearchResults;
+
+  if (options.polygon) {
+    // Use polygon search for community boundaries
+    searchResults = await searchByPolygon(options.polygon, { 
+      pageSize: 500, // Get more listings for better stats
+      status: ['Active']
+    });
+  } else {
+    // Use standard search for city/area/zip
+    searchResults = await searchListings({
+      city: options.city,
+      area: options.area,
+      zip: options.zip,
+      pageSize: 500,
+      status: ['Active']
+    });
+  }
+
+  const listings = searchResults.listings;
+  
+  if (listings.length === 0) {
+    return {
+      activeListings: 0,
+      medianPrice: 0,
+      averagePrice: 0,
+      minPrice: 0,
+      maxPrice: 0,
+      avgDaysOnMarket: 0,
+      pricePerSqft: 0,
+      totalSqft: 0,
+      averageListingAge: 0,
+    };
+  }
+
+  const prices = listings.map(l => l.price).sort((a, b) => a - b);
+  const validSqft = listings.filter(l => l.sqft > 0);
+  const daysOnMarket = listings.map(l => l.daysOnMarket || 0);
+  
+  const medianPrice = prices.length > 0 
+    ? prices[Math.floor(prices.length / 2)] 
+    : 0;
+  
+  const averagePrice = prices.length > 0
+    ? prices.reduce((sum, price) => sum + price, 0) / prices.length
+    : 0;
+
+  const pricePerSqft = validSqft.length > 0
+    ? validSqft.reduce((sum, listing) => sum + (listing.price / listing.sqft), 0) / validSqft.length
+    : 0;
+
+  const totalSqft = validSqft.reduce((sum, listing) => sum + listing.sqft, 0);
+
+  const avgDaysOnMarket = daysOnMarket.length > 0
+    ? daysOnMarket.reduce((sum, days) => sum + days, 0) / daysOnMarket.length
+    : 0;
+
+  // Calculate average listing age (days since list date)
+  const now = new Date();
+  const listingAges = listings.map(listing => {
+    const listDate = new Date(listing.listDate);
+    return Math.floor((now.getTime() - listDate.getTime()) / (1000 * 60 * 60 * 24));
+  });
+  
+  const averageListingAge = listingAges.length > 0
+    ? listingAges.reduce((sum, age) => sum + age, 0) / listingAges.length
+    : 0;
+
+  return {
+    activeListings: listings.length,
+    medianPrice: Math.round(medianPrice),
+    averagePrice: Math.round(averagePrice),
+    minPrice: prices.length > 0 ? prices[0] : 0,
+    maxPrice: prices.length > 0 ? prices[prices.length - 1] : 0,
+    avgDaysOnMarket: Math.round(avgDaysOnMarket),
+    pricePerSqft: Math.round(pricePerSqft),
+    totalSqft,
+    averageListingAge: Math.round(averageListingAge),
+  };
 }
 
 /**
