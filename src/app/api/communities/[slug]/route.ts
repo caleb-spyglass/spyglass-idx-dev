@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { fetchCommunityBySlug } from '@/lib/mission-control-api';
 import { getCommunityBySlug } from '@/data/communities-polygons';
 import { searchListings } from '@/lib/repliers-api';
 
@@ -14,7 +15,29 @@ export async function GET(request: NextRequest, context: RouteContext) {
     const page = parseInt(searchParams.get('page') || '1');
     const pageSize = parseInt(searchParams.get('pageSize') || '20');
 
-    const community = getCommunityBySlug(slug);
+    let community = null;
+
+    // First try Mission Control API
+    try {
+      const apiCommunity = await fetchCommunityBySlug(slug);
+      if (apiCommunity) {
+        community = {
+          name: apiCommunity.name,
+          slug: apiCommunity.slug,
+          county: apiCommunity.county || 'Travis',
+          polygon: apiCommunity.polygon || [],
+          displayPolygon: apiCommunity.displayPolygon || [],
+          featured: apiCommunity.featured || false,
+        };
+      }
+    } catch (apiError) {
+      console.warn(`[Community API] Mission Control unavailable for ${slug}, falling back to static data:`, apiError);
+    }
+
+    // Fallback to static data if API didn't return a community
+    if (!community) {
+      community = getCommunityBySlug(slug);
+    }
 
     if (!community) {
       return NextResponse.json(

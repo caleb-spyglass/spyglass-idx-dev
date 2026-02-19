@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
+import { fetchCommunityBySlug, fetchCommunities } from '@/lib/mission-control-api';
 import { getCommunityBySlug } from '@/data/communities-polygons';
 import { getAreaCommunityBySlug, ALL_AREA_COMMUNITIES } from '@/data/area-communities';
 import { getAreaCommunityDescription } from '@/data/area-community-descriptions';
@@ -37,10 +38,30 @@ const highlightIcons = [
 ];
 
 /**
- * Generate static params for both polygon-based and area-based communities.
+ * Generate static params for communities from all sources:
+ * - Mission Control API (published communities)
+ * - Static polygon data (fallback)
+ * - Area-based communities (zip/city)
  */
-export function generateStaticParams() {
-  // Import here to avoid circular dependency issues at build time
+export async function generateStaticParams() {
+  try {
+    // Try to get communities from Mission Control API first
+    const apiResponse = await fetchCommunities({ published: true, limit: 1000 });
+    const apiSlugs = apiResponse.communities.map(c => ({ slug: c.slug }));
+    
+    if (apiSlugs.length > 0) {
+      // Include area communities as well
+      const areaSlugs = ALL_AREA_COMMUNITIES.map((c) => ({
+        slug: c.slug,
+      }));
+      
+      return [...apiSlugs, ...areaSlugs];
+    }
+  } catch (error) {
+    console.error('[generateStaticParams] Error fetching communities from API:', error);
+  }
+
+  // Fallback to static data
   const { COMMUNITIES } = require('@/data/communities-polygons');
   
   const polygonSlugs = COMMUNITIES.map((c: { slug: string }) => ({
@@ -57,35 +78,73 @@ export function generateStaticParams() {
 export default async function CommunityDetailPage({ params }: PageProps) {
   const { slug } = await params;
   
-  // 1. Check polygon-based communities first (existing behavior)
+  // 1. First try to fetch from Mission Control API
+  try {
+    const apiCommunity = await fetchCommunityBySlug(slug);
+    
+    if (apiCommunity) {
+      // Convert Mission Control community to expected format
+      const community = {
+        name: apiCommunity.name,
+        slug: apiCommunity.slug,
+        county: apiCommunity.county || 'Travis',
+        polygon: apiCommunity.polygon || [],
+        displayPolygon: apiCommunity.displayPolygon || [],
+        featured: apiCommunity.featured || false,
+      };
+      
+      return renderPolygonCommunity(slug, community, apiCommunity);
+    }
+  } catch (error) {
+    console.error(`[Community Detail] Error fetching community ${slug} from API:`, error);
+    // Continue to fallback options
+  }
+  
+  // 2. Fallback: Check static polygon-based communities 
   const community = getCommunityBySlug(slug);
 
   if (community) {
-    // Existing polygon-based community rendering
+    // Existing polygon-based community rendering with static data
     return renderPolygonCommunity(slug, community);
   }
 
-  // 2. Check area-based communities (zip codes and cities)
+  // 3. Check area-based communities (zip codes and cities)
   const areaCommunity = getAreaCommunityBySlug(slug);
 
   if (areaCommunity) {
     return renderAreaCommunity(slug, areaCommunity);
   }
 
-  // 3. Not found
+  // 4. Not found
   notFound();
 }
 
 // ─── POLYGON-BASED COMMUNITY (existing behavior) ────────────────────────
 
-function renderPolygonCommunity(slug: string, community: ReturnType<typeof getCommunityBySlug>) {
+function renderPolygonCommunity(
+  slug: string, 
+  community: ReturnType<typeof getCommunityBySlug>,
+  apiCommunity?: NonNullable<Awaited<ReturnType<typeof fetchCommunityBySlug>>>
+) {
   if (!community) return notFound();
 
   const communityName = formatCommunityName(community.name);
-  const content = getCommunityContent(slug);
-  const scrapedContent = getScrapedContent(slug);
+  
+  // Prioritize API content over static content
+  const apiContent = apiCommunity ? {
+    description: apiCommunity.description || '',
+    bestFor: apiCommunity.bestFor || [],
+    highlights: apiCommunity.highlights || [],
+    nearbyLandmarks: apiCommunity.nearbyLandmarks || [],
+    sections: apiCommunity.sections || [],
+  } : null;
+  
+  const content = apiContent || getCommunityContent(slug);
+  const scrapedContent = apiContent?.sections?.length ? null : getScrapedContent(slug);
   const nearby = getNearbyCommunities(slug, 6);
-  const centroid = getCommunityCentroid(slug);
+  const centroid = apiCommunity?.centroid 
+    ? { lat: apiCommunity.centroid.lat, lng: apiCommunity.centroid.lng }
+    : getCommunityCentroid(slug);
 
   // Build TOC items from all available sections
   const tocItems: { id: string; label: string }[] = [];

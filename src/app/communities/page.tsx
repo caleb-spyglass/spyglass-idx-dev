@@ -1,21 +1,47 @@
-import { COMMUNITIES } from '@/data/communities-polygons';
+import { fetchCommunities, fetchCounties } from '@/lib/mission-control-api';
 import { ZIP_COMMUNITIES, CITY_COMMUNITIES } from '@/data/area-communities';
 import CommunitiesClientIsland from '@/components/community/CommunitiesClientIsland';
 import { Footer } from '@/components/home/Footer';
 import { formatCommunityName } from '@/lib/nearby-communities';
 import { getAllCommunityCardMeta } from '@/data/community-card-data';
 
-// Filter to Austin-area communities for the structured data
+// Austin-area counties for filtering
 const AUSTIN_COUNTIES = ['Travis', 'Williamson', 'Hays'];
-const austinCommunities = COMMUNITIES.filter((c) => AUSTIN_COUNTIES.includes(c.county));
-const uniqueAustin = Array.from(
-  new Map(austinCommunities.map((c) => [c.slug, c])).values()
-).sort((a, b) => a.name.localeCompare(b.name));
 
-// Build card metadata at build time (hero images, snippets)
-const cardMeta = getAllCommunityCardMeta(uniqueAustin.map((c) => c.slug));
+export default async function CommunitiesPage() {
+  let communities = [];
+  let cardMeta = {};
 
-export default function CommunitiesPage() {
+  try {
+    // Fetch communities from Mission Control API
+    const response = await fetchCommunities({ 
+      published: true,
+      limit: 500 // Get all published communities
+    });
+    
+    // Filter to Austin-area communities
+    const austinCommunities = response.communities.filter((c) => 
+      AUSTIN_COUNTIES.includes(c.county || 'Travis')
+    );
+    
+    // Remove duplicates and sort
+    const uniqueAustin = Array.from(
+      new Map(austinCommunities.map((c) => [c.slug, c])).values()
+    ).sort((a, b) => a.name.localeCompare(b.name));
+
+    communities = uniqueAustin;
+
+    // Build card metadata (hero images, snippets)
+    cardMeta = getAllCommunityCardMeta(uniqueAustin.map((c) => c.slug));
+
+  } catch (error) {
+    console.error('Error fetching communities for page:', error);
+    
+    // Fallback to empty array - the Mission Control API client handles fallbacks internally
+    communities = [];
+    cardMeta = {};
+  }
+
   // Build ItemList structured data for SEO
   const itemListSchema = {
     '@context': 'https://schema.org',
@@ -23,8 +49,8 @@ export default function CommunitiesPage() {
     name: 'Austin Area Communities',
     description:
       'Neighborhoods and communities in the greater Austin, Texas metropolitan area.',
-    numberOfItems: uniqueAustin.length,
-    itemListElement: uniqueAustin.slice(0, 100).map((community, index) => ({
+    numberOfItems: communities.length,
+    itemListElement: communities.slice(0, 100).map((community, index) => ({
       '@type': 'ListItem',
       position: index + 1,
       name: formatCommunityName(community.name),
@@ -82,7 +108,7 @@ export default function CommunitiesPage() {
         </p>
         <nav aria-label="Community directory">
           <ul>
-            {uniqueAustin.map((community) => (
+            {communities.map((community) => (
               <li key={community.slug}>
                 <a href={`/communities/${community.slug}`}>
                   Homes for Sale in {formatCommunityName(community.name)}, Austin TX
@@ -127,4 +153,22 @@ export default function CommunitiesPage() {
       <Footer />
     </>
   );
+}
+
+// Generate metadata for SEO
+export async function generateMetadata() {
+  try {
+    const response = await fetchCommunities({ published: true, limit: 10 });
+    const count = response.total;
+    
+    return {
+      title: `${count} Austin Area Communities & Neighborhoods | Spyglass Realty`,
+      description: `Explore ${count} neighborhoods and communities in the greater Austin, Texas metropolitan area. Find homes for sale, market statistics, and neighborhood guides.`,
+    };
+  } catch (error) {
+    return {
+      title: 'Austin Area Communities & Neighborhoods | Spyglass Realty',
+      description: 'Explore neighborhoods and communities in the greater Austin, Texas metropolitan area. Find homes for sale, market statistics, and neighborhood guides.',
+    };
+  }
 }
