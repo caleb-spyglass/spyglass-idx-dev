@@ -91,6 +91,10 @@ export function Header() {
             <Link href="/buy" className="text-sm hover:text-spyglass-orange transition-colors">
               Buying
             </Link>
+
+            <Link href="/blog" className="text-sm hover:text-spyglass-orange transition-colors">
+              Blog
+            </Link>
             
             <NavDropdown label="Search" items={searchItems} />
             <NavDropdown label="Services" items={servicesItems} />
@@ -131,6 +135,9 @@ export function Header() {
             <div className="px-2 pt-2 pb-3 space-y-1">
               <Link href="/buy" className="block px-3 py-2 text-sm hover:text-spyglass-orange" onClick={() => setMobileMenuOpen(false)}>
                 Buying
+              </Link>
+              <Link href="/blog" className="block px-3 py-2 text-sm hover:text-spyglass-orange" onClick={() => setMobileMenuOpen(false)}>
+                Blog
               </Link>
               <div className="px-3 py-1 text-xs font-medium text-gray-400 uppercase tracking-wide">
                 Search
