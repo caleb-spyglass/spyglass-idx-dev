@@ -92,6 +92,10 @@ export function Header() {
               Buying
             </Link>
 
+            <Link href="/home-value" className="text-sm hover:text-spyglass-orange transition-colors font-medium">
+              What's My Home Worth?
+            </Link>
+
             <Link href="/blog" className="text-sm hover:text-spyglass-orange transition-colors">
               Blog
             </Link>
@@ -135,6 +139,9 @@ export function Header() {
             <div className="px-2 pt-2 pb-3 space-y-1">
               <Link href="/buy" className="block px-3 py-2 text-sm hover:text-spyglass-orange" onClick={() => setMobileMenuOpen(false)}>
                 Buying
+              </Link>
+              <Link href="/home-value" className="block px-3 py-2 text-sm hover:text-spyglass-orange font-medium" onClick={() => setMobileMenuOpen(false)}>
+                What's My Home Worth?
               </Link>
               <Link href="/blog" className="block px-3 py-2 text-sm hover:text-spyglass-orange" onClick={() => setMobileMenuOpen(false)}>
                 Blog

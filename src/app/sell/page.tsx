@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { Header } from '@/components/ui/Header';
 import { Footer } from '@/components/home/Footer';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
 export default function SellPage() {
   const [formData, setFormData] = useState({
@@ -17,18 +17,82 @@ export default function SellPage() {
     phone: ''
   });
 
+  const [errors, setErrors] = useState({
+    name: '',
+    email: '',
+    address: ''
+  });
+
+  const nameRef = useRef<HTMLInputElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
+  const addressRef = useRef<HTMLInputElement>(null);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [name]: value
     });
+    
+    // Clear errors as user types
+    if (errors[name as keyof typeof errors]) {
+      setErrors({
+        ...errors,
+        [name]: ''
+      });
+    }
   };
 
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
+  const validateForm = () => {
+    const newErrors = { name: '', email: '', address: '' };
+    let isValid = true;
+
+    if (!formData.name.trim()) {
+      newErrors.name = 'Name is required';
+      isValid = false;
+    }
+
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email is required';
+      isValid = false;
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email address';
+      isValid = false;
+    }
+
+    if (!formData.address.trim()) {
+      newErrors.address = 'Property address is required';
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
+
+  const scrollToFirstError = () => {
+    if (errors.address && addressRef.current) {
+      addressRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      addressRef.current.focus();
+    } else if (errors.name && nameRef.current) {
+      nameRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      nameRef.current.focus();
+    } else if (errors.email && emailRef.current) {
+      emailRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      emailRef.current.focus();
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!validateForm()) {
+      scrollToFirstError();
+      return;
+    }
+
     setSubmitting(true);
     try {
       await fetch('/api/leads', {
@@ -41,7 +105,7 @@ export default function SellPage() {
           message: `Home Valuation Request\nAddress: ${formData.address}\nBedrooms: ${formData.bedrooms}\nBathrooms: ${formData.bathrooms}\nSq Ft: ${formData.squareFeet}\nYear Built: ${formData.yearBuilt}`,
           formType: 'home_valuation',
           listingAddress: formData.address,
-          source: 'spyglass-idx',
+          source: 'spyglass-idx-sell',
         }),
       });
       setSubmitted(true);
@@ -80,158 +144,216 @@ export default function SellPage() {
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
               What's Your Home Worth?
             </h2>
-            <p className="text-xl text-gray-600">
+            <p className="text-xl text-gray-600 mb-4">
               Get a free, instant home valuation based on recent market data
             </p>
+            <div className="inline-block bg-spyglass-orange/10 text-spyglass-orange px-4 py-2 rounded-lg">
+              <strong>New!</strong> Try our improved <Link href="/home-value" className="underline hover:no-underline">instant home valuation tool</Link>
+            </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="bg-gray-50 rounded-xl p-8 shadow-lg">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="md:col-span-2">
-                <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-2">
-                  Property Address *
-                </label>
-                <input
-                  type="text"
-                  id="address"
-                  name="address"
-                  value={formData.address}
-                  onChange={handleInputChange}
-                  placeholder="123 Main St, Austin, TX 78701"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-spyglass-orange focus:border-transparent"
-                  required
-                />
+          {submitted ? (
+            <div className="bg-green-50 border border-green-200 rounded-xl p-8 text-center">
+              <div className="w-16 h-16 bg-green-500 text-white rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
               </div>
-
-              <div>
-                <label htmlFor="bedrooms" className="block text-sm font-medium text-gray-700 mb-2">
-                  Bedrooms
-                </label>
-                <select
-                  id="bedrooms"
-                  name="bedrooms"
-                  value={formData.bedrooms}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-spyglass-orange focus:border-transparent"
+              <h3 className="text-2xl font-bold text-green-900 mb-2">Thank You!</h3>
+              <p className="text-green-700 mb-6">
+                Your home valuation request has been submitted successfully. We'll be in touch with your detailed analysis soon.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Link 
+                  href="/home-value"
+                  className="bg-spyglass-orange hover:bg-spyglass-orange-hover text-white px-6 py-3 rounded-lg font-medium transition-colors"
                 >
-                  <option value="">Select</option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5+">5+</option>
-                </select>
-              </div>
-
-              <div>
-                <label htmlFor="bathrooms" className="block text-sm font-medium text-gray-700 mb-2">
-                  Bathrooms
-                </label>
-                <select
-                  id="bathrooms"
-                  name="bathrooms"
-                  value={formData.bathrooms}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-spyglass-orange focus:border-transparent"
+                  Get Instant Estimate
+                </Link>
+                <button 
+                  onClick={() => setSubmitted(false)}
+                  className="border border-gray-300 text-gray-700 hover:bg-gray-50 px-6 py-3 rounded-lg font-medium transition-colors"
                 >
-                  <option value="">Select</option>
-                  <option value="1">1</option>
-                  <option value="1.5">1.5</option>
-                  <option value="2">2</option>
-                  <option value="2.5">2.5</option>
-                  <option value="3">3</option>
-                  <option value="3.5">3.5</option>
-                  <option value="4+">4+</option>
-                </select>
-              </div>
-
-              <div>
-                <label htmlFor="squareFeet" className="block text-sm font-medium text-gray-700 mb-2">
-                  Square Feet
-                </label>
-                <input
-                  type="number"
-                  id="squareFeet"
-                  name="squareFeet"
-                  value={formData.squareFeet}
-                  onChange={handleInputChange}
-                  placeholder="e.g. 2000"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-spyglass-orange focus:border-transparent"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="yearBuilt" className="block text-sm font-medium text-gray-700 mb-2">
-                  Year Built
-                </label>
-                <input
-                  type="number"
-                  id="yearBuilt"
-                  name="yearBuilt"
-                  value={formData.yearBuilt}
-                  onChange={handleInputChange}
-                  placeholder="e.g. 2010"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-spyglass-orange focus:border-transparent"
-                />
-              </div>
-
-              <div className="md:col-span-2 border-t border-gray-200 pt-6 mt-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Contact Information</h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                      Full Name *
-                    </label>
-                    <input
-                      type="text"
-                      id="name"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-spyglass-orange focus:border-transparent"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                      Email *
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-spyglass-orange focus:border-transparent"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
-                      Phone
-                    </label>
-                    <input
-                      type="tel"
-                      id="phone"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-spyglass-orange focus:border-transparent"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="md:col-span-2 text-center">
-                <button
-                  type="submit"
-                  className="bg-spyglass-orange hover:bg-spyglass-orange-hover text-white px-8 py-4 rounded-lg text-lg font-medium transition-colors"
-                >
-                  Get My Home Valuation
+                  Submit Another Request
                 </button>
               </div>
             </div>
-          </form>
+          ) : (
+            <form onSubmit={handleSubmit} className="bg-gray-50 rounded-xl p-8 shadow-lg">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="md:col-span-2">
+                  <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-2">
+                    Property Address *
+                  </label>
+                  <input
+                    ref={addressRef}
+                    type="text"
+                    id="address"
+                    name="address"
+                    value={formData.address}
+                    onChange={handleInputChange}
+                    placeholder="123 Main St, Austin, TX 78701"
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-spyglass-orange focus:border-transparent transition-colors ${
+                      errors.address ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                    }`}
+                    required
+                  />
+                  {errors.address && (
+                    <p className="mt-1 text-sm text-red-600">{errors.address}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label htmlFor="bedrooms" className="block text-sm font-medium text-gray-700 mb-2">
+                    Bedrooms
+                  </label>
+                  <select
+                    id="bedrooms"
+                    name="bedrooms"
+                    value={formData.bedrooms}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-spyglass-orange focus:border-transparent"
+                  >
+                    <option value="">Select</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5+">5+</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label htmlFor="bathrooms" className="block text-sm font-medium text-gray-700 mb-2">
+                    Bathrooms
+                  </label>
+                  <select
+                    id="bathrooms"
+                    name="bathrooms"
+                    value={formData.bathrooms}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-spyglass-orange focus:border-transparent"
+                  >
+                    <option value="">Select</option>
+                    <option value="1">1</option>
+                    <option value="1.5">1.5</option>
+                    <option value="2">2</option>
+                    <option value="2.5">2.5</option>
+                    <option value="3">3</option>
+                    <option value="3.5">3.5</option>
+                    <option value="4+">4+</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label htmlFor="squareFeet" className="block text-sm font-medium text-gray-700 mb-2">
+                    Square Feet
+                  </label>
+                  <input
+                    type="number"
+                    id="squareFeet"
+                    name="squareFeet"
+                    value={formData.squareFeet}
+                    onChange={handleInputChange}
+                    placeholder="e.g. 2000"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-spyglass-orange focus:border-transparent"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="yearBuilt" className="block text-sm font-medium text-gray-700 mb-2">
+                    Year Built
+                  </label>
+                  <input
+                    type="number"
+                    id="yearBuilt"
+                    name="yearBuilt"
+                    value={formData.yearBuilt}
+                    onChange={handleInputChange}
+                    placeholder="e.g. 2010"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-spyglass-orange focus:border-transparent"
+                  />
+                </div>
+
+                {/* Contact Information - Move to top of form for better UX */}
+                <div className="md:col-span-2 border-t border-gray-200 pt-6 mt-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Contact Information</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                        Full Name *
+                      </label>
+                      <input
+                        ref={nameRef}
+                        type="text"
+                        id="name"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-spyglass-orange focus:border-transparent transition-colors ${
+                          errors.name ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                        }`}
+                        required
+                      />
+                      {errors.name && (
+                        <p className="mt-1 text-sm text-red-600">{errors.name}</p>
+                      )}
+                    </div>
+                    <div>
+                      <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                        Email *
+                      </label>
+                      <input
+                        ref={emailRef}
+                        type="email"
+                        id="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-spyglass-orange focus:border-transparent transition-colors ${
+                          errors.email ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                        }`}
+                        required
+                      />
+                      {errors.email && (
+                        <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+                      )}
+                    </div>
+                    <div>
+                      <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+                        Phone
+                      </label>
+                      <input
+                        type="tel"
+                        id="phone"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-spyglass-orange focus:border-transparent"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="md:col-span-2 text-center">
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="bg-spyglass-orange hover:bg-spyglass-orange-hover disabled:bg-gray-400 disabled:cursor-not-allowed text-white px-8 py-4 rounded-lg text-lg font-medium transition-all duration-200 min-w-[200px]"
+                  >
+                    {submitting ? (
+                      <div className="flex items-center justify-center gap-2">
+                        <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+                        Submitting...
+                      </div>
+                    ) : (
+                      'Get My Home Valuation'
+                    )}
+                  </button>
+                </div>
+              </div>
+            </form>
+          )}
         </div>
       </section>
 
