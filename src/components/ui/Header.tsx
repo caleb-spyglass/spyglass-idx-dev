@@ -87,7 +87,7 @@ export function Header() {
             />
           </Link>
 
-          {/* Desktop Navigation */}
+          {/* Desktop Navigation - Order: Buying, Selling, Search, Services, About Us, Blog, Sign In */}
           <nav className="hidden lg:flex items-center gap-8">
             <Link href="/buy" className="text-sm hover:text-spyglass-orange transition-colors">
               Buying
