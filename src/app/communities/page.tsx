@@ -8,9 +8,16 @@ import { getAllCommunityCardMeta } from '@/data/community-card-data';
 // Austin-area counties for filtering
 const AUSTIN_COUNTIES = ['Travis', 'Williamson', 'Hays'];
 
+interface Community {
+  slug: string;
+  name: string;
+  county?: string;
+  [key: string]: any;
+}
+
 export default async function CommunitiesPage() {
-  let communities = [];
-  let cardMeta = {};
+  let communities: Community[] = [];
+  let cardMeta: Record<string, any> = {};
 
   try {
     // Fetch communities from Mission Control API

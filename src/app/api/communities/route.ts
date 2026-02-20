@@ -61,7 +61,7 @@ export async function GET(request: NextRequest) {
       
       // Try database fallback first
       try {
-        const { query: dbQuery } = await import('../../../lib/database.ts');
+        const { query: dbQuery } = await import('../../../lib/database');
         
         let queryText = `
           SELECT 

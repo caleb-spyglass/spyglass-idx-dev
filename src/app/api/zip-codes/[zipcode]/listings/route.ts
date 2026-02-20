@@ -47,8 +47,8 @@ export async function GET(request: NextRequest, context: RouteContext) {
     // Use polygon-based search if polygon data is available and requested
     if (usePolygon && zipData.polygon && zipData.polygon.length > 0) {
       try {
-        // Convert from [lat, lng] to [lng, lat] for Repliers API
-        const repliersPolygon = zipData.polygon.map(([lat, lng]) => [lng, lat]) as Array<[number, number]>;
+        // Convert from {lat, lng} to [lng, lat] for Repliers API
+        const repliersPolygon = zipData.polygon.map(coord => [coord.lng, coord.lat]) as Array<[number, number]>;
         results = await getZipCodeMLSListings(zipData.zipCode, repliersPolygon, filters);
         source = 'polygon-enhanced';
       } catch (polygonError) {

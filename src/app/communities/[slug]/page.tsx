@@ -132,6 +132,7 @@ function renderPolygonCommunity(
   
   // Prioritize API content over static content
   const apiContent = apiCommunity ? {
+    slug: slug,
     description: apiCommunity.description || '',
     bestFor: apiCommunity.bestFor || [],
     highlights: apiCommunity.highlights || [],

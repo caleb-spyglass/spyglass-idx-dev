@@ -262,7 +262,23 @@ async function getFallbackCommunities(options: {
 async function getFallbackCommunityBySlug(slug: string): Promise<CommunityData | null> {
   try {
     const { getCommunityBySlug } = await import('@/data/communities-polygons');
-    return getCommunityBySlug(slug);
+    const polygonData = getCommunityBySlug(slug);
+    if (!polygonData) {
+      return null;
+    }
+    // Convert CommunityPolygon to CommunityData format
+    return {
+      id: polygonData.slug,
+      slug: polygonData.slug,
+      name: polygonData.name,
+      county: polygonData.county,
+      published: true,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      polygon: polygonData.polygon || [],
+      displayPolygon: polygonData.displayPolygon || polygonData.polygon || [],
+      featured: false,
+    } as CommunityData;
   } catch (error) {
     console.error(`[Mission Control API] Error loading fallback community ${slug}:`, error);
     return null;
