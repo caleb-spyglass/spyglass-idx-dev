@@ -20,6 +20,12 @@ export default async function CommunitiesPage() {
   let cardMeta: Record<string, any> = {};
 
   try {
+    // TEMPORARY: Skip API fetch during build to prevent build timeouts
+    // This will be reverted once navigation deployment is successful
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error('Skipping API fetch during build');
+    }
+    
     // Fetch communities from Mission Control API
     const response = await fetchCommunities({ 
       published: true,
