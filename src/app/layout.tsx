@@ -47,6 +47,19 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        {/* Mapbox GL CSS - Preload for interactive maps */}
+        <link
+          rel="preload"
+          href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css"
+          as="style"
+        />
+        <link
+          rel="stylesheet"
+          href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css"
+          crossOrigin="anonymous"
+        />
+      </head>
       <body className="antialiased">
         {children}
       </body>

@@ -3,11 +3,16 @@
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ZipCodeData } from '@/data/zip-codes-data';
+import dynamic from 'next/dynamic';
 
-// Use dynamic import for mapbox-gl to avoid SSR issues
-// Import CSS via link tag or import statement
+// CSS is loaded in layout.tsx to avoid timing issues
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || '';
+
+// Debug logging for production
+if (typeof window !== 'undefined' && !MAPBOX_TOKEN) {
+  console.warn('🗺️ MAPBOX_TOKEN missing - falling back to static map');
+}
 
 const ZIP_COLORS = [
   '#e6194b', '#3cb44b', '#ffe119', '#4363d8', '#f58231',
@@ -33,28 +38,34 @@ export default function ZipCodeMap({ zipCodes }: ZipCodeMapProps) {
   const router = useRouter();
 
   useEffect(() => {
-    if (!mapContainer.current || !MAPBOX_TOKEN || mapLoaded) return;
+    if (!mapContainer.current || mapLoaded) return;
+    
+    // If no token, show fallback immediately
+    if (!MAPBOX_TOKEN) {
+      console.warn('🗺️ No Mapbox token found, showing static fallback');
+      setLoadError(true);
+      return;
+    }
     
     // Dynamic import to avoid SSR
     import('mapbox-gl')
       .then((mapboxgl) => {
-        // Import CSS dynamically
-        const link = document.createElement('link');
-        link.href = 'https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css';
-        link.rel = 'stylesheet';
-        document.head.appendChild(link);
-
+        console.log('🗺️ Mapbox GL loaded successfully');
         mapboxgl.default.accessToken = MAPBOX_TOKEN;
         
-        map.current = new mapboxgl.default.Map({
-          container: mapContainer.current!,
-          style: 'mapbox://styles/mapbox/light-v11',
-          center: [-97.74, 30.27],
-          zoom: 9,
-        });
+        try {
+          map.current = new mapboxgl.default.Map({
+            container: mapContainer.current!,
+            style: 'mapbox://styles/mapbox/light-v11',
+            center: [-97.74, 30.27],
+            zoom: 9,
+          });
 
-        map.current.on('load', () => {
-          setMapLoaded(true);
+          console.log('🗺️ Mapbox map initialized');
+
+          map.current.on('load', () => {
+            console.log('🗺️ Map loaded, adding zip code polygons');
+            setMapLoaded(true);
           
           zipCodes.forEach((zip, index) => {
             if (!zip.polygon || zip.polygon.length < 3) return;
@@ -146,13 +157,18 @@ export default function ZipCodeMap({ zipCodes }: ZipCodeMapProps) {
         // Add navigation controls
         map.current.addControl(new mapboxgl.default.NavigationControl(), 'bottom-left');
 
-        map.current.on('error', (e: any) => {
-          console.error('Mapbox error:', e);
+          map.current.on('error', (e: any) => {
+            console.error('🗺️ Mapbox error:', e);
+            setLoadError(true);
+          });
+
+        } catch (mapError) {
+          console.error('🗺️ Failed to initialize Mapbox map:', mapError);
           setLoadError(true);
-        });
+        }
       })
       .catch((error) => {
-        console.error('Failed to load Mapbox GL:', error);
+        console.error('🗺️ Failed to load Mapbox GL module:', error);
         setLoadError(true);
       });
 
@@ -165,27 +181,42 @@ export default function ZipCodeMap({ zipCodes }: ZipCodeMapProps) {
   }, [zipCodes, router, mapLoaded]);
 
   if (!MAPBOX_TOKEN || loadError) {
-    // Fallback to static image with enhanced UI
+    // Enhanced fallback to static image with better UX
     return (
       <div className="relative w-full h-full bg-gradient-to-br from-blue-100 to-green-100 rounded-lg overflow-hidden">
         <div className="flex items-center justify-center h-full p-4">
-          <div className="text-center">
+          <div className="text-center max-w-4xl">
             <img
               src="https://www.spyglassrealty.com/uploads/agent-1/Austin%20Zip%20Code%20Map.webp"
               alt="Greater Austin Zip Code Map"
-              className="max-w-full max-h-full object-contain rounded-lg shadow-md"
+              className="max-w-full max-h-full object-contain rounded-lg shadow-md mb-4"
               loading="lazy"
             />
-            <div className="mt-4 p-4 bg-white/90 backdrop-blur-sm rounded-lg border border-white/20">
+            <div className="p-4 bg-white/90 backdrop-blur-sm rounded-lg border border-white/20">
               <div className="flex items-center justify-center gap-2 mb-2">
-                <svg className="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 15.5c-.77.833.192 2.5 1.732 2.5z" />
-                </svg>
-                <p className="text-sm font-medium text-gray-800">Static Map View</p>
+                {!MAPBOX_TOKEN ? (
+                  <svg className="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                ) : (
+                  <svg className="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 15.5c-.77.833.192 2.5 1.732 2.5z" />
+                  </svg>
+                )}
+                <p className="text-sm font-medium text-gray-800">
+                  {!MAPBOX_TOKEN ? 'Static Map Reference' : 'Interactive Map Unavailable'}
+                </p>
               </div>
-              <p className="text-xs text-gray-600">
-                {!MAPBOX_TOKEN ? 'Click zip codes in the list below for details' : 'Interactive features temporarily disabled'}
+              <p className="text-xs text-gray-600 mb-2">
+                {!MAPBOX_TOKEN 
+                  ? 'Use the zip code list below to explore specific areas and view detailed information.' 
+                  : 'Interactive features temporarily disabled. Please try refreshing or use the zip code list below.'}
               </p>
+              {process.env.NODE_ENV === 'development' && (
+                <p className="text-xs text-red-600 font-mono">
+                  Debug: {!MAPBOX_TOKEN ? 'NEXT_PUBLIC_MAPBOX_TOKEN missing' : 'Map initialization failed'}
+                </p>
+              )}
             </div>
           </div>
         </div>
