@@ -5,6 +5,7 @@ import ZipCodeHeroIsland from '@/components/zip-codes/ZipCodeHeroIsland';
 import ZipCodeBreadcrumbs from '@/components/zip-codes/ZipCodeBreadcrumbs';
 import { Footer } from '@/components/home/Footer';
 import { getPulseZipSummary, shouldUsePulseData } from '@/lib/pulse-api';
+import { MapDiagnostics } from '@/components/zip-codes/MapDiagnostics';
 import {
   SparklesIcon,
   MapPinIcon,
@@ -232,6 +233,10 @@ export default async function ZipCodeDetailPage({ params }: PageProps) {
       />
 
       <ZipCodeBreadcrumbs zipCode={zipCodeData.zipCode} zipName={zipCodeData.name} />
+
+      <div className="max-w-7xl mx-auto px-4 py-4">
+        <MapDiagnostics zipCode={zipCodeData.zipCode} />
+      </div>
 
       <Suspense
         fallback={

@@ -214,19 +214,29 @@ async function makePulseRequest<T>(options: PulseRequestOptions): Promise<T> {
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
       'User-Agent': 'spyglass-idx/1.0',
+      'Accept': 'application/json',
     };
     if (PULSE_API_KEY) {
       headers['X-API-Key'] = PULSE_API_KEY;
+      headers['Authorization'] = `Bearer ${PULSE_API_KEY}`;
     }
 
     const response = await fetch(url, {
       method: 'GET',
       headers,
       signal: controller.signal,
+      cache: 'no-cache',
     });
 
     if (!response.ok) {
-      throw new Error(`Pulse API error: ${response.status} ${response.statusText}`);
+      const errorText = await response.text().catch(() => 'Unknown error');
+      throw new Error(`Pulse API error: ${response.status} ${response.statusText} - ${errorText.slice(0, 200)}`);
+    }
+
+    const contentType = response.headers.get('content-type');
+    if (!contentType?.includes('application/json')) {
+      const text = await response.text();
+      throw new Error(`Expected JSON response, got ${contentType}. Response: ${text.slice(0, 200)}`);
     }
 
     return response.json();
@@ -251,29 +261,34 @@ export function shouldUsePulseData(zip: string): boolean {
  */
 export async function getPulseZipSummary(zip: string): Promise<PulseZipSummary | null> {
   if (!shouldUsePulseData(zip)) {
+    console.log(`[Pulse API] Zip ${zip} not eligible for Pulse data`);
     return null;
   }
 
   // Try real API first if we have a key configured
-  if (PULSE_API_KEY) {
+  if (PULSE_API_KEY && MISSION_CONTROL_URL) {
+    console.log(`[Pulse API] Attempting live fetch for zip ${zip} from ${MISSION_CONTROL_URL}`);
     try {
       const data = await makePulseRequest<PulseZipSummary>({
         endpoint: `/api/pulse/v2/zip/${zip}/summary`,
       });
-      console.log(`[Pulse API] Live data fetched for zip ${zip}`);
+      console.log(`[Pulse API] ✅ Live data fetched successfully for zip ${zip}`);
       return data;
     } catch (error) {
-      console.error(`[Pulse API] Live fetch failed for zip ${zip}, falling back to mock:`, error);
+      console.warn(`[Pulse API] ⚠️ Live fetch failed for zip ${zip}, falling back to mock:`, error);
     }
+  } else {
+    console.log(`[Pulse API] Missing API configuration (key: ${!!PULSE_API_KEY}, url: ${!!MISSION_CONTROL_URL})`);
   }
 
   // Fallback to enhanced mock data
   const mockData = ENHANCED_PULSE_DATA[zip];
   if (mockData) {
-    console.log(`[Pulse API] Using mock data for zip ${zip} (no API key or fetch failed)`);
+    console.log(`[Pulse API] 📊 Using enhanced mock data for zip ${zip} (${Object.keys(mockData.metrics || {}).length} metrics)`);
     return mockData as PulseZipSummary;
   }
   
+  console.warn(`[Pulse API] ❌ No data available for zip ${zip}`);
   return null;
 }
 

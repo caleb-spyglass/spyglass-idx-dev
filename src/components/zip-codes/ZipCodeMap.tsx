@@ -165,19 +165,29 @@ export default function ZipCodeMap({ zipCodes }: ZipCodeMapProps) {
   }, [zipCodes, router, mapLoaded]);
 
   if (!MAPBOX_TOKEN || loadError) {
-    // Fallback to static image
+    // Fallback to static image with enhanced UI
     return (
-      <div className="relative w-full h-full bg-gradient-to-br from-blue-100 to-green-100 rounded-lg overflow-hidden flex items-center justify-center">
-        <div className="text-center">
-          <img
-            src="https://www.spyglassrealty.com/uploads/agent-1/Austin%20Zip%20Code%20Map.webp"
-            alt="Greater Austin Zip Code Map"
-            className="max-w-full max-h-full object-contain"
-            loading="lazy"
-          />
-          <p className="mt-4 text-sm text-gray-600">
-            {!MAPBOX_TOKEN ? 'Interactive map unavailable — Mapbox token not configured' : 'Map failed to load — using static fallback'}
-          </p>
+      <div className="relative w-full h-full bg-gradient-to-br from-blue-100 to-green-100 rounded-lg overflow-hidden">
+        <div className="flex items-center justify-center h-full p-4">
+          <div className="text-center">
+            <img
+              src="https://www.spyglassrealty.com/uploads/agent-1/Austin%20Zip%20Code%20Map.webp"
+              alt="Greater Austin Zip Code Map"
+              className="max-w-full max-h-full object-contain rounded-lg shadow-md"
+              loading="lazy"
+            />
+            <div className="mt-4 p-4 bg-white/90 backdrop-blur-sm rounded-lg border border-white/20">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <svg className="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 15.5c-.77.833.192 2.5 1.732 2.5z" />
+                </svg>
+                <p className="text-sm font-medium text-gray-800">Static Map View</p>
+              </div>
+              <p className="text-xs text-gray-600">
+                {!MAPBOX_TOKEN ? 'Click zip codes in the list below for details' : 'Interactive features temporarily disabled'}
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     );

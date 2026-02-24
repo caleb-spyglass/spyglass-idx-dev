@@ -142,8 +142,23 @@ export default function ZipCodeDetailMap({ zipCodeData }: ZipCodeDetailMapProps)
 
   if (!MAPBOX_TOKEN || loadError) {
     return (
-      <div className="w-full h-[300px] bg-gray-100 rounded-lg flex items-center justify-center">
-        <p className="text-sm text-gray-500">Map requires Mapbox token</p>
+      <div className="w-full h-[300px] bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg flex items-center justify-center">
+        <div className="text-center p-6">
+          <div className="w-16 h-16 bg-gray-300 rounded-full mx-auto mb-4 flex items-center justify-center">
+            <svg className="w-8 h-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m-6 3l6-3" />
+            </svg>
+          </div>
+          <h3 className="text-sm font-medium text-gray-700 mb-2">{zipCodeData.name} Boundary</h3>
+          <p className="text-xs text-gray-500">
+            {!MAPBOX_TOKEN ? 'Interactive map not configured' : 'Map temporarily unavailable'}
+          </p>
+          <div className="mt-4 p-3 bg-orange-50 rounded border border-orange-200">
+            <p className="text-xs text-spyglass-orange font-medium">
+              Zip Code: {zipCodeData.zipCode} • {zipCodeData.county} County
+            </p>
+          </div>
+        </div>
       </div>
     );
   }
