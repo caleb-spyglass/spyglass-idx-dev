@@ -76,7 +76,7 @@ function PageContent() {
   // Track whether initial fetch for mapView has run
   const mapViewInitRef = useRef(false);
   
-  // Check for URL parameters to activate map view
+  // Check for URL parameters to activate map view, and reset when navigating away
   useEffect(() => {
     const mapViewParam = searchParams.get('mapView');
     if (mapViewParam === 'true' && !mapViewInitRef.current) {
@@ -84,8 +84,18 @@ function PageContent() {
       setShowHomepage(false);
       setViewMode('split');
       setSearchMode('filters');
-      // Fetch once on init
       fetchListings({});
+    } else if (!mapViewParam && mapViewInitRef.current) {
+      // User navigated away from mapView (e.g. clicked logo → "/")
+      mapViewInitRef.current = false;
+      setShowHomepage(true);
+      setAiListings([]);
+      setAiTotal(0);
+      setAiSummary(null);
+      setIsAiActive(false);
+      setMatchedCommunityName(null);
+      setSelectedCommunity(null);
+      setSelectedListing(null);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
