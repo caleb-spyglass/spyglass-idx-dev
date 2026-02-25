@@ -33,6 +33,7 @@ export function useListings({
     const requestFilters = filters || currentFilters;
     setLoading(true);
     setError(null);
+    // Don't clear listings — keep showing old results while loading to avoid flash
     
     try {
       const response = await fetch('/api/listings', {

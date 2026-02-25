@@ -22,7 +22,9 @@ export function ListingsGrid({
   onDismissListing,
   isLoading 
 }: ListingsGridProps) {
-  if (isLoading) {
+  // Only show skeleton on initial load when there are no listings yet.
+  // On refetch, keep showing the old listings to avoid photo flicker.
+  if (isLoading && listings.length === 0) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
         {[...Array(6)].map((_, i) => (
@@ -56,7 +58,7 @@ export function ListingsGrid({
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
       {listings.map((listing) => (
         <div
-          key={listing.id}
+          key={listing.mlsNumber || listing.id}
           onMouseEnter={() => onHoverListing?.(listing)}
           onMouseLeave={() => onHoverListing?.(null)}
         >

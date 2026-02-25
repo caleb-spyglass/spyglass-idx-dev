@@ -1,7 +1,7 @@
 'use client';
 // Navigation update and TypeScript build fixes - 2026-02-20
 
-import { useState, useEffect, lazy, Suspense } from 'react';
+import { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Header } from '@/components/ui/Header';
 import { HomePage } from '@/components/home/HomePage';
@@ -73,22 +73,30 @@ function PageContent() {
     loadMore 
   } = useListings({ autoFetch: !showHomepage && searchMode === 'filters' });
 
+  // Track whether initial fetch for mapView has run
+  const mapViewInitRef = useRef(false);
+  
   // Check for URL parameters to activate map view
   useEffect(() => {
     const mapViewParam = searchParams.get('mapView');
-    if (mapViewParam === 'true') {
+    if (mapViewParam === 'true' && !mapViewInitRef.current) {
+      mapViewInitRef.current = true;
       setShowHomepage(false);
-      setViewMode('map');
+      setViewMode('split');
       setSearchMode('filters');
-      // Optionally fetch listings immediately
+      // Fetch once on init
       fetchListings({});
     }
-  }, [searchParams, fetchListings]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
   
   // Use AI listings when AI search is active, otherwise use filter listings
   const listings = isAiActive ? aiListings : filterListings;
   const total = isAiActive ? aiTotal : filterTotal;
 
+  // Track previous filter signature to avoid redundant fetches
+  const prevFilterSigRef = useRef<string>('');
+  
   // Refetch when filters change (only in filter mode and not on homepage)
   useEffect(() => {
     if (!showHomepage && (searchMode === 'filters' || !isAiActive)) {
@@ -96,6 +104,10 @@ function PageContent() {
         ...filters,
         polygon: selectedCommunity?.coordinates,
       };
+      // Deduplicate: only fetch if filters actually changed
+      const sig = JSON.stringify(searchFilters);
+      if (sig === prevFilterSigRef.current) return;
+      prevFilterSigRef.current = sig;
       fetchListings(searchFilters);
     }
   }, [filters, selectedCommunity, searchMode, isAiActive, showHomepage]); // eslint-disable-line react-hooks/exhaustive-deps
