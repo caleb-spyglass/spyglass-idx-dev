@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Listing, SearchFilters, SearchResults } from '@/types/listing';
 
 interface UseListingsOptions {
@@ -27,13 +27,22 @@ export function useListings({
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
-  const [currentFilters, setCurrentFilters] = useState<SearchFilters>(initialFilters);
+
+  // Use refs to avoid re-creating callbacks and causing render loops
+  const currentFiltersRef = useRef<SearchFilters>(initialFilters);
+  const pageRef = useRef(1);
+  const loadingRef = useRef(false);
+  const hasMoreRef = useRef(false);
 
   const fetchListings = useCallback(async (filters?: SearchFilters) => {
-    const requestFilters = filters || currentFilters;
+    // Prevent concurrent fetches
+    if (loadingRef.current) return;
+
+    const requestFilters = filters || currentFiltersRef.current;
+    
+    loadingRef.current = true;
     setLoading(true);
     setError(null);
-    // Don't clear listings — keep showing old results while loading to avoid flash
     
     try {
       const response = await fetch('/api/listings', {
@@ -53,26 +62,32 @@ export function useListings({
       setPage(data.page);
       setHasMore(data.hasMore);
       
+      pageRef.current = data.page;
+      hasMoreRef.current = data.hasMore;
+      
       if (filters) {
-        setCurrentFilters(filters);
+        currentFiltersRef.current = filters;
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch listings');
       console.error('Fetch listings error:', err);
     } finally {
+      loadingRef.current = false;
       setLoading(false);
     }
-  }, [currentFilters]);
+  }, []); // Stable reference — no dependencies
 
   const loadMore = useCallback(async () => {
-    if (loading || !hasMore) return;
+    if (loadingRef.current || !hasMoreRef.current) return;
     
+    loadingRef.current = true;
     setLoading(true);
     try {
+      const nextPage = pageRef.current + 1;
       const response = await fetch('/api/listings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...currentFilters, page: page + 1 }),
+        body: JSON.stringify({ ...currentFiltersRef.current, page: nextPage }),
       });
       
       if (!response.ok) {
@@ -83,12 +98,16 @@ export function useListings({
       setListings(prev => [...prev, ...data.listings]);
       setPage(data.page);
       setHasMore(data.hasMore);
+      
+      pageRef.current = data.page;
+      hasMoreRef.current = data.hasMore;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load more');
     } finally {
+      loadingRef.current = false;
       setLoading(false);
     }
-  }, [currentFilters, page, loading, hasMore]);
+  }, []); // Stable reference — no dependencies
 
   useEffect(() => {
     if (autoFetch) {
