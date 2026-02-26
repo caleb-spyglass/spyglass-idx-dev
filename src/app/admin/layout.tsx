@@ -1,4 +1,6 @@
 import type { ReactNode } from 'react';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 import { AdminSidebar } from './_components/AdminSidebar';
 
 export const metadata = {
@@ -6,7 +8,15 @@ export const metadata = {
   robots: { index: false, follow: false },
 };
 
-export default function AdminLayout({ children }: { children: ReactNode }) {
+export async function checkAdminAuth() {
+  const cookieStore = await cookies();
+  const session = cookieStore.get('admin_session');
+  const password = process.env.ADMIN_PASSWORD ?? 'spyglass2026';
+  const expectedToken = btoa(`${password}:spyglass-cms`);
+  return session?.value === expectedToken;
+}
+
+export default async function AdminLayout({ children }: { children: ReactNode }) {
   return (
     <div className="flex min-h-screen bg-gray-50">
       <AdminSidebar />
