@@ -39,7 +39,7 @@ export async function POST(req: NextRequest, { params }: RouteParams) {
     const frontendPath = dbSlug === '/' ? '/' : dbSlug;
     revalidatePath(frontendPath);
     revalidatePath('/admin/pages');
-    revalidateTag('cms-page');
+    revalidateTag('cms-page', 'default');
 
     return NextResponse.json({ success: true, page });
   } catch (error) {

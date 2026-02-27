@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
 
     revalidatePath('/', 'layout');
     revalidatePath('/admin/settings');
-    revalidateTag('cms-settings');
+    revalidateTag('cms-settings', 'default');
 
     return NextResponse.json({ success: true });
   } catch (error) {

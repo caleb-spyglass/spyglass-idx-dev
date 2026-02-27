@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
     revalidatePath('/blog');
     revalidatePath(`/blog/${post.slug}`);
     revalidatePath('/admin/blog');
-    revalidateTag('cms-blog');
+    revalidateTag('cms-blog', 'default');
 
     return NextResponse.json({ success: true, post });
   } catch (error) {
