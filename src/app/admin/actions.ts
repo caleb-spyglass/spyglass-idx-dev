@@ -192,11 +192,13 @@ export async function importBlogFromUrlAction(url: string): Promise<ImportResult
       return { success: false, error: 'Invalid URL format' };
     }
 
-    // Fetch the page
+    // Fetch the page — use a realistic browser User-Agent to avoid CDN/WAF blocks
     const response = await fetch(parsedUrl.toString(), {
       headers: {
         'User-Agent':
-          'Mozilla/5.0 (compatible; SpyglassCMS/1.0; +https://spyglassrealty.com)',
+          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.9',
       },
     });
 
