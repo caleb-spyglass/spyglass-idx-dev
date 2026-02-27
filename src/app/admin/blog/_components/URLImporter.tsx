@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-import { importBlogFromUrlAction } from '../../actions';
+import { importBlogFromUrlAction, importBlogFromHtmlAction } from '../../actions';
 import type { BlogBlock } from './blog-block-types';
 
 interface URLImporterProps {
@@ -18,14 +18,20 @@ interface URLImporterProps {
 
 export function URLImporter({ onImport }: URLImporterProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [mode, setMode] = useState<'url' | 'html'>('url');
   const [url, setUrl] = useState('');
+  const [htmlInput, setHtmlInput] = useState('');
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
   function handleImport() {
-    if (!url.trim()) {
+    if (mode === 'url' && !url.trim()) {
       setError('Please enter a URL');
+      return;
+    }
+    if (mode === 'html' && !htmlInput.trim()) {
+      setError('Please paste the HTML source');
       return;
     }
 
@@ -34,9 +40,17 @@ export function URLImporter({ onImport }: URLImporterProps) {
 
     startTransition(async () => {
       try {
-        const result = await importBlogFromUrlAction(url.trim());
+        const result = mode === 'url'
+          ? await importBlogFromUrlAction(url.trim())
+          : await importBlogFromHtmlAction(htmlInput.trim(), url.trim() || undefined);
+
         if (!result.success) {
           setError(result.error || 'Import failed');
+          return;
+        }
+
+        if (!result.data!.blocks.length) {
+          setError(`Page fetched but 0 content blocks found. The page may be JavaScript-rendered or the content structure wasn't recognized. Try "Paste HTML" mode instead.`);
           return;
         }
 
@@ -52,6 +66,7 @@ export function URLImporter({ onImport }: URLImporterProps) {
 
         setSuccess(`Imported "${result.data!.title}" — ${result.data!.blocks.length} blocks`);
         setUrl('');
+        setHtmlInput('');
         setTimeout(() => {
           setIsOpen(false);
           setSuccess('');
@@ -79,7 +94,7 @@ export function URLImporter({ onImport }: URLImporterProps) {
     <div className="bg-blue-50 border border-blue-200 rounded-xl p-5 space-y-3">
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-semibold text-blue-900 flex items-center gap-2">
-          <span>🔗</span> Import from WordPress URL
+          <span>🔗</span> Import Blog Content
         </h3>
         <button
           type="button"
@@ -94,42 +109,88 @@ export function URLImporter({ onImport }: URLImporterProps) {
         </button>
       </div>
 
-      <p className="text-xs text-blue-600">
-        Paste a Spyglass blog URL to automatically import content, headings, images, and metadata into the block editor.
-      </p>
-
-      <div className="flex gap-2">
-        <input
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-          placeholder="https://spyglassrealty.com/blog/your-post-slug"
-          className="flex-1 px-3 py-2 border border-blue-300 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white"
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              e.preventDefault();
-              handleImport();
-            }
-          }}
-        />
+      {/* Mode toggle */}
+      <div className="flex gap-1 bg-blue-100 rounded-lg p-0.5">
         <button
           type="button"
-          onClick={handleImport}
-          disabled={isPending}
-          className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors whitespace-nowrap"
+          onClick={() => { setMode('url'); setError(''); }}
+          className={`flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
+            mode === 'url'
+              ? 'bg-white text-blue-700 shadow-sm'
+              : 'text-blue-500 hover:text-blue-700'
+          }`}
         >
-          {isPending ? (
-            <span className="flex items-center gap-1.5">
-              <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-              </svg>
-              Importing...
-            </span>
-          ) : (
-            'Import'
-          )}
+          Fetch from URL
+        </button>
+        <button
+          type="button"
+          onClick={() => { setMode('html'); setError(''); }}
+          className={`flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
+            mode === 'html'
+              ? 'bg-white text-blue-700 shadow-sm'
+              : 'text-blue-500 hover:text-blue-700'
+          }`}
+        >
+          Paste HTML
         </button>
       </div>
+
+      {mode === 'url' ? (
+        <>
+          <p className="text-xs text-blue-600">
+            Paste a blog URL to automatically import content, headings, images, and metadata.
+          </p>
+          <div className="flex gap-2">
+            <input
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              placeholder="https://spyglassrealty.com/blog/your-post-slug.html"
+              className="flex-1 px-3 py-2 border border-blue-300 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  handleImport();
+                }
+              }}
+            />
+            <button
+              type="button"
+              onClick={handleImport}
+              disabled={isPending}
+              className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors whitespace-nowrap"
+            >
+              {isPending ? 'Importing...' : 'Import'}
+            </button>
+          </div>
+        </>
+      ) : (
+        <>
+          <p className="text-xs text-blue-600">
+            If URL fetch fails (403/blocked), right-click the blog page → &quot;View Page Source&quot; → copy all → paste below.
+          </p>
+          <input
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+            placeholder="Source URL (optional, for canonical)"
+            className="w-full px-3 py-1.5 border border-blue-300 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white"
+          />
+          <textarea
+            value={htmlInput}
+            onChange={(e) => setHtmlInput(e.target.value)}
+            placeholder="Paste the full HTML source here..."
+            rows={6}
+            className="w-full px-3 py-2 border border-blue-300 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white font-mono text-xs"
+          />
+          <button
+            type="button"
+            onClick={handleImport}
+            disabled={isPending}
+            className="w-full px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
+          >
+            {isPending ? 'Parsing...' : 'Parse HTML'}
+          </button>
+        </>
+      )}
 
       {error && (
         <p className="text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">

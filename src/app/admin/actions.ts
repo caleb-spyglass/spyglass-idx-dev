@@ -182,43 +182,16 @@ export interface ImportResult {
   };
 }
 
-export async function importBlogFromUrlAction(url: string): Promise<ImportResult> {
+// Parse HTML string into blog blocks (shared by both URL fetch and paste modes)
+async function parseHtmlToBlocks(html: string, sourceUrl?: string): Promise<ImportResult> {
   try {
-    // Validate URL
-    let parsedUrl: URL;
-    try {
-      parsedUrl = new URL(url);
-    } catch {
-      return { success: false, error: 'Invalid URL format' };
-    }
-
-    // Fetch the page — use a realistic browser User-Agent to avoid CDN/WAF blocks
-    const response = await fetch(parsedUrl.toString(), {
-      headers: {
-        'User-Agent':
-          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-        'Accept-Language': 'en-US,en;q=0.9',
-      },
-    });
-
-    if (!response.ok) {
-      return {
-        success: false,
-        error: `Failed to fetch URL: ${response.status} ${response.statusText}`,
-      };
-    }
-
-    const html = await response.text();
-
-    // Use cheerio to parse
     const cheerio = await import('cheerio');
     const $ = cheerio.load(html);
 
     // Extract metadata
     const title =
       $('meta[property="og:title"]').attr('content') ||
-      $('title').text() ||
+      $('title').text().split('|')[0].trim() ||
       $('h1').first().text() ||
       '';
 
@@ -229,7 +202,8 @@ export async function importBlogFromUrlAction(url: string): Promise<ImportResult
 
     const canonicalUrl =
       $('link[rel="canonical"]').attr('href') ||
-      parsedUrl.toString();
+      sourceUrl ||
+      '';
 
     const featuredImage =
       $('meta[property="og:image"]').attr('content') ||
@@ -242,15 +216,17 @@ export async function importBlogFromUrlAction(url: string): Promise<ImportResult
       $('[rel="author"]').first().text().trim() ||
       '';
 
-    // Find the main content area (WordPress common selectors)
+    // Find the main content area — try many selectors for different CMS platforms
     const contentSelectors = [
       'article .entry-content',
       '.post-content',
       '.entry-content',
+      '#content article',
       'article .content',
       '.article-content',
       '.blog-content',
       'article',
+      'main #content',
       'main',
       '.post',
     ];
@@ -278,200 +254,216 @@ export async function importBlogFromUrlAction(url: string): Promise<ImportResult
       content: Record<string, unknown>;
     }> = [];
 
+    // Recursively walk children to find content elements (handles nested divs)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    $content.children().each((_i: any, el: any) => {
-      const $el = $(el);
-      const tagName = el.tagName?.toLowerCase() as string;
+    function walkElements(parent: any) {
+      parent.children().each((_i: number, el: any) => {
+        const $el = $(el);
+        const tagName = el.tagName?.toLowerCase() as string;
 
-      // Skip script, style, nav, header, footer, aside
-      if (['script', 'style', 'nav', 'header', 'footer', 'aside', 'form'].includes(tagName)) {
-        return;
-      }
-
-      // Headings
-      if (['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].includes(tagName)) {
-        const text = $el.text().trim();
-        if (text) {
-          // Downshift h1 to h2 since title is the h1
-          const level = tagName === 'h1' ? 'h2' : tagName;
-          blocks.push({
-            id: genId(),
-            type: 'heading',
-            content: { text, level },
-          });
+        // Skip script, style, nav, header, footer, aside, form
+        if (['script', 'style', 'nav', 'header', 'footer', 'aside', 'form', 'noscript'].includes(tagName)) {
+          return;
         }
-        return;
-      }
 
-      // Images
-      if (tagName === 'img') {
-        const src = $el.attr('src') || '';
-        const alt = $el.attr('alt') || '';
-        if (src) {
-          blocks.push({
-            id: genId(),
-            type: 'image',
-            content: { src, alt, caption: '' },
-          });
+        // Skip TOC and sidebar elements
+        const classAttr = ($el.attr('class') || '').toLowerCase();
+        const idAttr = ($el.attr('id') || '').toLowerCase();
+        if (classAttr.includes('sidebar') || classAttr.includes('comment') ||
+            classAttr.includes('toc') || classAttr.includes('table-of-contents') ||
+            idAttr.includes('sidebar') || idAttr.includes('comment') ||
+            idAttr.includes('table-of-contents')) {
+          return;
         }
-        return;
-      }
 
-      // Figure (image with caption)
-      if (tagName === 'figure') {
-        const $img = $el.find('img').first();
-        const src = $img.attr('src') || '';
-        const alt = $img.attr('alt') || '';
-        const caption = $el.find('figcaption').text().trim();
-        if (src) {
-          blocks.push({
-            id: genId(),
-            type: 'image',
-            content: { src, alt, caption },
-          });
+        // Headings
+        if (['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].includes(tagName)) {
+          const text = $el.text().trim();
+          if (text) {
+            const level = tagName === 'h1' ? 'h2' : tagName;
+            blocks.push({
+              id: genId(),
+              type: 'heading',
+              content: { text, level },
+            });
+          }
+          return;
         }
-        return;
-      }
 
-      // Blockquote
-      if (tagName === 'blockquote') {
-        const text = $el.text().trim();
-        const cite = $el.find('cite').text().trim();
-        if (text) {
-          blocks.push({
-            id: genId(),
-            type: 'quote',
-            content: {
-              text: cite ? text.replace(cite, '').trim() : text,
-              citation: cite,
-            },
-          });
-        }
-        return;
-      }
-
-      // Horizontal rule
-      if (tagName === 'hr') {
-        blocks.push({
-          id: genId(),
-          type: 'divider',
-          content: { style: 'solid' },
-        });
-        return;
-      }
-
-      // Unordered/ordered lists
-      if (tagName === 'ul' || tagName === 'ol') {
-        const html = $.html(el);
-        if (html) {
-          blocks.push({
-            id: genId(),
-            type: 'text',
-            content: { html },
-          });
-        }
-        return;
-      }
-
-      // Paragraphs and divs
-      if (tagName === 'p' || tagName === 'div') {
-        // Check if it contains an image
-        const $img = $el.find('img').first();
-        if ($img.length > 0) {
-          const src = $img.attr('src') || '';
-          const alt = $img.attr('alt') || '';
+        // Images (standalone)
+        if (tagName === 'img') {
+          const src = $el.attr('src') || '';
+          const alt = $el.attr('alt') || '';
           if (src) {
             blocks.push({
               id: genId(),
               type: 'image',
-              content: { src, alt, caption: '' },
+              content: { src, alt, loading: 'lazy' },
             });
           }
-          // Also add remaining text if any
-          const remainingText = $el.clone().find('img').remove().end().text().trim();
-          if (remainingText) {
+          return;
+        }
+
+        // Paragraphs
+        if (tagName === 'p') {
+          // Check for embedded image
+          const img = $el.find('img').first();
+          if (img.length > 0) {
+            const src = img.attr('src') || '';
+            const alt = img.attr('alt') || '';
+            if (src) {
+              blocks.push({
+                id: genId(),
+                type: 'image',
+                content: { src, alt, loading: 'lazy' },
+              });
+            }
+          }
+          const text = $el.text().trim();
+          const html = $el.html()?.trim() || '';
+          if (text && text.length > 5) {
             blocks.push({
               id: genId(),
               type: 'text',
-              content: { html: `<p>${remainingText}</p>` },
+              content: { html: html || text },
             });
           }
           return;
         }
 
-        // Check for embedded video (iframe)
-        const $iframe = $el.find('iframe').first();
-        if ($iframe.length > 0) {
-          const videoSrc = $iframe.attr('src') || '';
-          if (videoSrc) {
+        // Lists
+        if (tagName === 'ul' || tagName === 'ol') {
+          const html = $.html(el);
+          if (html) {
             blocks.push({
               id: genId(),
-              type: 'video',
-              content: { url: videoSrc, provider: 'youtube' },
+              type: 'text',
+              content: { html },
             });
           }
           return;
         }
 
-        // Regular paragraph
-        const innerHtml = $.html(el);
-        const text = $el.text().trim();
-        if (text) {
-          blocks.push({
-            id: genId(),
-            type: 'text',
-            content: { html: innerHtml || `<p>${text}</p>` },
-          });
+        // Blockquote
+        if (tagName === 'blockquote') {
+          const text = $el.text().trim();
+          if (text) {
+            blocks.push({
+              id: genId(),
+              type: 'quote',
+              content: { text, attribution: '' },
+            });
+          }
+          return;
         }
-        return;
-      }
 
-      // Iframe (video embed)
-      if (tagName === 'iframe') {
-        const src = $el.attr('src') || '';
-        if (src) {
-          blocks.push({
-            id: genId(),
-            type: 'video',
-            content: { url: src, provider: 'youtube' },
-          });
+        // Figure (usually wraps image + caption)
+        if (tagName === 'figure') {
+          const img = $el.find('img').first();
+          const caption = $el.find('figcaption').first().text().trim();
+          if (img.length > 0) {
+            blocks.push({
+              id: genId(),
+              type: 'image',
+              content: {
+                src: img.attr('src') || '',
+                alt: img.attr('alt') || caption || '',
+                loading: 'lazy',
+              },
+            });
+          }
+          return;
         }
-        return;
-      }
 
-      // Catch-all: if there's text, make it a text block
-      const text = $el.text().trim();
-      if (text && text.length > 10) {
-        const innerHtml = $.html(el);
-        blocks.push({
-          id: genId(),
-          type: 'text',
-          content: { html: innerHtml || `<p>${text}</p>` },
-        });
-      }
-    });
+        // Divs — recurse into them to find nested content
+        if (tagName === 'div' || tagName === 'section') {
+          walkElements($el);
+          return;
+        }
 
-    // Generate excerpt from first text block
-    const firstTextBlock = blocks.find((b) => b.type === 'text');
+        // Table
+        if (tagName === 'table') {
+          const html = $.html(el);
+          if (html) {
+            blocks.push({
+              id: genId(),
+              type: 'html',
+              content: { html },
+            });
+          }
+          return;
+        }
+      });
+    }
+
+    walkElements($content);
+
+    // Extract excerpt from first text block
+    const firstTextBlock = blocks.find(b => b.type === 'text');
     const excerpt = firstTextBlock
-      ? (firstTextBlock.content.html as string)
-          .replace(/<[^>]*>/g, '')
-          .slice(0, 200)
-          .trim()
+      ? (firstTextBlock.content.html as string || '').replace(/<[^>]*>/g, '').slice(0, 300)
       : metaDescription;
 
     return {
       success: true,
       data: {
         title: title.trim(),
-        metaDescription: metaDescription.trim(),
+        metaDescription,
         canonicalUrl,
         featuredImage,
         excerpt,
-        author: author.trim(),
+        author,
         blocks,
       },
     };
+  } catch (e) {
+    console.error('parseHtmlToBlocks error:', e);
+    return {
+      success: false,
+      error: `Parse failed: ${e instanceof Error ? e.message : 'Unknown error'}`,
+    };
+  }
+}
+
+// Import blog from pasted HTML (bypasses fetch — always works)
+export async function importBlogFromHtmlAction(html: string, sourceUrl?: string): Promise<ImportResult> {
+  if (!html || html.trim().length < 50) {
+    return { success: false, error: 'HTML content is too short. Please paste the full page source.' };
+  }
+  return parseHtmlToBlocks(html, sourceUrl);
+}
+
+export async function importBlogFromUrlAction(url: string): Promise<ImportResult> {
+  try {
+    // Validate URL
+    let parsedUrl: URL;
+    try {
+      parsedUrl = new URL(url);
+    } catch {
+      return { success: false, error: 'Invalid URL format' };
+    }
+
+    // Fetch the page — use a realistic browser User-Agent to avoid CDN/WAF blocks
+    const response = await fetch(parsedUrl.toString(), {
+      headers: {
+        'User-Agent':
+          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.9',
+        'Cache-Control': 'no-cache',
+      },
+      redirect: 'follow',
+    });
+
+    if (!response.ok) {
+      return {
+        success: false,
+        error: `Failed to fetch URL: ${response.status} ${response.statusText}. Try using "Paste HTML" mode instead.`,
+      };
+    }
+
+    const html = await response.text();
+    return parseHtmlToBlocks(html, parsedUrl.toString());
   } catch (e) {
     console.error('importBlogFromUrlAction error:', e);
     return {
