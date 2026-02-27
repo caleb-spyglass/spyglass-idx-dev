@@ -1,10 +1,19 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useState, useTransition, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { saveBlogPostAction } from '../../actions';
 import type { CmsBlogPost } from '@/lib/admin-db';
+import { BlogBlockEditor } from './BlogBlockEditor';
+import { SEOPanel } from './SEOPanel';
+import { URLImporter } from './URLImporter';
+import {
+  type BlogBlock,
+  blocksToHtml,
+  htmlToBlocks,
+  estimateReadingTime,
+} from './blog-block-types';
 
 interface BlogEditorFormProps {
   post?: CmsBlogPost;
@@ -20,16 +29,18 @@ function slugify(text: string): string {
     .replace(/^-+|-+$/g, '');
 }
 
+const BASE_URL = 'https://spyglassrealty.com';
+
 export function BlogEditorForm({ post, isNew = false }: BlogEditorFormProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
   const [errorMsg, setErrorMsg] = useState('');
 
+  // Core fields
   const [title, setTitle] = useState(post?.title ?? '');
   const [slug, setSlug] = useState(post?.slug ?? '');
   const [slugManuallyEdited, setSlugManuallyEdited] = useState(!isNew);
-  const [content, setContent] = useState(post?.content ?? '');
   const [excerpt, setExcerpt] = useState(post?.excerpt ?? '');
   const [featuredImage, setFeaturedImage] = useState(post?.featured_image ?? '');
   const [author, setAuthor] = useState(post?.author ?? '');
@@ -37,12 +48,61 @@ export function BlogEditorForm({ post, isNew = false }: BlogEditorFormProps) {
   const [tags, setTags] = useState(post?.tags?.join(', ') ?? '');
   const [isPublished, setIsPublished] = useState(post?.is_published ?? false);
 
+  // SEO fields
+  const [metaDescription, setMetaDescription] = useState(post?.excerpt ?? '');
+  const [canonicalUrl, setCanonicalUrl] = useState(
+    post?.slug ? `${BASE_URL}/blog/${post.slug}` : ''
+  );
+
+  // Block-based content — parse existing HTML content into blocks on mount
+  const [blocks, setBlocks] = useState<BlogBlock[]>(() => {
+    if (post?.content) {
+      const parsed = htmlToBlocks(post.content);
+      return parsed.length > 0 ? parsed : [];
+    }
+    return [];
+  });
+
+  // Computed reading time
+  const readingTime = useMemo(() => estimateReadingTime(blocks), [blocks]);
+
   function handleTitleChange(val: string) {
     setTitle(val);
     if (!slugManuallyEdited) {
-      setSlug(slugify(val));
+      const newSlug = slugify(val);
+      setSlug(newSlug);
+      setCanonicalUrl(`${BASE_URL}/blog/${newSlug}`);
     }
   }
+
+  function handleSlugChange(val: string) {
+    setSlug(val);
+    setSlugManuallyEdited(true);
+    setCanonicalUrl(`${BASE_URL}/blog/${val}`);
+  }
+
+  const handleImport = useCallback(
+    (data: {
+      title: string;
+      metaDescription: string;
+      canonicalUrl: string;
+      featuredImage: string;
+      blocks: BlogBlock[];
+      excerpt: string;
+      author: string;
+    }) => {
+      setTitle(data.title);
+      setSlug(slugify(data.title));
+      setSlugManuallyEdited(false);
+      setMetaDescription(data.metaDescription);
+      setCanonicalUrl(data.canonicalUrl || `${BASE_URL}/blog/${slugify(data.title)}`);
+      setFeaturedImage(data.featuredImage);
+      setBlocks(data.blocks);
+      setExcerpt(data.excerpt);
+      if (data.author) setAuthor(data.author);
+    },
+    []
+  );
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -53,12 +113,16 @@ export function BlogEditorForm({ post, isNew = false }: BlogEditorFormProps) {
     }
 
     setSaveStatus('saving');
+
+    // Convert blocks to HTML for storage
+    const htmlContent = blocksToHtml(blocks);
+
     const formData = new FormData();
     if (post?.id) formData.set('id', String(post.id));
     formData.set('slug', slug);
     formData.set('title', title);
-    formData.set('content', content);
-    formData.set('excerpt', excerpt);
+    formData.set('content', htmlContent);
+    formData.set('excerpt', excerpt || metaDescription);
     formData.set('featured_image', featuredImage);
     formData.set('author', author);
     formData.set('category', category);
@@ -87,11 +151,19 @@ export function BlogEditorForm({ post, isNew = false }: BlogEditorFormProps) {
       {saveStatus === 'saved' && (
         <div className="bg-green-50 border border-green-200 rounded-lg px-4 py-3 text-sm text-green-700 flex items-center gap-2">
           <svg className="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+            <path
+              fillRule="evenodd"
+              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+              clipRule="evenodd"
+            />
           </svg>
           Saved and revalidated!
           {isPublished && (
-            <Link href={`/blog/${slug}`} target="_blank" className="underline font-medium">
+            <Link
+              href={`/blog/${slug}`}
+              target="_blank"
+              className="underline font-medium"
+            >
               View post →
             </Link>
           )}
@@ -102,6 +174,9 @@ export function BlogEditorForm({ post, isNew = false }: BlogEditorFormProps) {
           {errorMsg || 'Save failed. Try again.'}
         </div>
       )}
+
+      {/* URL Import */}
+      <URLImporter onImport={handleImport} />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main content */}
@@ -119,6 +194,23 @@ export function BlogEditorForm({ post, isNew = false }: BlogEditorFormProps) {
                 placeholder="Post title"
                 required
               />
+              {/* Title character counter */}
+              <div className="flex items-center justify-between text-xs mt-1">
+                <span className="text-gray-400">SEO title length</span>
+                <span
+                  className={
+                    title.length >= 30 && title.length <= 65
+                      ? 'text-green-600 font-medium'
+                      : title.length > 65
+                      ? 'text-red-500 font-medium'
+                      : 'text-amber-500 font-medium'
+                  }
+                >
+                  {title.length}/65
+                  {title.length >= 30 && title.length <= 65 && ' ✓'}
+                  {title.length > 65 && ' (too long)'}
+                </span>
+              </div>
             </div>
 
             <div>
@@ -128,10 +220,7 @@ export function BlogEditorForm({ post, isNew = false }: BlogEditorFormProps) {
               </label>
               <input
                 value={slug}
-                onChange={(e) => {
-                  setSlug(e.target.value);
-                  setSlugManuallyEdited(true);
-                }}
+                onChange={(e) => handleSlugChange(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm font-mono focus:outline-none focus:ring-1 focus:ring-[#EF4923] focus:border-[#EF4923]"
                 placeholder="post-slug"
                 required
@@ -150,19 +239,9 @@ export function BlogEditorForm({ post, isNew = false }: BlogEditorFormProps) {
             </div>
           </div>
 
-          {/* Content */}
-          <div className="bg-white rounded-xl border border-gray-200 p-6 space-y-3">
-            <div className="flex items-center justify-between">
-              <label className="text-sm font-medium text-gray-700">Content</label>
-              <span className="text-xs text-gray-400">HTML or plain text</span>
-            </div>
-            <textarea
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              rows={24}
-              className="w-full px-3 py-3 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-[#EF4923] focus:border-[#EF4923] resize-y font-mono"
-              placeholder="<p>Write your blog post content here...</p>"
-            />
+          {/* Block-based Content Editor */}
+          <div className="bg-white rounded-xl border border-gray-200 p-6">
+            <BlogBlockEditor blocks={blocks} onChange={setBlocks} />
           </div>
         </div>
 
@@ -197,7 +276,19 @@ export function BlogEditorForm({ post, isNew = false }: BlogEditorFormProps) {
             </button>
           </div>
 
-          {/* Meta */}
+          {/* SEO Panel */}
+          <SEOPanel
+            title={title}
+            metaDescription={metaDescription}
+            onMetaDescriptionChange={setMetaDescription}
+            canonicalUrl={canonicalUrl}
+            onCanonicalUrlChange={setCanonicalUrl}
+            publishDate={post?.published_at ?? null}
+            modifiedDate={post?.updated_at ?? null}
+            readingTime={readingTime}
+          />
+
+          {/* Meta / Details */}
           <div className="bg-white rounded-xl border border-gray-200 p-5 space-y-4">
             <h3 className="font-semibold text-gray-900 text-sm">Details</h3>
 
@@ -234,7 +325,9 @@ export function BlogEditorForm({ post, isNew = false }: BlogEditorFormProps) {
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1.5">Featured Image URL</label>
+              <label className="block text-xs font-medium text-gray-600 mb-1.5">
+                Featured Image URL
+              </label>
               <input
                 value={featuredImage}
                 onChange={(e) => setFeaturedImage(e.target.value)}
@@ -243,11 +336,14 @@ export function BlogEditorForm({ post, isNew = false }: BlogEditorFormProps) {
                 type="url"
               />
               {featuredImage && (
+                // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={featuredImage}
                   alt="Featured"
                   className="mt-2 w-full h-32 object-cover rounded-lg border border-gray-200"
-                  onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).style.display = 'none';
+                  }}
                 />
               )}
             </div>

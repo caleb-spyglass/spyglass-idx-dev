@@ -93,7 +93,7 @@ export async function savePageAction(formData: FormData): Promise<ActionResult> 
     const frontendPath = slug === '/' ? '/' : slug;
     revalidatePath(frontendPath);
     revalidatePath('/admin/pages');
-    revalidateTag('cms-page');
+    revalidateTag('cms-page', 'default');
 
     return { success: true };
   } catch (e) {
@@ -138,7 +138,7 @@ export async function saveBlogPostAction(formData: FormData): Promise<ActionResu
     revalidatePath('/blog');
     revalidatePath(`/blog/${slug}`);
     revalidatePath('/admin/blog');
-    revalidateTag('cms-blog');
+    revalidateTag('cms-blog', 'default');
 
     return { success: true, slug: post.slug };
   } catch (e) {
@@ -152,11 +152,330 @@ export async function deleteBlogPostAction(id: number): Promise<ActionResult> {
     await deleteBlogPost(id);
     revalidatePath('/blog');
     revalidatePath('/admin/blog');
-    revalidateTag('cms-blog');
+    revalidateTag('cms-blog', 'default');
     return { success: true };
   } catch (e) {
     console.error('deleteBlogPostAction error:', e);
     return { success: false, error: 'Failed to delete post' };
+  }
+}
+
+// ─── Settings ─────────────────────────────────────────────────────────────────
+
+// ─── Blog URL Import ──────────────────────────────────────────────────────────
+
+export interface ImportResult {
+  success: boolean;
+  error?: string;
+  data?: {
+    title: string;
+    metaDescription: string;
+    canonicalUrl: string;
+    featuredImage: string;
+    excerpt: string;
+    author: string;
+    blocks: Array<{
+      id: string;
+      type: string;
+      content: Record<string, unknown>;
+    }>;
+  };
+}
+
+export async function importBlogFromUrlAction(url: string): Promise<ImportResult> {
+  try {
+    // Validate URL
+    let parsedUrl: URL;
+    try {
+      parsedUrl = new URL(url);
+    } catch {
+      return { success: false, error: 'Invalid URL format' };
+    }
+
+    // Fetch the page
+    const response = await fetch(parsedUrl.toString(), {
+      headers: {
+        'User-Agent':
+          'Mozilla/5.0 (compatible; SpyglassCMS/1.0; +https://spyglassrealty.com)',
+      },
+    });
+
+    if (!response.ok) {
+      return {
+        success: false,
+        error: `Failed to fetch URL: ${response.status} ${response.statusText}`,
+      };
+    }
+
+    const html = await response.text();
+
+    // Use cheerio to parse
+    const cheerio = await import('cheerio');
+    const $ = cheerio.load(html);
+
+    // Extract metadata
+    const title =
+      $('meta[property="og:title"]').attr('content') ||
+      $('title').text() ||
+      $('h1').first().text() ||
+      '';
+
+    const metaDescription =
+      $('meta[property="og:description"]').attr('content') ||
+      $('meta[name="description"]').attr('content') ||
+      '';
+
+    const canonicalUrl =
+      $('link[rel="canonical"]').attr('href') ||
+      parsedUrl.toString();
+
+    const featuredImage =
+      $('meta[property="og:image"]').attr('content') ||
+      '';
+
+    // Try to find author
+    const author =
+      $('meta[name="author"]').attr('content') ||
+      $('[class*="author"]').first().text().trim() ||
+      $('[rel="author"]').first().text().trim() ||
+      '';
+
+    // Find the main content area (WordPress common selectors)
+    const contentSelectors = [
+      'article .entry-content',
+      '.post-content',
+      '.entry-content',
+      'article .content',
+      '.article-content',
+      '.blog-content',
+      'article',
+      'main',
+      '.post',
+    ];
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let $content: any = $('body');
+    for (const sel of contentSelectors) {
+      const found = $(sel).first();
+      if (found.length > 0 && found.text().trim().length > 100) {
+        $content = found;
+        break;
+      }
+    }
+
+    // Parse DOM elements into blocks
+    let blockCounter = 0;
+    function genId() {
+      blockCounter++;
+      return `import-block-${Date.now()}-${blockCounter}`;
+    }
+
+    const blocks: Array<{
+      id: string;
+      type: string;
+      content: Record<string, unknown>;
+    }> = [];
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    $content.children().each((_i: any, el: any) => {
+      const $el = $(el);
+      const tagName = el.tagName?.toLowerCase() as string;
+
+      // Skip script, style, nav, header, footer, aside
+      if (['script', 'style', 'nav', 'header', 'footer', 'aside', 'form'].includes(tagName)) {
+        return;
+      }
+
+      // Headings
+      if (['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].includes(tagName)) {
+        const text = $el.text().trim();
+        if (text) {
+          // Downshift h1 to h2 since title is the h1
+          const level = tagName === 'h1' ? 'h2' : tagName;
+          blocks.push({
+            id: genId(),
+            type: 'heading',
+            content: { text, level },
+          });
+        }
+        return;
+      }
+
+      // Images
+      if (tagName === 'img') {
+        const src = $el.attr('src') || '';
+        const alt = $el.attr('alt') || '';
+        if (src) {
+          blocks.push({
+            id: genId(),
+            type: 'image',
+            content: { src, alt, caption: '' },
+          });
+        }
+        return;
+      }
+
+      // Figure (image with caption)
+      if (tagName === 'figure') {
+        const $img = $el.find('img').first();
+        const src = $img.attr('src') || '';
+        const alt = $img.attr('alt') || '';
+        const caption = $el.find('figcaption').text().trim();
+        if (src) {
+          blocks.push({
+            id: genId(),
+            type: 'image',
+            content: { src, alt, caption },
+          });
+        }
+        return;
+      }
+
+      // Blockquote
+      if (tagName === 'blockquote') {
+        const text = $el.text().trim();
+        const cite = $el.find('cite').text().trim();
+        if (text) {
+          blocks.push({
+            id: genId(),
+            type: 'quote',
+            content: {
+              text: cite ? text.replace(cite, '').trim() : text,
+              citation: cite,
+            },
+          });
+        }
+        return;
+      }
+
+      // Horizontal rule
+      if (tagName === 'hr') {
+        blocks.push({
+          id: genId(),
+          type: 'divider',
+          content: { style: 'solid' },
+        });
+        return;
+      }
+
+      // Unordered/ordered lists
+      if (tagName === 'ul' || tagName === 'ol') {
+        const html = $.html(el);
+        if (html) {
+          blocks.push({
+            id: genId(),
+            type: 'text',
+            content: { html },
+          });
+        }
+        return;
+      }
+
+      // Paragraphs and divs
+      if (tagName === 'p' || tagName === 'div') {
+        // Check if it contains an image
+        const $img = $el.find('img').first();
+        if ($img.length > 0) {
+          const src = $img.attr('src') || '';
+          const alt = $img.attr('alt') || '';
+          if (src) {
+            blocks.push({
+              id: genId(),
+              type: 'image',
+              content: { src, alt, caption: '' },
+            });
+          }
+          // Also add remaining text if any
+          const remainingText = $el.clone().find('img').remove().end().text().trim();
+          if (remainingText) {
+            blocks.push({
+              id: genId(),
+              type: 'text',
+              content: { html: `<p>${remainingText}</p>` },
+            });
+          }
+          return;
+        }
+
+        // Check for embedded video (iframe)
+        const $iframe = $el.find('iframe').first();
+        if ($iframe.length > 0) {
+          const videoSrc = $iframe.attr('src') || '';
+          if (videoSrc) {
+            blocks.push({
+              id: genId(),
+              type: 'video',
+              content: { url: videoSrc, provider: 'youtube' },
+            });
+          }
+          return;
+        }
+
+        // Regular paragraph
+        const innerHtml = $.html(el);
+        const text = $el.text().trim();
+        if (text) {
+          blocks.push({
+            id: genId(),
+            type: 'text',
+            content: { html: innerHtml || `<p>${text}</p>` },
+          });
+        }
+        return;
+      }
+
+      // Iframe (video embed)
+      if (tagName === 'iframe') {
+        const src = $el.attr('src') || '';
+        if (src) {
+          blocks.push({
+            id: genId(),
+            type: 'video',
+            content: { url: src, provider: 'youtube' },
+          });
+        }
+        return;
+      }
+
+      // Catch-all: if there's text, make it a text block
+      const text = $el.text().trim();
+      if (text && text.length > 10) {
+        const innerHtml = $.html(el);
+        blocks.push({
+          id: genId(),
+          type: 'text',
+          content: { html: innerHtml || `<p>${text}</p>` },
+        });
+      }
+    });
+
+    // Generate excerpt from first text block
+    const firstTextBlock = blocks.find((b) => b.type === 'text');
+    const excerpt = firstTextBlock
+      ? (firstTextBlock.content.html as string)
+          .replace(/<[^>]*>/g, '')
+          .slice(0, 200)
+          .trim()
+      : metaDescription;
+
+    return {
+      success: true,
+      data: {
+        title: title.trim(),
+        metaDescription: metaDescription.trim(),
+        canonicalUrl,
+        featuredImage,
+        excerpt,
+        author: author.trim(),
+        blocks,
+      },
+    };
+  } catch (e) {
+    console.error('importBlogFromUrlAction error:', e);
+    return {
+      success: false,
+      error: `Import failed: ${e instanceof Error ? e.message : 'Unknown error'}`,
+    };
   }
 }
 
@@ -174,7 +493,7 @@ export async function saveSettingsAction(formData: FormData): Promise<ActionResu
     await saveAllSettings(settings);
     revalidatePath('/', 'layout');
     revalidatePath('/admin/settings');
-    revalidateTag('cms-settings');
+    revalidateTag('cms-settings', 'default');
     return { success: true };
   } catch (e) {
     console.error('saveSettingsAction error:', e);
