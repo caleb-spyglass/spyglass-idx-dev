@@ -23,7 +23,7 @@ export async function DELETE(_req: NextRequest, { params }: RouteParams) {
     revalidatePath('/blog');
     if (slug) revalidatePath(`/blog/${slug}`);
     revalidatePath('/admin/blog');
-    revalidateTag('cms-blog');
+    revalidateTag('cms-blog', 'default');
 
     return NextResponse.json({ success: true });
   } catch (error) {
